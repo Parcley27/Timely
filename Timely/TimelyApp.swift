@@ -5,11 +5,20 @@
 //  Created by Pierce Oxley on 2023-06-14.
 //
 
+// Change color with system theme
+//
+//@Environment(\.colorScheme) var colorScheme
+//
+//.foregroundColor(colorScheme == .dark ? .white : .black)
+
 import SwiftUI
 import SwiftData
 
 @main
 struct TimelyApp: App {
+    @StateObject var eventList = EventData()
+    
+    /*
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -22,11 +31,32 @@ struct TimelyApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+    */
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabView {
+                ContentView()
+                    //.badge()
+                    .tabItem {
+                        Label("ContentView", systemImage: "folder.fill")
+                    }
+                
+                EventListView()
+                    //.badge()
+                    .tabItem {
+                        Label("Content List", systemImage: "list.bullet.circle.fill")
+                    }
+                    .environmentObject(eventList)
+                
+                Settings()
+                    //.badge()
+                    .tabItem {
+                        Label("Settings", systemImage: "gearshape.fill")
+                    }
+                    .environmentObject(eventList)
+            }
         }
-        .modelContainer(sharedModelContainer)
+        //.modelContainer(sharedModelContainer)
     }
 }
