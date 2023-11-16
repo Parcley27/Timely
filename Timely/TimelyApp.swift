@@ -36,16 +36,18 @@ struct TimelyApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
+                /*
                 ContentView()
                     //.badge()
                     .tabItem {
                         Label("ContentView", systemImage: "folder.fill")
                     }
+                 */
                 
                 EventListView()
                     //.badge()
                     .tabItem {
-                        Label("Content List", systemImage: "list.bullet.circle.fill")
+                        Label("Upcoming Events", systemImage: "list.bullet.circle.fill")
                     }
                     .environmentObject(eventList)
                 
