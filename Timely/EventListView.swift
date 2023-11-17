@@ -14,7 +14,6 @@ struct EventListView: View {
     
     @State private var showingSheet = false
 
-
     var body: some View {
         VStack{
             NavigationStack {
@@ -105,8 +104,7 @@ struct EventListView: View {
                     ToolbarItem(placement: .navigationBarLeading) {
                         EditButton()
                     }
-                }
-                .toolbar {
+
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
                             showingSheet.toggle()
@@ -114,7 +112,8 @@ struct EventListView: View {
                             Label("New", systemImage: "plus")
                         }
                         .sheet(isPresented: $showingSheet) {
-                            NewEventSheetView().environmentObject(data)
+                            NewEventSheetView()
+                                .environmentObject(data)
                         }
                     }
                 }
@@ -127,6 +126,14 @@ struct EventListView: View {
 
 struct EventListView_Previews: PreviewProvider {
     static var previews: some View {
-        EventListView()
-    }
+           let previewData = EventData() // Assuming EventData conforms to ObservableObject
+           previewData.events = [
+               Event(name: "Sample Event 1"),
+               Event(name: "Sample Event 2"),
+               // Add more sample events as needed
+           ]
+
+           return EventListView()
+               .environmentObject(previewData)
+       }
 }
