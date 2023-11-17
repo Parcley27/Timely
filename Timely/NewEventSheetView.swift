@@ -19,43 +19,40 @@ struct NewEventSheetView: View {
     @State private var formMutedL: Bool = true
 
     var body: some View {
-        VStack {
-            // This would be better with propper toolbar items, but this will work for now
-            HStack {
-                Button("Cancel") {
-                    dismiss()
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(EdgeInsets(top: 15, leading: 15, bottom: 0, trailing: 0))
-                Text("New Event")
-                    .bold()
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0))
-                
-                Button("Done") {
-                    // Save form data to EventData
-                    dismiss()
-                }
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 15))
-            }
-            
-            Form {
-                Section("About") {
-                    TextField("Event Name", text: $formName)
+        NavigationStack {
+            VStack {
+                Form {
+                    Section("About") {
+                        TextField("Event Name", text: $formName)
 
-                    TextField("Event Emoji (Optional)", text: $formEmoji)
-                }
-                
-                Section("Date and Time") {
-                    DatePicker("Event Date", selection: $formDateAndTime, displayedComponents: [.date])
-                    DatePicker("Event Time", selection: $formDateAndTime, displayedComponents: [.hourAndMinute])
-                    Text("\(formDateAndTime)")
+                        TextField("Event Emoji (Optional)", text: $formEmoji)
+                    }
+                    
+                    Section("Date and Time") {
+                        DatePicker("Event Date", selection: $formDateAndTime, displayedComponents: [.date])
+                        DatePicker("Event Time", selection: $formDateAndTime, displayedComponents: [.hourAndMinute])
+                        Text("\(formDateAndTime)")
+                    }
                 }
             }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button ("Done") {
+                        // Chnage to add new data to EventData
+                        dismiss()
+                    }
+                }
+            }
+            .navigationBarTitle("Events", displayMode: .inline)
         }
-        
     }
+    
     /*
         NavigationView {
             VStack {
