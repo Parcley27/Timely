@@ -77,35 +77,6 @@ struct NewEventSheetView: View {
             .navigationBarTitle("New Event", displayMode: .inline)
         }
     }
-    
-    /*
-        NavigationView {
-            VStack {
-                Button("Done") {
-                    dismiss()
-                }
-                
-                List() {
-                    Text("Example Text")
-                    Text("Example Text 2")
-                    //Text(data)
-                }
-                
-                Button {
-                    let newEvent = Event(name: "New Event", emoji: "📅")
-                    data.events.append(newEvent)
-                } label: {
-                    Label("New", systemImage: "plus")
-                }
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Text("test")
-            }
-        }
-    }
-     */
 }
 
 struct NewEventSheetView_Previews: PreviewProvider {
