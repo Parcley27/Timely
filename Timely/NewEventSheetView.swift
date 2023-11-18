@@ -6,32 +6,56 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct NewEventSheetView: View {
     @EnvironmentObject var data: EventData
 
     @Environment(\.dismiss) var dismiss
     
+    @State private var isCompleted = false
+    
     @State private var formName: String = ""
     @State private var formEmoji: String = ""
-    @State private var formDateAndTime: Date = Date()
+    @State private var formDateAndTime: Date = {
+        let currentDate = Date()
+        let oneDayInSeconds: TimeInterval = 24 * 60 * 60
+        return currentDate.addingTimeInterval(oneDayInSeconds)
+    }()
     @State private var formFavourited: Bool = false
-    @State private var formMutedL: Bool = true
-
+    @State private var formMuted: Bool = false
+    
+    private func formatTime(inputDate: Date) -> Date {
+        var calendar = Calendar.current
+        
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: inputDate)
+        
+        if let formattedDate = calendar.date(from: components) {
+            return formattedDate
+        } else {
+            return inputDate
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             VStack {
                 Form {
                     Section("About") {
                         TextField("Event Name", text: $formName)
-
                         TextField("Event Emoji (Optional)", text: $formEmoji)
                     }
                     
                     Section("Date and Time") {
-                        DatePicker("Event Date", selection: $formDateAndTime, displayedComponents: [.date])
-                        DatePicker("Event Time", selection: $formDateAndTime, displayedComponents: [.hourAndMinute])
-                        Text("\(formDateAndTime)")
+                        DatePicker("Date", selection: $formDateAndTime, displayedComponents: [.date])
+                        DatePicker("Time", selection: $formDateAndTime, displayedComponents: [.hourAndMinute])
+                        // DEBUG - Display date information
+                        //Text("\(formatTime(inputDate: formDateAndTime))")
+                    }
+                    
+                    Section("More") {
+                        Toggle("Favourite", isOn: $formFavourited)
+                        Toggle("Mute", isOn: $formMuted)
                     }
                 }
             }
@@ -44,12 +68,13 @@ struct NewEventSheetView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button ("Done") {
-                        // Chnage to add new data to EventData
+                        // Chanage to add new data to EventData
                         dismiss()
                     }
+                    .disabled(formName.isEmpty)
                 }
             }
-            .navigationBarTitle("Events", displayMode: .inline)
+            .navigationBarTitle("New Event", displayMode: .inline)
         }
     }
     
