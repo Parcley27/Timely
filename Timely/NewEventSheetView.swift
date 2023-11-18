@@ -26,7 +26,7 @@ struct NewEventSheetView: View {
     @State private var formMuted: Bool = false
     
     private func formatTime(inputDate: Date) -> Date {
-        var calendar = Calendar.current
+        let calendar = Calendar.current
         
         let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: inputDate)
         
