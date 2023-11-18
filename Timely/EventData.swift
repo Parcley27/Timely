@@ -5,16 +5,6 @@
 //  Created by Pierce Oxley on 2023-08-13.
 //
 
-// Hello, Git at 2:30!
-
-/*
- CreatureZoo == EventList
- creatureZoo == eventList
- creatures == events
- creature == event
- Creature == Event
- */
-
 import SwiftUI
 
 class EventData : ObservableObject {
@@ -43,7 +33,7 @@ struct Event : Identifiable {
     var dateAndTime: Date = Date()
     
     var isFavourite: Bool? = false
-    var isMuted: Bool? = true
+    var isMuted: Bool? = false
     
     var id = UUID()
 }
