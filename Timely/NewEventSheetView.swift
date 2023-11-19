@@ -12,11 +12,10 @@ struct NewEventSheetView: View {
     @EnvironmentObject var data: EventData
 
     @Environment(\.dismiss) var dismiss
-    
-    @State private var isCompleted = false
-    
+        
     @State private var formName: String = ""
     @State private var formEmoji: String = ""
+    @State private var formDescription: String = ""
     @State private var formDateAndTime: Date = {
         let currentDate = Date()
         let oneDayInSeconds: TimeInterval = 24 * 60 * 60
@@ -37,6 +36,24 @@ struct NewEventSheetView: View {
         }
     }
     
+    private func createEvent() {
+        if formEmoji.isEmpty {
+            formEmoji = "🙂"
+        }
+        
+        let newEvent = Event (
+            name: formName,
+            emoji: formEmoji,
+            description: formDescription,
+            dateAndTime: formDateAndTime,
+            isFavourite: formFavourited,
+            isMuted: formMuted
+        )
+        
+        data.events.append(newEvent)
+
+    }
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -44,6 +61,10 @@ struct NewEventSheetView: View {
                     Section("About") {
                         TextField("Event Name", text: $formName)
                         TextField("Event Emoji (Optional)", text: $formEmoji)
+                    }
+                    
+                    Section() {
+                        TextField("Description", text: $formDescription)
                     }
                     
                     Section("Date and Time") {
@@ -69,6 +90,8 @@ struct NewEventSheetView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button ("Done") {
                         // Chanage to add new data to EventData
+                        createEvent()
+                        
                         dismiss()
                     }
                     .disabled(formName.isEmpty)
