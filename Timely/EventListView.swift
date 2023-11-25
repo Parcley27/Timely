@@ -37,12 +37,15 @@ struct EventListView: View {
     
     @State private var showingSheet = false
     
+    @State private var dateDisplayText: String = ""
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
     func displayDate(inputDate: Date) -> String {
         let timeInterval = inputDate.timeIntervalSinceNow
         
         let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .full
-        formatter.allowedUnits = [.day, .hour, .minute, .second]
+        formatter.unitsStyle = .abbreviated
+        formatter.allowedUnits = [.year, .day, .hour, .minute, .second]
         
         if let formattedString = formatter.string(from: timeInterval) {
             return formattedString
@@ -71,27 +74,15 @@ struct EventListView: View {
                                         Text(event.name ?? "Event Name")
                                             .bold()
                                             //.frame(maxWidth: .infinity, alignment: .leading)
-                                        
-                                        
-                                        /*
-                                        Text(displayDate(event.dateAndTime))
+                                                                                
+                                        Text(dateDisplayText)
                                             .font(.caption)
+                                            .onReceive(timer) { _ in
+                                                                // Update the date text every second
+                                                                dateDisplayText = displayDate(inputDate: event.dateAndTime)
+                                                            }
                                             //.frame(maxWidth: .infinity, alignment: .leading)
-                                        */
-                                        
-                                        /*
-                                        if let dateString = displayDate(event.dateAndTime) {
-                                            Text(dateString)
-                                                .font(.caption)
-                                        }
-                                         */
-                                        
-                                        /*
-                                        let safeDate = event.dateAndTime {
-                                        Text(displayDate(inputDate: safeDate))
-                                                .font(.caption)
-                                        }
-                                         */
+
                                     }
                                 }
                                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
