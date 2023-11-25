@@ -135,7 +135,9 @@ struct EventListView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton()
+                    if data.events.count != 0 {
+                        EditButton()
+                    }
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
