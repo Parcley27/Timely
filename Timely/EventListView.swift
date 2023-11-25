@@ -8,6 +8,30 @@
 import SwiftUI
 import Foundation
 
+struct noEventsView: View {
+    @EnvironmentObject var data: EventData
+    
+    @State private var showingSheet = false
+    
+    var body: some View {
+        Spacer()
+        
+        Button() {
+            showingSheet.toggle()
+        
+        } label: {
+            Label("Add New Event", systemImage: "plus")
+                .font(.title)
+        }
+        .sheet(isPresented: $showingSheet, content: {
+            NewEventSheetView()
+                .environmentObject(data)
+        })
+        
+        Spacer()
+    }
+}
+
 struct EventListView: View {
     @EnvironmentObject var data: EventData
     
@@ -31,20 +55,8 @@ struct EventListView: View {
         NavigationStack {
             VStack {
                 if data.events.count == 0 {
-                    Spacer()
-                    
-                    Button() {
-                        showingSheet.toggle()
-                    } label: {
-                        Label("Add New Event", systemImage: "plus")
-                            .font(.title3)
-                    }
-                    .sheet(isPresented: $showingSheet) {
-                        NewEventSheetView().environmentObject(data)
-                    }
-                    
-                    Spacer()
-                    
+                    noEventsView()
+
                 } else {
                     List{
                         ForEach(data.events) { event in
