@@ -30,7 +30,12 @@ struct Event : Identifiable {
     var emoji: String? = "📅"
     var description: String? = "Event Description"
     
-    var dateAndTime: Date = Date()
+    var dateAndTime: Date = {
+        let currentDate = Date()
+        let oneDayInSeconds: TimeInterval = 24 * 60 * 60
+        return currentDate.addingTimeInterval(oneDayInSeconds)
+    }()
+    
     
     var isFavourite: Bool? = false
     var isMuted: Bool? = false
