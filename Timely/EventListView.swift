@@ -78,9 +78,9 @@ struct EventListView: View {
                                         Text(dateDisplayText)
                                             .font(.caption)
                                             .onReceive(timer) { _ in
-                                                                // Update the date text every second
-                                                                dateDisplayText = displayDate(inputDate: event.dateAndTime)
-                                                            }
+                                                // Update the date text every second
+                                                dateDisplayText = displayDate(inputDate: event.dateAndTime)
+                                            }
                                             //.frame(maxWidth: .infinity, alignment: .leading)
 
                                     }
