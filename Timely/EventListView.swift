@@ -39,20 +39,6 @@ struct EventListView: View {
     
     @State private var dateDisplayText: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
-    func displayDate(inputDate: Date) -> String {
-        let timeInterval = inputDate.timeIntervalSinceNow
-        
-        let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .abbreviated
-        formatter.allowedUnits = [.year, .day, .hour, .minute, .second]
-        
-        if let formattedString = formatter.string(from: timeInterval) {
-            return formattedString
-        } else {
-            return "Time unknown"
-        }
-    }
 
     var body: some View {
         NavigationStack {
@@ -79,7 +65,7 @@ struct EventListView: View {
                                             .font(.caption)
                                             .onReceive(timer) { _ in
                                                 // Update the date text every second
-                                                dateDisplayText = displayDate(inputDate: event.dateAndTime)
+                                                dateDisplayText = data.timeUntil(inputDate: event.dateAndTime)
                                             }
                                             //.frame(maxWidth: .infinity, alignment: .leading)
 

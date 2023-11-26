@@ -78,6 +78,20 @@ extension EventData {
         }
     }
     
+    func timeUntil(inputDate: Date) -> String {
+        let timeInterval = inputDate.timeIntervalSinceNow
+        
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .abbreviated
+        formatter.allowedUnits = [.year, .day, .hour, .minute, .second]
+        
+        if let formattedString = formatter.string(from: timeInterval) {
+            return formattedString
+        } else {
+            return "Time unknown"
+        }
+    }
+    
     func indexFor(_ event: Event) ->  Double {
         if let index = events.firstIndex(where: { $0.id == event.id }) {
             return Double(index)
