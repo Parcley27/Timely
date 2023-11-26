@@ -11,25 +11,22 @@ struct EventDetailView: View {
     @EnvironmentObject var data: EventData
     
     let event: Event
-
-    //let information: [String]
+    
+    @State private var dateDisplayText: String = ""
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        /*
-        let eventName = event.name ?? ""
-        let eventEmoji = event.emoji ?? ""
-        let eventTitle = eventName + eventEmoji
-        */
-        
         VStack {
-            List {
-                Section(header: Text("Info")) {
-                    HStack {
-                        Text(event.name ?? "Event Name")
-                        Text(event.emoji ?? "📅")
-                    }
+            Text(event.name ?? "Event Name")
+                .font(.largeTitle)
+                .bold()
+            
+            Text(dateDisplayText)
+                .font(.title)
+                .onReceive(timer) { _ in
+                    // Update the date text every second
+                    dateDisplayText = data.timeUntil(inputDate: event.dateAndTime)
                 }
-            }
             
             /*
             Button("Change name") {
@@ -54,12 +51,12 @@ struct EventDetailView: View {
 
 struct EventDetailViewPreviews: PreviewProvider {
     static var previews: some View {
-           let previewData = EventData()
-           previewData.events = [
-               Event(name: "Sample Event"),
-           ]
+        let previewData = EventData()
+        previewData.events = [
+            Event(name: "Sample Event"),
+        ]
 
         return EventDetailView(event: previewData.events[0])
                .environmentObject(previewData)
-       }
+    }
 }
