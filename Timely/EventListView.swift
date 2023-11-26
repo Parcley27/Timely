@@ -145,14 +145,14 @@ struct EventListView: View {
 
 struct EventListView_Previews: PreviewProvider {
     static var previews: some View {
-           let previewData = EventData()
-           previewData.events = [
-               Event(name: "Sample Event 1"),
-               Event(name: "Sample Event 2"),
-               // Add more sample events if needed
-           ]
+        let previewData = EventData()
+        previewData.events = [
+            Event(name: "Sample Event 1"),
+            Event(name: "Sample Event 2"),
+            // Add more sample events if needed
+        ]
 
-           return EventListView()
-               .environmentObject(previewData)
-       }
+        return EventListView()
+            .environmentObject(previewData)
+    }
 }

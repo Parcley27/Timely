@@ -52,12 +52,14 @@ struct EventDetailView: View {
     }
 }
 
-
-
-/*
-struct EventDetailView_Previews: PreviewProvider {
+struct EventDetailViewPreviews: PreviewProvider {
     static var previews: some View {
-        EventDetailView()
-    }
+           let previewData = EventData()
+           previewData.events = [
+               Event(name: "Sample Event"),
+           ]
+
+        return EventDetailView(event: previewData.events[0])
+               .environmentObject(previewData)
+       }
 }
-*/
