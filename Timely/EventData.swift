@@ -92,6 +92,21 @@ extension EventData {
         }
     }
     
+    func dateDisplayString(event: Event) -> String {
+        let dateToDisplay = event.dateAndTime
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        let dateString = dateFormatter.string(from: dateToDisplay)
+        
+        if dateString != "" {
+            return dateString
+        } else {
+            return "Date unknown"
+        }
+    }
+    
     func indexFor(_ event: Event) ->  Double {
         if let index = events.firstIndex(where: { $0.id == event.id }) {
             return Double(index)
