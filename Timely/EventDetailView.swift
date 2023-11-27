@@ -17,7 +17,9 @@ struct EventDetailView: View {
     
     var body: some View {
         VStack {
-            Text(event.name ?? "Event Name")
+            let titleWrapper = (event.emoji ?? "📅") + " " + (event.name ?? "Event Name")
+            
+            Text(titleWrapper)
                 .font(.largeTitle)
                 .bold()
             
