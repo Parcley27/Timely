@@ -11,7 +11,7 @@ struct EventDetailView: View {
     @EnvironmentObject var data: EventData
     
     let event: Event
-    
+        
     @State private var dateDisplayText: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
@@ -23,6 +23,9 @@ struct EventDetailView: View {
             
             Text(dateDisplayText)
                 .font(.title)
+                .onAppear() {
+                    dateDisplayText = data.timeUntil(inputDate: event.dateAndTime)
+                }
                 .onReceive(timer) { _ in
                     // Update the date text every second
                     dateDisplayText = data.timeUntil(inputDate: event.dateAndTime)

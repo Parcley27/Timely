@@ -59,16 +59,16 @@ struct EventListView: View {
                                     VStack(alignment: .leading) {
                                         Text(event.name ?? "Event Name")
                                             .bold()
-                                            //.frame(maxWidth: .infinity, alignment: .leading)
                                                                                 
                                         Text(dateDisplayText)
                                             .font(.caption)
+                                            .onAppear() {
+                                                dateDisplayText = data.timeUntil(inputDate: event.dateAndTime)
+                                            }
                                             .onReceive(timer) { _ in
                                                 // Update the date text every second
                                                 dateDisplayText = data.timeUntil(inputDate: event.dateAndTime)
                                             }
-                                            //.frame(maxWidth: .infinity, alignment: .leading)
-
                                     }
                                 }
                                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
