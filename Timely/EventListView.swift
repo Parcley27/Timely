@@ -47,7 +47,7 @@ struct EventListView: View {
                     noEventsView()
 
                 } else {
-                    List{
+                    List {
                         ForEach(data.events) { event in
                             NavigationLink(destination: EventDetailView(event: event)
                                 .environmentObject(data))
@@ -59,7 +59,7 @@ struct EventListView: View {
                                     VStack(alignment: .leading) {
                                         Text(event.name ?? "Event Name")
                                             .bold()
-                                                                                
+                                                
                                         Text(dateDisplayText)
                                             .font(.caption)
                                             .onAppear() {
