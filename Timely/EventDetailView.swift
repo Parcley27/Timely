@@ -62,7 +62,7 @@ struct EventDetailView: View {
                     }
                 }
             }
-            .navigationBarTitle(event.name ?? "", displayMode: .inline)
+            .navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
         }
     }
 }
