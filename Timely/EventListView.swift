@@ -147,7 +147,7 @@ struct EventListView_Previews: PreviewProvider {
     static var previews: some View {
         let previewData = EventData()
         previewData.events = [
-            Event(name: "Sample Event 1"),
+            Event(name: "Sample Event 1", dateAndTime: Date()),
             Event(name: "Sample Event 2"),
             // Add more sample events if needed
         ]
