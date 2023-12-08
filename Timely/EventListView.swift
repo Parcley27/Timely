@@ -37,7 +37,7 @@ struct EventListView: View {
     
     @State private var showingSheet = false
     
-    @State private var dateDisplayText: String = ""
+    @State private var timeUpdater: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -59,16 +59,17 @@ struct EventListView: View {
                                     VStack(alignment: .leading) {
                                         Text(event.name ?? "Event Name")
                                             .bold()
-                                                
-                                        Text(dateDisplayText)
-                                            .font(.caption)
-                                            .onAppear() {
-                                                dateDisplayText = data.timeUntil(inputDate: event.dateAndTime)
-                                            }
-                                            .onReceive(timer) { _ in
-                                                // Update the date text every second
-                                                dateDisplayText = data.timeUntil(inputDate: event.dateAndTime)
-                                            }
+                                                                                
+                                        HStack {
+                                            Text(event.timeUntil + timeUpdater)
+                                                .font(.caption)
+                                                .onReceive(timer) { _ in
+                                                    // Reset timeUpdater every second
+                                                    // This tricks the text object into getting a new timeUntil
+                                                    timeUpdater = " "
+                                                    timeUpdater = ""
+                                                }
+                                        }
                                     }
                                 }
                                 .swipeActions(edge: .leading, allowsFullSwipe: true) {

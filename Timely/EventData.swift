@@ -36,6 +36,19 @@ struct Event : Identifiable {
         return currentDate.addingTimeInterval(oneDayInSeconds)
     }()
     
+    var timeUntil: String {
+        let timeInterval = dateAndTime.timeIntervalSinceNow
+                
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .abbreviated
+        formatter.allowedUnits = [.year, .day, .hour, .minute, .second]
+                
+        if let formattedString = formatter.string(from: timeInterval) {
+            return formattedString
+        } else {
+            return "Time Until Date"
+        }
+    }
     
     var isFavourite: Bool? = false
     var isMuted: Bool? = false
