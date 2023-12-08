@@ -38,7 +38,7 @@ struct NewEventSheetView: View {
     
     private func createEvent() {
         if formEmoji.isEmpty {
-            formEmoji = "🙂"
+            formEmoji = "📅"
         }
         
         let newEvent = Event (
