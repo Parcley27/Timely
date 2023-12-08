@@ -79,9 +79,9 @@ struct EventListView: View {
                                         print("Toggling favourite on \(event)")
                                     } label: {
                                         if event.isFavourite == true {
-                                            Label("Unfavourite", systemImage: "star.slash")
+                                            Label("Unfavourite", systemImage: "star")
                                         } else {
-                                            Label("Favourite", systemImage: "star")
+                                            Label("Favourite", systemImage: "star.slash")
                                         }
                                     }
                                     .tint(.yellow)
