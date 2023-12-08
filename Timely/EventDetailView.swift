@@ -17,7 +17,8 @@ struct EventDetailView: View {
     
     var body: some View {
         NavigationStack {
-            let navigationTitleWrapper = (event.emoji ?? "📅") + " " + (event.name ?? "Event Name")
+            //let navigationTitleWrapper = (event.emoji ?? "📅") + " " + (event.name ?? "Event Name")
+            let navigationTitleWrapper = ("Details")
             
             VStack {
                 Spacer()
