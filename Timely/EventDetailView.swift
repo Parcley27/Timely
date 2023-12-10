@@ -12,7 +12,7 @@ struct EventDetailView: View {
     
     let event: Event
         
-    @State private var dateDisplayText: String = ""
+    @State private var timeUpdater: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
@@ -29,14 +29,13 @@ struct EventDetailView: View {
                     .font(.largeTitle)
                     .bold()
                 
-                Text(dateDisplayText)
+                Text(event.timeUntil + timeUpdater)
                     .font(.title)
-                    .onAppear() {
-                        dateDisplayText = data.timeUntil(inputDate: event.dateAndTime)
-                    }
                     .onReceive(timer) { _ in
-                        // Update the date text every second
-                        dateDisplayText = data.timeUntil(inputDate: event.dateAndTime)
+                        // Reset timeUpdater every second
+                        // This tricks the text object into getting a new timeUntil
+                        timeUpdater = " "
+                        timeUpdater = ""
                     }
                 
                 List {
