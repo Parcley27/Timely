@@ -127,13 +127,3 @@ extension EventData {
         return 0.0
     }
 }
-
-
-
-/*
-struct EventData: PreviewProvider {
-    static var previews: some View {
-        EventData()
-    }
-}
-*/
