@@ -35,10 +35,26 @@ struct noEventsView: View {
 struct EventListView: View {
     @EnvironmentObject var data: EventData
     
+    @State private var isEditing =  false
+    @State private var editMode = EditMode.inactive
+
     @State private var showingSheet = false
     
     @State private var timeUpdater: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    func showNewEventSheetView() {
+        showingSheet = true
+    }
+    
+    private var addButton: some View {
+        switch editMode {
+        case .inactive:
+            return AnyView(Button(action: showNewEventSheetView) { Image(systemName: "plus") })
+        default:
+            return AnyView(EmptyView())
+        }
+    }
 
     var body: some View {
         let listDisplay = List {
@@ -113,34 +129,30 @@ struct EventListView: View {
             }
         }
         .listStyle(.inset)
-
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                if data.events.count != 0 {
+                    EditButton()
+                }
+            }
+            
+            ToolbarItem(placement: .navigationBarTrailing) {
+                addButton
+            }
+        }
+        .navigationBarTitle("Upcoming")
+        .environment(\.editMode, $editMode)
+        .sheet(isPresented: $showingSheet) {
+            NewEventSheetView()
+                .environmentObject(data)
+        }
         
         NavigationStack {
             VStack {
                 if data.events.count == 0 {
                     noEventsView()
-
                 } else {
                     listDisplay
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    if data.events.count != 0 {
-                        EditButton()
-                    }
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingSheet.toggle()
-                    } label: {
-                        Label("New", systemImage: "plus")
-                    }
-                    .sheet(isPresented: $showingSheet) {
-                        NewEventSheetView()
-                            .environmentObject(data)
-                    }
                 }
             }
             .navigationBarTitle("Upcoming", displayMode: .inline)
