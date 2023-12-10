@@ -155,7 +155,6 @@ struct EventListView: View {
                     listDisplay
                 }
             }
-            .navigationBarTitle("Upcoming", displayMode: .inline)
         }
     }
 }
