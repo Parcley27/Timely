@@ -61,6 +61,9 @@ struct NewEventSheetView: View {
                     Section("About") {
                         TextField("Event Name", text: $formName)
                         TextField("Event Emoji (Optional)", text: $formEmoji)
+                            .onChange(of: formEmoji) { _ in
+                                formEmoji = String(formEmoji.prefix(1))
+                            }
                     }
                     
                     Section() {
