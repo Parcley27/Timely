@@ -37,6 +37,9 @@ struct EventDetailView: View {
                         timeUpdater = " "
                         timeUpdater = ""
                     }
+                    .foregroundStyle(event.timeUntil.hasPrefix("-") == true ? .red : .primary)
+                    .bold(event.timeUntil.hasPrefix("-") == true)
+
                 
                 List {
                     Section("Date") {
