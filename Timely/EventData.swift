@@ -120,6 +120,28 @@ extension EventData {
         }
     }
     
+    func passedEvents() -> Int {
+        var count = 0
+        
+        for event in events {
+            if event.timeUntil.prefix(1) == "-" {
+                count += 1
+            }
+        }
+        
+        return count
+    }
+    
+    /*
+    func sortEvents(filter: String? = "Date Ascending") {
+        if filter == "Date Ascending" {
+            for event in events {
+                // Sort by lowest date -> highest date
+            }
+        }
+    }
+    */
+    
     func indexFor(_ event: Event) ->  Double {
         if let index = events.firstIndex(where: { $0.id == event.id }) {
             return Double(index)
