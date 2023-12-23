@@ -44,6 +44,7 @@ struct EventDetailView: View {
                 List {
                     Section("Date") {
                         Text(data.dateDisplayString(event: event))
+                        //Text(data.timeUntil(inputDate: event.dateAndTime, format: "Seconds"))
                     }
                 }
                 .listStyle(.inset)
