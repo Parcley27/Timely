@@ -91,14 +91,23 @@ extension EventData {
         }
     }
     
-    func timeUntil(inputDate: Date) -> String {
+    func timeUntil(inputDate: Date, format: String? = "Full Date") -> String {        
         let timeInterval = inputDate.timeIntervalSinceNow
         
         let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .abbreviated
-        formatter.allowedUnits = [.year, .day, .hour, .minute, .second]
         
-        if let formattedString = formatter.string(from: timeInterval) {
+        if format == "Full Date" {
+            formatter.unitsStyle = .abbreviated
+            formatter.allowedUnits = [.year, .day, .hour, .minute, .second]
+        }
+        
+        if format == "Seconds" {
+            formatter.unitsStyle = .positional
+            formatter.allowedUnits = [.second]
+        }
+        
+        if var formattedString = formatter.string(from: timeInterval) {
+            formattedString = formattedString.replacingOccurrences(of: ",", with: "")
             return formattedString
         } else {
             return "Time unknown"
