@@ -173,7 +173,7 @@ struct EventListView: View {
                 data.events.move(fromOffsets: $0, toOffset: $1)
             }
         }
-        .listStyle(.inset)
+        //.listStyle(.inset)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 if data.events.count != 0 {
