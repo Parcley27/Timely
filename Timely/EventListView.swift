@@ -55,6 +55,42 @@ struct EventListView: View {
             return AnyView(EmptyView())
         }
     }
+    
+    func favouriteStatusIcon(event: Event) -> some View {
+        var favouriteIcon: some View {
+            Button {
+                data.toggleFavouriteEvent(event: event)
+            } label: {
+                if event.isFavourite == true {
+                    Label("", systemImage: "star.fill")
+                        .foregroundStyle(.yellow)
+                } else {
+                    Label("", systemImage: "star.slash")
+                        .foregroundStyle(.gray)
+                }
+            }
+        }
+        
+        return favouriteIcon
+    }
+    
+    func mutedStatusIcon(event: Event) -> some View {
+        var muteIcon: some View {
+            Button {
+                data.toggleMutedEvent(event: event)
+            } label: {
+                if event.isMuted == true {
+                    Label("", systemImage: "bell.fill")
+                        .foregroundStyle(.indigo)
+                } else {
+                    Label("", systemImage: "bell.slash")
+                        .foregroundStyle(.gray)
+                }
+            }
+        }
+        
+        return muteIcon
+    }
 
     var body: some View {
         let listDisplay = List {
@@ -83,6 +119,13 @@ struct EventListView: View {
                                     .bold(event.timeUntil.hasPrefix("-") == true)
                             }
                         }
+                        
+                        Spacer()
+                        
+                        favouriteStatusIcon(event: event)
+                        mutedStatusIcon(event: event)
+                        
+                        Text("")
                     }
                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
                         
