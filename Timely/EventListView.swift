@@ -65,7 +65,7 @@ struct EventListView: View {
                     Label("", systemImage: "star.fill")
                         .foregroundStyle(.yellow)
                 } else {
-                    Label("", systemImage: "star.slash")
+                    Label("", systemImage: "star.slash.fill")
                         .foregroundStyle(.gray)
                 }
             }
@@ -80,11 +80,11 @@ struct EventListView: View {
                 data.toggleMutedEvent(event: event)
             } label: {
                 if event.isMuted == true {
+                    Label("", systemImage: "bell.slash.fill")
+                        .foregroundStyle(.gray)
+                } else {
                     Label("", systemImage: "bell.fill")
                         .foregroundStyle(.indigo)
-                } else {
-                    Label("", systemImage: "bell.slash")
-                        .foregroundStyle(.gray)
                 }
             }
         }
@@ -134,9 +134,9 @@ struct EventListView: View {
                             print("Toggling favourite on \(event)")
                         } label: {
                             if event.isFavourite == true {
-                                Label("Unfavourite", systemImage: "star")
+                                Label("Unfavourite", systemImage: "star.slash.fill")
                             } else {
-                                Label("Favourite", systemImage: "star.slash")
+                                Label("Favourite", systemImage: "star.fill")
                             }
                         }
                         .tint(.yellow)
@@ -157,9 +157,9 @@ struct EventListView: View {
                             print("Toggling mute on \(event)")
                         } label: {
                             if event.isMuted == true {
-                                Label("Unmute", systemImage: "bell.slash.fill")
+                                Label("Unmute", systemImage: "bell.fill")
                             } else {
-                                Label("Mute", systemImage: "bell.fill")
+                                Label("Mute", systemImage: "bell.slash.fill")
                             }
                         }
                         .tint(.indigo)
