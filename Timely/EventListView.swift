@@ -91,6 +91,38 @@ struct EventListView: View {
         
         return muteIcon
     }
+    
+    func listItem(event: Event) -> some View {
+        HStack {
+            Text(event.emoji ?? "📅")
+            Text("")
+            
+            VStack(alignment: .leading) {
+                Text(event.name ?? "Event Name")
+                    .bold()
+                
+                HStack {
+                    Text(event.timeUntil + timeUpdater)
+                        .font(.caption)
+                        .onReceive(timer) { _ in
+                            // Reset timeUpdater every second
+                            // This tricks the text object into getting a new timeUntil
+                            timeUpdater = " "
+                            timeUpdater = ""
+                        }
+                        .foregroundStyle(event.timeUntil.hasPrefix("-") == true ? .red : .primary)
+                        .bold(event.timeUntil.hasPrefix("-") == true)
+                }
+            }
+            
+            Spacer()
+            
+            favouriteStatusIcon(event: event)
+            mutedStatusIcon(event: event)
+            
+            Text("")
+        }
+    }
 
     var body: some View {
         let listDisplay = List {
@@ -98,37 +130,8 @@ struct EventListView: View {
                 NavigationLink(destination: EventDetailView(event: event)
                     .environmentObject(data))
                 {
-                    HStack {
-                        Text(event.emoji ?? "📅")
-                        Text("")
-                        
-                        VStack(alignment: .leading) {
-                            Text(event.name ?? "Event Name")
-                                .bold()
-                            
-                            HStack {
-                                Text(event.timeUntil + timeUpdater)
-                                    .font(.caption)
-                                    .onReceive(timer) { _ in
-                                        // Reset timeUpdater every second
-                                        // This tricks the text object into getting a new timeUntil
-                                        timeUpdater = " "
-                                        timeUpdater = ""
-                                    }
-                                    .foregroundStyle(event.timeUntil.hasPrefix("-") == true ? .red : .primary)
-                                    .bold(event.timeUntil.hasPrefix("-") == true)
-                            }
-                        }
-                        
-                        Spacer()
-                        
-                        favouriteStatusIcon(event: event)
-                        mutedStatusIcon(event: event)
-                        
-                        Text("")
-                    }
+                    listItem(event: event)
                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                        
                         Button {
                             data.toggleFavouriteEvent(event: event)
                             print("Toggling favourite on \(event)")
