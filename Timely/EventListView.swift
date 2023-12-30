@@ -58,17 +58,8 @@ struct EventListView: View {
     
     func favouriteStatusIcon(event: Event) -> some View {
         var favouriteIcon: some View {
-            Button {
-                data.toggleFavouriteEvent(event: event)
-            } label: {
-                if event.isFavourite == true {
-                    Label("", systemImage: "star.fill")
-                        .foregroundStyle(.yellow)
-                } else {
-                    Label("", systemImage: "star.slash.fill")
-                        .foregroundStyle(.gray)
-                }
-            }
+            Image(systemName: event.isFavourite == true ? "star.fill" : "star.slash.fill")
+                .foregroundStyle(event.isMuted == true ? .yellow : .gray)
         }
         
         return favouriteIcon
@@ -76,17 +67,8 @@ struct EventListView: View {
     
     func mutedStatusIcon(event: Event) -> some View {
         var muteIcon: some View {
-            Button {
-                data.toggleMutedEvent(event: event)
-            } label: {
-                if event.isMuted == true {
-                    Label("", systemImage: "bell.slash.fill")
-                        .foregroundStyle(.gray)
-                } else {
-                    Label("", systemImage: "bell.fill")
-                        .foregroundStyle(.indigo)
-                }
-            }
+            Image(systemName: event.isMuted == true ? "bell.slash.fill" : "bell.fill")
+                .foregroundStyle(event.isMuted == true ? .gray : .indigo)
         }
         
         return muteIcon
