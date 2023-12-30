@@ -59,7 +59,7 @@ struct EventListView: View {
     func favouriteStatusIcon(event: Event) -> some View {
         var favouriteIcon: some View {
             Image(systemName: event.isFavourite == true ? "star.fill" : "star.slash.fill")
-                .foregroundStyle(event.isMuted == true ? .yellow : .gray)
+                .foregroundStyle(event.isFavourite == true ? .yellow : .gray)
         }
         
         return favouriteIcon
