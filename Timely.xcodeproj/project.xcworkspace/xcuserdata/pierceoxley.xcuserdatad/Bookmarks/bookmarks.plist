@@ -14,6 +14,25 @@
 					<key>payload</key>
 					<dict>
 						<key>relative-path</key>
+						<string>Timely/EventData.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
 						<string>Timely/EventListView.swift</string>
 					</dict>
 				</dict>
@@ -52,7 +71,7 @@
 					<key>payload</key>
 					<dict>
 						<key>relative-path</key>
-						<string>Timely/EventData.swift</string>
+						<string>Timely/EventDetailView.swift</string>
 					</dict>
 				</dict>
 				<key>type</key>
