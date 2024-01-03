@@ -11,7 +11,7 @@ import Foundation
 
 open class contentDetail {
     
-    var names = ["James", "Austin", "Alex", "Pierce", "Wade", "Guy", "Dale", "Akshay", "Aurian", "Jayden", "Aleksandra", "Dad", "Mom", "Joel", "Jeevan", "Sophie", "Keeley", "Molly", "Zoie", "Matteo", "Luca", "Armaan"]
+    var names = ["John", "David", "Albert", "Anne", "Olivia", "Bella"]
     
     func compileDetailInfomation(dName: String, dDate: String, dValues: String, dMisc: String) -> [String] {
         let detailInformation = [dName, dDate, dValues, dMisc]
