@@ -170,7 +170,7 @@ struct EventListView: View {
                 addButton
             }
         }
-        .navigationBarTitle("Upcoming")
+        .navigationBarTitle("Events")
         .environment(\.editMode, $editMode)
         .sheet(isPresented: $showingSheet) {
             NewEventSheetView()

@@ -47,7 +47,7 @@ struct TimelyApp: App {
                 EventListView()
                     .badge(eventList.passedEvents())
                     .tabItem {
-                        Label("Upcoming", systemImage: "calendar")
+                        Label("Events", systemImage: "calendar")
                     }
                 
                     .environmentObject(eventList)
