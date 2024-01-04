@@ -100,10 +100,11 @@ struct EventListView: View {
             
             Spacer()
             
-            favouriteStatusIcon(event: event)
-            mutedStatusIcon(event: event)
-            
-            Text("")
+            HStack {
+                favouriteStatusIcon(event: event)
+                mutedStatusIcon(event: event)
+            }
+            .padding(.horizontal, 10)
         }
     }
 
