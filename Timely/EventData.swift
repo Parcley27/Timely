@@ -26,6 +26,18 @@ struct Event : Identifiable {
         return currentDate.addingTimeInterval(oneDayInSeconds)
     }()
     
+    var dateString: String? {
+        let dateFormatter = DateFormatter()
+        //dateFormatter.dateFormat = "dd MMM, yyyy 'at' h:mm a"
+        // Adapts to user settings
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .short
+
+        let formattedDate = dateFormatter.string(from: dateAndTime)
+
+        return formattedDate
+    }
+    
     var timeUntil: String {
         let timeInterval = dateAndTime.timeIntervalSinceNow
                 
