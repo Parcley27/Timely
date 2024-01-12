@@ -196,8 +196,8 @@ struct EventListView_Previews: PreviewProvider {
         let previewData = EventData()
         previewData.events = [
             Event(name: "Sample Event 1", dateAndTime: Date()),
-            Event(name: "Sample Event 2"),
-            Event(name: "Sample Event 3", isFavourite: true, isMuted: true)
+            Event(name: "Sample Event 2", isMuted: true),
+            Event(name: "Sample Event 3", isFavourite: true)
             // Add more sample events if needed
         ]
 
