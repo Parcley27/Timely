@@ -68,7 +68,7 @@ struct EventListView: View {
     func mutedStatusIcon(event: Event) -> some View {
         var muteIcon: some View {
             Image(systemName: event.isMuted == true ? "bell.slash.fill" : "bell.fill")
-                .foregroundStyle(event.isMuted == true ? .gray : .indigo)
+                .foregroundStyle(event.isMuted == true ? .indigo : .gray)
         }
         
         return muteIcon
