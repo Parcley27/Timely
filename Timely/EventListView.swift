@@ -78,7 +78,7 @@ struct EventListView: View {
         HStack {
             Text(event.emoji ?? "📅")
                 .font(.title3)
-                .padding(.trailing, 10)
+                //.padding(.trailing, 10)
             
             VStack(alignment: .leading) {
                 Text(event.name ?? "Event Name")
