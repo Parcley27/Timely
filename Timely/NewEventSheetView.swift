@@ -44,7 +44,7 @@ struct NewEventSheetView: View {
         let newEvent = Event (
             name: formName,
             emoji: formEmoji,
-            description: formDescription,
+            description: (formDescription != "" ? formDescription : nil),
             dateAndTime: formDateAndTime,
             isFavourite: formFavourited,
             isMuted: formMuted
