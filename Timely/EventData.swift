@@ -18,7 +18,7 @@ class EventData : ObservableObject {
 struct Event : Identifiable {
     var name: String? = "Event Name"
     var emoji: String? = "📅"
-    var description: String? = "Event Description"
+    var description: String?
     
     var dateAndTime: Date = {
         let currentDate = Date()
