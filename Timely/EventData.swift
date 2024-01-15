@@ -52,8 +52,8 @@ struct Event : Identifiable {
         }
     }
     
-    var isFavourite: Bool? = false
-    var isMuted: Bool? = false
+    var isFavourite: Bool = false
+    var isMuted: Bool = false
     
     var id = UUID()
 }
