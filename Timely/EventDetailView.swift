@@ -17,6 +17,7 @@ struct EventDetailView: View {
     @State private var timeUpdater: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
+    @State private var showEditEventSheet = false
     @State private var confirmationIsShowing = false
     
     private var deleteButton: some View {
@@ -106,12 +107,16 @@ struct EventDetailView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         print("Edit event")
+                        showEditEventSheet = true
                     } label: {
-                        Label("Edit", systemImage: "pencil")
+                        Image(systemName: "ellipsis.circle")
                     }
                 }
             }
             .navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
+            .sheet(isPresented: $showEditEventSheet) {
+                //EditEventSheetView()
+            }
         }
     }
 }
