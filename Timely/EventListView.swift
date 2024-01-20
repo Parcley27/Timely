@@ -14,21 +14,28 @@ struct noEventsView: View {
     @State private var showingSheet = false
     
     var body: some View {
-        Spacer()
-        
-        Button() {
-            showingSheet.toggle()
-        
-        } label: {
-            Label("Add New Event", systemImage: "plus")
-                .font(.title)
+        NavigationStack {
+            Spacer()
+            
+            Text("No Saved Events")
+                .foregroundStyle(.gray)
+            
+            Button() {
+                showingSheet.toggle()
+            
+            } label: {
+                HStack {
+                    Text("Add New Event")
+                    Image(systemName: "plus")
+                }
+            }
+            .sheet(isPresented: $showingSheet, content: {
+                NewEventSheetView()
+                    .environmentObject(data)
+            })
+            
+            Spacer()
         }
-        .sheet(isPresented: $showingSheet, content: {
-            NewEventSheetView()
-                .environmentObject(data)
-        })
-        
-        Spacer()
     }
 }
 
