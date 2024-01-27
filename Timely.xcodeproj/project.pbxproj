@@ -22,6 +22,7 @@
 		6EAEA0262B0196E50029A8D4 /* EventListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0252B0196E50029A8D4 /* EventListView.swift */; };
 		6EAEA0282B0196FC0029A8D4 /* NewEventSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0272B0196FC0029A8D4 /* NewEventSheetView.swift */; };
 		6EAEA02C2B0197270029A8D4 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA02B2B0197270029A8D4 /* Settings.swift */; };
+		6EE9B5182B64E8C4005895DC /* EditEventSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE9B5172B64E8C4005895DC /* EditEventSheetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		6EAEA0252B0196E50029A8D4 /* EventListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListView.swift; sourceTree = "<group>"; };
 		6EAEA0272B0196FC0029A8D4 /* NewEventSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventSheetView.swift; sourceTree = "<group>"; };
 		6EAEA02B2B0197270029A8D4 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		6EE9B5172B64E8C4005895DC /* EditEventSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEventSheetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 				6EAE9FF12B018D7B0029A8D4 /* ContentView.swift */,
 				6EAEA0212B0196A90029A8D4 /* EventData.swift */,
 				6EAEA0232B0196C30029A8D4 /* EventDetailView.swift */,
+				6EE9B5172B64E8C4005895DC /* EditEventSheetView.swift */,
 				6EAEA0252B0196E50029A8D4 /* EventListView.swift */,
 				6EAEA0272B0196FC0029A8D4 /* NewEventSheetView.swift */,
 				6EAEA02B2B0197270029A8D4 /* Settings.swift */,
@@ -289,6 +292,7 @@
 				6EAEA01C2B0193680029A8D4 /* AccessFile.swift in Sources */,
 				6EAE9FF42B018D7B0029A8D4 /* Item.swift in Sources */,
 				6EAE9FF02B018D7B0029A8D4 /* TimelyApp.swift in Sources */,
+				6EE9B5182B64E8C4005895DC /* EditEventSheetView.swift in Sources */,
 				6EAEA0242B0196C30029A8D4 /* EventDetailView.swift in Sources */,
 				6EAEA0262B0196E50029A8D4 /* EventListView.swift in Sources */,
 			);
