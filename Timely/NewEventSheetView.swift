@@ -92,7 +92,6 @@ struct NewEventSheetView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button ("Done") {
-                        // Chanage to add new data to EventData
                         createEvent()
                         
                         dismiss()
