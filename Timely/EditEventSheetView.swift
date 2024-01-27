@@ -8,11 +8,23 @@
 import SwiftUI
 
 struct EditEventSheetView: View {
+    @EnvironmentObject var data: EventData
+    
+    @Environment(\.dismiss) var dismiss
+    
+    @State var event: Event
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text(event.name ?? "Event Name")
     }
 }
 
 #Preview {
-    EditEventSheetView()
+    let previewData = EventData()
+    previewData.events = [
+        Event(name: "Sample Event"),
+    ]
+
+    return EditEventSheetView(event: previewData.events[0])
+        .environmentObject(previewData)
 }
