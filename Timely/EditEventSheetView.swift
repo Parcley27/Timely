@@ -15,7 +15,31 @@ struct EditEventSheetView: View {
     @State var event: Event
     
     var body: some View {
-        Text(event.name ?? "Event Name")
+        NavigationStack {
+            VStack {
+                Form {
+                    Section("Event Name") {
+                        Text(event.name ?? "Event Name")
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button ("Done") {
+                        // Update event data
+                        
+                        dismiss()
+                    }
+                }
+            }
+            .navigationBarTitle(event.name ?? "Edit Event", displayMode: .inline)
+        }
     }
 }
 
