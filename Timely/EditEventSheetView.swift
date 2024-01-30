@@ -31,7 +31,7 @@ struct EditEventSheetView: View {
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button ("Done") {
+                    Button ("Save") {
                         // Update event data
                         
                         dismiss()

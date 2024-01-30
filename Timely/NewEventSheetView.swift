@@ -91,7 +91,7 @@ struct NewEventSheetView: View {
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button ("Done") {
+                    Button ("Save") {
                         createEvent()
                         
                         dismiss()
