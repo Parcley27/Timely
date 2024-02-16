@@ -55,7 +55,7 @@ struct TimelyApp: App {
                 Settings()
                     //.badge()
                     .tabItem {
-                        Label("Settings", systemImage: "pencil")
+                        Label("Settings", systemImage: "gear")
                     }
                 
                     .environmentObject(eventList)
