@@ -29,7 +29,7 @@ struct Event : Identifiable, Codable {
     var dateString: String? {
         let dateFormatter = DateFormatter()
         //dateFormatter.dateFormat = "dd MMM, yyyy 'at' h:mm a"
-        // Adapts to user settings
+        // Auto adapts to user system settings
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .short
 
@@ -40,15 +40,37 @@ struct Event : Identifiable, Codable {
     
     var timeUntil: String {
         let timeInterval = dateAndTime.timeIntervalSinceNow
-                
+        
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .abbreviated
-        formatter.allowedUnits = [.year, .day, .hour, .minute, .second]
+        
+        let oneDayInSeconds = 86000.0
+        let oneHourInSeconds = 3600.0
+        
+        if timeInterval > oneDayInSeconds || timeInterval < -oneDayInSeconds {
+            formatter.allowedUnits = [.year, .day, .hour, .minute]
+            
+        } else if timeInterval > oneDayInSeconds || timeInterval < -oneHourInSeconds {
+            formatter.allowedUnits = [.day, .hour, .minute]
+            
+        } else {
+            formatter.allowedUnits = [.minute, .second]
+        }
                 
         if let formattedString = formatter.string(from: timeInterval) {
             return formattedString
         } else {
             return "Time Until Date"
+        }
+    }
+    
+    var hasPassed: Bool {
+        let timeInterval = dateAndTime.timeIntervalSinceNow
+        
+        if timeInterval <= 0.0 {
+            return true
+        } else {
+            return false
         }
     }
     
@@ -60,6 +82,7 @@ struct Event : Identifiable, Codable {
 
 
 // Should be hidden probably
+// ^^^ Where did this come from????
 extension EventData {
     func removeEvent(event: Event) {
         if let index = events.firstIndex(where: {$0.id == event.id}) {
@@ -93,7 +116,7 @@ extension EventData {
         }
     }
     
-    func timeUntil(inputDate: Date, format: String? = "Full Date") -> String {        
+    func timeUntil(inputDate: Date, format: String? = "Full Date") -> String {
         let timeInterval = inputDate.timeIntervalSinceNow
         
         let formatter = DateComponentsFormatter()
