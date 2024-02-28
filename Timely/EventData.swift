@@ -15,7 +15,7 @@ class EventData : ObservableObject {
     ]
 }
 
-struct Event : Identifiable {
+struct Event : Identifiable, Codable {
     var name: String? = "Event Name"
     var emoji: String? = "📅"
     var description: String?
