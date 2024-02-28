@@ -12,55 +12,42 @@
 //.foregroundColor(colorScheme == .dark ? .white : .black)
 
 import SwiftUI
-import SwiftData
 
 @main
 struct TimelyApp: App {
-    @StateObject var eventList = EventData()
-    
-    /*
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
-    */
+    @StateObject private var eventList = EventStore()
 
     var body: some Scene {
         WindowGroup {
             TabView {
-                /*
-                ContentView()
-                    //.badge()
-                    .tabItem {
-                        Label("ContentView", systemImage: "folder.fill")
+                EventListView(data: $eventList.events) {
+                    Task {
+                        do {
+                            try await eventList.save(events: eventList.events)
+                        } catch {
+                            fatalError(error.localizedDescription)
+                        }
                     }
-                 */
-                
-                EventListView()
-                    .badge(eventList.passedEvents())
+                }
+                    //.badge(EventData.passedEvents())
                     .tabItem {
                         Label("Events", systemImage: "calendar")
                     }
                 
-                    .environmentObject(eventList)
-                
-                Settings()
+                    .task {
+                        do {
+                            try await eventList.load()
+                            print("Loading events: \(eventList.events)")
+                        } catch {
+                            fatalError(error.localizedDescription)
+                        }
+                    }
+                Settings(data: $eventList.events)
                     //.badge()
                     .tabItem {
-                        Label("Settings", systemImage: "gear")
+                        Label("Settings", systemImage: "gearshape")
                     }
-                
-                    .environmentObject(eventList)
             }
         }
-        //.modelContainer(sharedModelContainer)
     }
 }
