@@ -26,7 +26,7 @@ struct EditEventSheetView: View {
             VStack {
                 Form {
                     Section("Event Name") {
-                        Text(event.name ?? "Event Name")
+                        TextField(event.name ?? "Event Name", text: $editedName)
                     }
                 }
             }
