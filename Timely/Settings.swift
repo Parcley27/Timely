@@ -8,8 +8,9 @@
 import SwiftUI
         
 struct Settings: View {
+    @Binding var data: [Event]
     
-    @EnvironmentObject var data: EventData
+    //@EnvironmentObject var data: EventData
     
     var body: some View {
         VStack {
@@ -19,21 +20,25 @@ struct Settings: View {
             // Fix reference
             //Text(outsideTest)
             
-            List{
-                ForEach(data.events) { event in
+            List($data) { $event in
+                Text(event.name ?? "evenName")
+                /*
+                ForEach($scrums.event) { $event in
                     HStack {
                         Text(event.name ?? "EventName")
                         Spacer()
                         Text(event.emoji ?? "📅")
                     }
-                }
+                 */
+
             }
         }
     }
 }
-
+/*
 struct Settings_Previews: PreviewProvider {
     static var previews: some View {
         Settings()
     }
 }
+*/
