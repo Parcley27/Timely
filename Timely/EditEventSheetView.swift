@@ -14,6 +14,13 @@ struct EditEventSheetView: View {
     
     @State var event: Event
     
+    @State private var editedName: String = ""
+    
+    init(event: Event) {
+            _event = State(initialValue: event)
+            _editedName = State(initialValue: event.name ?? "")
+        }
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -33,6 +40,10 @@ struct EditEventSheetView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button ("Save") {
                         // Update event data
+                        
+                        event.name = editedName
+                        
+                        print(event)
                         
                         dismiss()
                     }

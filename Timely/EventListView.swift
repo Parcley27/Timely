@@ -9,47 +9,47 @@ import SwiftUI
 import Foundation
 
 struct noEventsView: View {
-    @EnvironmentObject var data: EventData
+    @Binding var data: [Event]
     
     @State private var showingSheet = false
     
     var body: some View {
-        NavigationStack {
-            Spacer()
-            
+        VStack {
             Text("No Saved Events")
-                .foregroundStyle(.gray)
+                .font(.title2)
+                .bold()
             
             Button() {
                 showingSheet.toggle()
             
             } label: {
                 HStack {
-                    Text("Add New Event")
+                    Text("Add a New Event")
                     Image(systemName: "plus")
                 }
             }
-            .sheet(isPresented: $showingSheet, content: {
-                NewEventSheetView()
-                    .environmentObject(data)
-            })
-            
-            Spacer()
+                .sheet(isPresented: $showingSheet, content: {
+                    NewEventSheetView(data: $data)
+                })
         }
     }
 }
 
 struct EventListView: View {
-    @EnvironmentObject var data: EventData
+    @Binding var data: [Event]
+    @Environment(\.scenePhase) private var scenePhase
+    
+    
+    let saveAction: ()->Void
     
     @State private var isEditing =  false
     @State private var editMode = EditMode.inactive
-
+    
     @State private var showingSheet = false
     
     @State private var timeUpdater: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-        
+    
     func showNewEventSheetView() {
         showingSheet = true
     }
@@ -84,15 +84,14 @@ struct EventListView: View {
     func listItem(event: Event) -> some View {
         HStack {
             Text(event.emoji ?? "📅")
-                .font(.title3)
-                //.padding(.trailing, 10)
+                .font(.title)
             
             VStack(alignment: .leading) {
                 Text(event.name ?? "Event Name")
                     .bold()
                 
                 HStack {
-                    Text(event.timeUntil + timeUpdater)
+                    Text(event.timeUntil)
                         .font(.caption)
                         .onReceive(timer) { _ in
                             // Reset timeUpdater every second
@@ -100,8 +99,8 @@ struct EventListView: View {
                             timeUpdater = " "
                             timeUpdater = ""
                         }
-                        .foregroundStyle(event.timeUntil.hasPrefix("-") == true ? .red : .primary)
-                        .bold(event.timeUntil.hasPrefix("-") == true)
+                        .foregroundStyle(event.hasPassed ? .red : .primary)
+                        .bold(event.hasPassed)
                 }
             }
             
@@ -114,17 +113,15 @@ struct EventListView: View {
             .padding(.horizontal, 10)
         }
     }
-
-    var body: some View {
-        let listDisplay = List {
-            ForEach(data.events) { event in
-                NavigationLink(destination: EventDetailView(event: event)
-                    .environmentObject(data))
-                {
-                    listItem(event: event)
+    
+    var listDisplay: some View {
+        List($data) { $event in
+            NavigationLink(destination: EventDetailView(data: $data, event: $event)) {
+                //.environmentObject(data))
+                listItem(event: event)
                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
                         Button {
-                            data.toggleFavouriteEvent(event: event)
+                            //data.toggleFavouriteEvent(event: event)
                             print("Toggling favourite on \(event)")
                         } label: {
                             if event.isFavourite == true {
@@ -135,19 +132,21 @@ struct EventListView: View {
                         }
                         .tint(.yellow)
                     }
-                    
+                
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         
                         Button(role: .destructive) {
-                            data.removeEvent(event: event)
-                            print("Deleting \(event)")
+                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                data.remove(at: index)
+                            }
+                            print("Deleting \($event)")
                         } label: {
                             Label("Delete", systemImage: "trash.fill")
                         }
                         .tint(.red)
                         
                         Button {
-                            data.toggleMutedEvent(event: event)
+                            //data.toggleMutedEvent(event: event)
                             print("Toggling mute on \(event)")
                         } label: {
                             if event.isMuted == true {
@@ -158,40 +157,49 @@ struct EventListView: View {
                         }
                         .tint(.indigo)
                     }
-                }
             }
+            /*
             .onDelete {
-                data.events.remove(atOffsets: $0)
+                $data.remove(atOffsets: $0)
             }
+             */
+            /*
             .onMove {
-                data.events.move(fromOffsets: $0, toOffset: $1)
+                $data.move(fromOffsets: $0, toOffset: $1)
             }
+             */
         }
-        //.listStyle(.inset)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                if data.events.count != 0 {
-                    EditButton()
-                }
-            }
-            
-            ToolbarItem(placement: .navigationBarTrailing) {
-                addButton
-            }
-        }
-        .navigationBarTitle("Events")
-        .environment(\.editMode, $editMode)
-        .sheet(isPresented: $showingSheet) {
-            NewEventSheetView()
-                .environmentObject(data)
-        }
-        
+    }
+    
+    var body: some View {
         NavigationStack {
             VStack {
-                if data.events.count == 0 {
-                    noEventsView()
+                if $data.count == 0 {
+                    noEventsView(data: $data)
                 } else {
                     listDisplay
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    EditButton()
+                        .disabled($data.count == 0)
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    addButton
+                }
+            }
+            .navigationBarTitle("Events")
+            .environment(\.editMode, $editMode)
+            .sheet(isPresented: $showingSheet) {
+                NewEventSheetView(data: $data)
+                //.environmentObject(data)
+            }
+            .onChange(of: scenePhase) { phase in
+                if phase == .inactive {
+                    saveAction()
+                    print("saveAction()")
                 }
             }
         }
@@ -207,8 +215,9 @@ struct EventListView_Previews: PreviewProvider {
             Event(name: "Sample Event 3", isFavourite: true)
             // Add more sample events if needed
         ]
+        
+        let previewEvents = Binding.constant(previewData.events)
 
-        return EventListView()
-            .environmentObject(previewData)
+        return EventListView(data: previewEvents, saveAction: {})
     }
 }

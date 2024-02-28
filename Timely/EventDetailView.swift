@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct EventDetailView: View {
-    @EnvironmentObject var data: EventData
-    
+    @Binding var data: [Event]
+    @Binding var event: Event
+        
     @Environment(\.presentationMode) var presentationMode
-    
-    @State var event: Event
         
     @State private var timeUpdater: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -31,6 +30,7 @@ struct EventDetailView: View {
     
     var body: some View {
         NavigationStack {
+            // Alternate navigation bar title
             //let navigationTitleWrapper = (event.emoji ?? "📅") + " " + (event.name ?? "Event Name")
             let navigationTitleWrapper = (event.name ?? "Details")
             
@@ -41,13 +41,14 @@ struct EventDetailView: View {
                             Text(event.name ?? "Event Name")
                                 .font(.title)
                                 .bold()
-                            Text(event.timeUntil + timeUpdater)
+                            Text(event.timeUntil)
                                 .onReceive(timer) { _ in
                                     timeUpdater = " "
                                     timeUpdater = ""
                                 }
-                                .foregroundStyle(event.timeUntil.hasPrefix("-") == true ? .red : .primary)
-                                .bold(event.timeUntil.hasPrefix("-") == true)
+                                .font(.title3)
+                                .foregroundStyle(event.hasPassed ? .red : .primary)
+                                .bold(event.hasPassed)
                         }
                         
                         Spacer()
@@ -60,8 +61,8 @@ struct EventDetailView: View {
                 Section {
                     HStack {
                         Text(event.dateString ?? "Event date and time")
-                            .foregroundStyle(event.timeUntil.hasPrefix("-") == true ? .red : .primary)
-                            .bold(event.timeUntil.hasPrefix("-") == true)
+                            .foregroundStyle(event.hasPassed ? .red : .primary)
+                            .bold(event.hasPassed)
                     }
                 }
                 
@@ -74,12 +75,12 @@ struct EventDetailView: View {
                 Section {
                     Toggle("Favourite", isOn: $event.isFavourite)
                         .onChange(of: event.isFavourite) { newValue in
-                            data.toggleFavouriteEvent(event: event)
+                            //data.toggleFavouriteEvent(event: event)
                         }
                     
                     Toggle("Mute", isOn: $event.isMuted)
                         .onChange(of: event.isMuted) { newValue in
-                            data.toggleMutedEvent(event: event)
+                            //data.toggleMutedEvent(event: event)
                         }
                 }
 
@@ -95,7 +96,7 @@ struct EventDetailView: View {
                                 buttons: [
                                     .cancel(Text("Cancel")),
                                     .destructive(Text("Delete Event"), action: {
-                                        data.removeEvent(event:event)
+                                        //data.removeEvent(event:event)
                                         presentationMode.wrappedValue.dismiss()
                                     })
                                 ]
@@ -116,7 +117,6 @@ struct EventDetailView: View {
             .navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
             .sheet(isPresented: $showEditEventSheet) {
                 EditEventSheetView(event: event)
-                    .environmentObject(data)
             }
         }
     }
@@ -126,10 +126,12 @@ struct EventDetailViewPreviews: PreviewProvider {
     static var previews: some View {
         let previewData = EventData()
         previewData.events = [
-            Event(name: "Sample Event"),
+            Event(name: "Sample Event 1", dateAndTime: Date()),
         ]
 
-        return EventDetailView(event: previewData.events[0])
-               .environmentObject(previewData)
+        // Create a binding to the events array in previewData
+        let previewEvents = Binding.constant(previewData.events)
+
+        return EventDetailView(data: previewEvents, event: Binding.constant(previewData.events[0]))
     }
 }

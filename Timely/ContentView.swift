@@ -5,63 +5,29 @@
 //  Created by Pierce Oxley on 2023-06-14.
 //
 
-/* error with Swift Data
- 
- 
- import SwiftUI
- import SwiftData
- 
+import SwiftUI
+import SwiftData
+
+/*
  struct ContentView: View {
- @Environment(\.modelContext) private var modelContext
- 
- @Query private var items: [Item]
+ @Environment(\.modelContainer) private var modelContainer
+ @State private var events: [Event] = []
  
  var body: some View {
- NavigationSplitView {
- List {
- ForEach(items) { item in
- NavigationLink {
- Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
- } label: {
- Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+ // Use events obtained from SwiftData
+ List(events) { event in
+ Text(event.name ?? "Event Name")
  }
- }
- .onDelete(perform: deleteItems)
- }
- .toolbar {
- ToolbarItem(placement: .navigationBarTrailing) {
- EditButton()
- }
- ToolbarItem {
- Button(action: addItem) {
- Label("Add Item", systemImage: "plus")
- }
- }
- }
- } detail: {
- Text("Select an item")
- }
- }
- 
- private func addItem() {
- withAnimation {
- let newItem = Item(timestamp: Date())
- modelContext.insert(newItem)
- }
- }
- 
- private func deleteItems(offsets: IndexSet) {
- withAnimation {
- for index in offsets {
- modelContext.delete(items[index])
- }
+ .onAppear {
+ // Fetch events from SwiftData
+ events = try! modelContainer.get(Event.self).fetchAll()
  }
  }
  }
  
  #Preview {
  ContentView()
- .modelContainer(for: Item.self, inMemory: true)
+ .modelContainer(for: Event.self, inMemory: true)
  }
  
  */

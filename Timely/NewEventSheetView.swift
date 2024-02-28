@@ -9,7 +9,10 @@ import SwiftUI
 import Foundation
 
 struct NewEventSheetView: View {
-    @EnvironmentObject var data: EventData
+    //@EnvironmentObject var data: EventData
+    @Binding var data: [Event]
+    @StateObject private var store = EventStore()
+
 
     @Environment(\.dismiss) var dismiss
         
@@ -49,21 +52,35 @@ struct NewEventSheetView: View {
             isFavourite: formFavourited,
             isMuted: formMuted
         )
+                
+        data.append(newEvent)
         
-        data.events.append(newEvent)
+        Task {
+            do {
+                try await store.save(events: store.events)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
+        
+        print("Saving event: \(newEvent)")
+        
+        for event in store.events {
+            print(event)
+        }
 
     }
     
     var body: some View {
         NavigationStack {
             VStack {
-                Form {
+                List {
                     Section("About") {
                         TextField("Event Name", text: $formName)
                         TextField("Event Emoji (Optional)", text: $formEmoji)
                             .onChange(of: formEmoji) { _ in
-                                formEmoji = String(formEmoji.prefix(1))
-                            }
+                                    formEmoji = String(formEmoji.prefix(1))
+                                }
                     }
                     
                     Section("Details") {
@@ -106,6 +123,8 @@ struct NewEventSheetView: View {
 
 struct NewEventSheetView_Previews: PreviewProvider {
     static var previews: some View {
-        NewEventSheetView()
+        @StateObject var eventList = EventStore()
+        
+        return NewEventSheetView(data: $eventList.events)
     }
 }
