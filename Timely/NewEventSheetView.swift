@@ -84,7 +84,7 @@ struct NewEventSheetView: View {
                     }
                     
                     Section("Details") {
-                        TextEditor(text: $formDescription)
+                        TextField("Description (Optional)", text: $formDescription)
                     }
                     
                     Section("Date and Time") {
