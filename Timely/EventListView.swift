@@ -148,20 +148,22 @@ struct EventListView: View {
                             }
                             .tint(.red)
                             
-                            Button {
-                                event.isMuted.toggle()
-                                saveAction()
-                                
-                                print("Toggling mute on \(event)")
-                                
-                            } label: {
-                                if event.isMuted == true {
-                                    Label("Unmute", systemImage: "bell.fill")
-                                } else {
-                                    Label("Mute", systemImage: "bell.slash.fill")
+                            if editMode == .inactive {
+                                Button {
+                                    event.isMuted.toggle()
+                                    saveAction()
+                                    
+                                    print("Toggling mute on \(event)")
+                                    
+                                } label: {
+                                    if event.isMuted == true {
+                                        Label("Unmute", systemImage: "bell.fill")
+                                    } else {
+                                        Label("Mute", systemImage: "bell.slash.fill")
+                                    }
                                 }
+                                .tint(.indigo)
                             }
-                            .tint(.indigo)
                         }
                 }
             }
