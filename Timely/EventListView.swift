@@ -117,12 +117,13 @@ struct EventListView: View {
     var listDisplay: some View {
         List($data) { $event in
             NavigationLink(destination: EventDetailView(data: $data, event: $event)) {
-                //.environmentObject(data))
                 listItem(event: event)
                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
                         Button {
-                            //data.toggleFavouriteEvent(event: event)
+                            event.isFavourite.toggle()
+                            
                             print("Toggling favourite on \(event)")
+                            
                         } label: {
                             if event.isFavourite == true {
                                 Label("Unfavourite", systemImage: "star.slash.fill")
@@ -134,20 +135,22 @@ struct EventListView: View {
                     }
                 
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        
                         Button(role: .destructive) {
                             if let index = $data.firstIndex(where: { $0.id == event.id }) {
                                 data.remove(at: index)
                             }
                             print("Deleting \($event)")
+                            
                         } label: {
                             Label("Delete", systemImage: "trash.fill")
                         }
                         .tint(.red)
                         
                         Button {
-                            //data.toggleMutedEvent(event: event)
+                            event.isMuted.toggle()
+                            
                             print("Toggling mute on \(event)")
+                            
                         } label: {
                             if event.isMuted == true {
                                 Label("Unmute", systemImage: "bell.fill")
@@ -158,16 +161,6 @@ struct EventListView: View {
                         .tint(.indigo)
                     }
             }
-            /*
-            .onDelete {
-                $data.remove(atOffsets: $0)
-            }
-             */
-            /*
-            .onMove {
-                $data.move(fromOffsets: $0, toOffset: $1)
-            }
-             */
         }
     }
     
