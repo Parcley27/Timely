@@ -39,7 +39,6 @@ struct EventListView: View {
     @Binding var data: [Event]
     @Environment(\.scenePhase) private var scenePhase
     
-    
     let saveAction: ()->Void
     
     @State private var isEditing =  false
@@ -115,55 +114,68 @@ struct EventListView: View {
     }
     
     var listDisplay: some View {
-        List($data) { $event in
-            NavigationLink(destination: EventDetailView(data: $data, event: $event)) {
-                listItem(event: event)
-                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                        Button {
-                            event.isFavourite.toggle()
-                            
-                            print("Toggling favourite on \(event)")
-                            
-                        } label: {
-                            if event.isFavourite == true {
-                                Label("Unfavourite", systemImage: "star.slash.fill")
-                            } else {
-                                Label("Favourite", systemImage: "star.fill")
+        List {
+            ForEach($data) { $event in
+                NavigationLink(destination: EventDetailView(data: $data, event: $event)) {
+                    listItem(event: event)
+                        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                            Button {
+                                event.isFavourite.toggle()
+                                saveAction()
+                                
+                                print("Toggling favourite on \(event)")
+                                
+                            } label: {
+                                if event.isFavourite == true {
+                                    Label("Unfavourite", systemImage: "star.slash.fill")
+                                } else {
+                                    Label("Favourite", systemImage: "star.fill")
+                                }
                             }
+                            .tint(.yellow)
                         }
-                        .tint(.yellow)
-                    }
-                
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button(role: .destructive) {
-                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                data.remove(at: index)
+                    
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                    data.remove(at: index)
+                                    saveAction()
+                                }
+                                print("Deleting \($event)")
+                                
+                            } label: {
+                                Label("Delete", systemImage: "trash.fill")
                             }
-                            print("Deleting \($event)")
+                            .tint(.red)
                             
-                        } label: {
-                            Label("Delete", systemImage: "trash.fill")
-                        }
-                        .tint(.red)
-                        
-                        Button {
-                            event.isMuted.toggle()
-                            
-                            print("Toggling mute on \(event)")
-                            
-                        } label: {
-                            if event.isMuted == true {
-                                Label("Unmute", systemImage: "bell.fill")
-                            } else {
-                                Label("Mute", systemImage: "bell.slash.fill")
+                            Button {
+                                event.isMuted.toggle()
+                                saveAction()
+                                
+                                print("Toggling mute on \(event)")
+                                
+                            } label: {
+                                if event.isMuted == true {
+                                    Label("Unmute", systemImage: "bell.fill")
+                                } else {
+                                    Label("Mute", systemImage: "bell.slash.fill")
+                                }
                             }
+                            .tint(.indigo)
                         }
-                        .tint(.indigo)
-                    }
+                }
+            }
+            .onDelete { indexSet in
+                data.remove(atOffsets: indexSet)
+                saveAction()
+            }
+            .onMove { indices, newOffset in
+                data.move(fromOffsets: indices, toOffset: newOffset)
+                saveAction()
             }
         }
     }
-    
+        
     var body: some View {
         NavigationStack {
             VStack {
