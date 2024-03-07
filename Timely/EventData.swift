@@ -50,7 +50,7 @@ struct Event : Identifiable, Codable {
         if timeInterval > oneDayInSeconds || timeInterval < -oneDayInSeconds {
             formatter.allowedUnits = [.year, .day, .hour, .minute]
             
-        } else if timeInterval > oneDayInSeconds || timeInterval < -oneHourInSeconds {
+        } else if timeInterval > oneHourInSeconds || timeInterval < -oneHourInSeconds {
             formatter.allowedUnits = [.day, .hour, .minute]
             
         } else {
