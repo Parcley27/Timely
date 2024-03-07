@@ -22,7 +22,11 @@ struct NewEventSheetView: View {
     @State private var formDateAndTime: Date = {
         let currentDate = Date()
         let oneDayInSeconds: TimeInterval = 24 * 60 * 60
-        return currentDate.addingTimeInterval(oneDayInSeconds)
+        let oneHourInSeconds: TimeInterval = 60 * 60
+        
+        //return currentDate.addingTimeInterval(oneDayInSeconds)
+        return currentDate.addingTimeInterval(oneHourInSeconds)
+
     }()
     @State private var formFavourited: Bool = false
     @State private var formMuted: Bool = false
