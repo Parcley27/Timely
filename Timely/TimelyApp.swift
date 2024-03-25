@@ -16,6 +16,12 @@ import SwiftUI
 @main
 struct TimelyApp: App {
     @StateObject private var eventList = EventStore()
+    
+    func filterPassedEvents(events: [Event]) -> [Event] {
+        let passedEvents = events.filter { $0.hasPassed == true }
+        
+        return passedEvents
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -29,7 +35,7 @@ struct TimelyApp: App {
                         }
                     }
                 }
-                    //.badge(EventData.passedEvents())
+                .badge(filterPassedEvents(events: eventList.events).count)
                     .tabItem {
                         Label("Events", systemImage: "calendar")
                     }
