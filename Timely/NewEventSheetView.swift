@@ -13,8 +13,9 @@ struct NewEventSheetView: View {
     @Binding var data: [Event]
     @StateObject private var store = EventStore()
 
-
     @Environment(\.dismiss) var dismiss
+    
+    @FocusState private var isTextFieldFocused: Bool
         
     @State private var formName: String = ""
     @State private var formEmoji: String = ""
@@ -81,6 +82,11 @@ struct NewEventSheetView: View {
                 List {
                     Section("About") {
                         TextField("Event Name", text: $formName)
+                            .focused($isTextFieldFocused)
+                            .onAppear {
+                                // Set the focus to the text field when the view appears
+                                isTextFieldFocused = true
+                            }
                         TextField("Event Emoji (Optional)", text: $formEmoji)
                             .onChange(of: formEmoji) { _ in
                                     formEmoji = String(formEmoji.prefix(1))
