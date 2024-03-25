@@ -90,6 +90,24 @@ struct EventDetailView: View {
                     } label: {
                         deleteButton
                     }
+                    .alert(Text("Delete \(event.name!)?"),
+                        isPresented: $confirmationIsShowing,
+                        actions: {
+                        Button("Delete", role: .destructive) {
+                            print("dele")
+                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                data.remove(at: index)
+                                //saveAction()
+                                print("hee")
+                                presentationMode.wrappedValue.dismiss()
+
+                            }
+                        }
+                        
+                        Button("Cancel", role: .cancel) {}
+                        }, message: {
+                            Text("This action cannot be undone")
+                        })
                         .actionSheet(isPresented: $confirmationIsShowing) {
                             ActionSheet(
                                 title: Text("This action can not be undone"),
