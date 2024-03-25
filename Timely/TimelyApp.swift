@@ -48,6 +48,10 @@ struct TimelyApp: App {
                             fatalError(error.localizedDescription)
                         }
                     }
+                
+                //Spacer()
+                // Use spacer to give room for large add button later
+                
                 Settings(data: $eventList.events)
                     //.badge()
                     .tabItem {
