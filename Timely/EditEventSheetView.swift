@@ -49,7 +49,7 @@ struct EditEventSheetView: View {
                     }
                 }
             }
-            .navigationBarTitle(event.name ?? "Edit Event", displayMode: .inline)
+            .navigationBarTitle("Edit Event", displayMode: .inline)
         }
     }
 }
