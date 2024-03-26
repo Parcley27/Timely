@@ -52,7 +52,8 @@ struct TimelyApp: App {
                 //Spacer()
                 // Use spacer to give room for large add button later
                 
-                Settings(data: $eventList.events)
+                //Settings(data: $eventList.events)
+                CalendarView(data: $eventList.events)
                     //.badge()
                     .tabItem {
                         Label("Settings", systemImage: "gearshape")

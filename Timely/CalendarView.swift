@@ -9,9 +9,38 @@ import SwiftUI
 
 struct CalendarView: View {
     @Binding var data: [Event]
+    
+    @State private var showingSettings = false
 
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            VStack {
+                Text("Hello, Calendar!")
+
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button() {
+                        // SHOW TODAY VIEW
+                    } label: {
+                        Text("Today")
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button() {
+                        showingSettings = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                    }
+                }
+            }
+            .sheet(isPresented: $showingSettings) {
+                Settings(data: $data)
+            }
+            .navigationBarTitle("Calendar")
+            
+        }
     }
 }
 
