@@ -37,7 +37,7 @@ struct TimelyApp: App {
                 }
                 .badge(filterPassedEvents(events: eventList.events).count)
                     .tabItem {
-                        Label("Events", systemImage: "calendar")
+                        Label("Events", systemImage: "list.bullet")
                     }
                 
                     .task {
