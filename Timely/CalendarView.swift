@@ -38,7 +38,7 @@ struct CalendarView: View {
                 }
             }
             .sheet(isPresented: $showingSettings) {
-                Settings(data: $data)
+                Settings()
             }
             .navigationBarTitle("Calendar")
             
