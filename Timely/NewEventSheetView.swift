@@ -62,7 +62,7 @@ struct NewEventSheetView: View {
         
         Task {
             do {
-                try await store.save(events: store.events)
+                try await store.save(events: data)
             } catch {
                 fatalError(error.localizedDescription)
             }
@@ -70,7 +70,7 @@ struct NewEventSheetView: View {
         
         print("Saving event: \(newEvent)")
         
-        for event in store.events {
+        for event in data {
             print(event)
         }
 
