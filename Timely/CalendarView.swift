@@ -10,6 +10,8 @@ import SwiftUI
 struct CalendarView: View {
     @Binding var data: [Event]
     
+    let saveAction: ()->Void
+    
     @State private var showingSettings = false
 
     var body: some View {
@@ -55,5 +57,5 @@ struct CalendarView: View {
     
     let previewEvents = Binding.constant(previewData.events)
     
-    return CalendarView(data: previewEvents)
+    return CalendarView(data: previewEvents, saveAction: {})
 }
