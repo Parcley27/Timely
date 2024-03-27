@@ -33,7 +33,7 @@ struct CalendarView: View {
                     Button() {
                         showingSettings = true
                     } label: {
-                        Image(systemName: "gearshape.fill")
+                        Image(systemName: "gearshape")
                     }
                 }
             }

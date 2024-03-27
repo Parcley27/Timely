@@ -56,7 +56,7 @@ struct EventListView: View {
     private var addButton: some View {
         switch editMode {
         case .inactive:
-            return AnyView(Button(action: showNewEventSheetView) { Image(systemName: "plus") })
+            return AnyView(Button(action: showNewEventSheetView) { Image(systemName: "plus.circle") })
         default:
             return AnyView(EmptyView())
         }
