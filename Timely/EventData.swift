@@ -48,7 +48,7 @@ struct Event : Identifiable, Codable {
         let oneHourInSeconds = 3600.0
         
         if timeInterval > oneDayInSeconds || timeInterval < -oneDayInSeconds {
-            formatter.allowedUnits = [.year, .day, .hour, .minute]
+            formatter.allowedUnits = [.year, .day, .hour]
             
         } else if timeInterval > oneHourInSeconds || timeInterval < -oneHourInSeconds {
             formatter.allowedUnits = [.day, .hour, .minute]
