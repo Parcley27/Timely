@@ -22,6 +22,9 @@ struct TimelyApp: App {
 
     @State private var showNewSheet: Bool = false
     
+    var currentMonth = Calendar.current.component(.month, from: Date())
+    var currentYear = Calendar.current.component(.year, from: Date())
+    
     var plusButton: some View {
         ZStack {
             Circle()
@@ -45,7 +48,30 @@ struct TimelyApp: App {
             VStack {
                 ZStack {
                     TabView(selection: $selectedTab) {
-                        Group {
+                        EventListView(data: $eventList.events) {
+                            Task {
+                                do {
+                                    try await eventList.save(events: eventList.events)
+                                } catch {
+                                    fatalError(error.localizedDescription)
+                                }
+                            }
+                        }
+                        .task {
+                            do {
+                                try await eventList.load()
+                                print("Loading events: \(eventList.events)")
+                            } catch {
+                                fatalError(error.localizedDescription)
+                            }
+                        }
+                        .badge(filterPassedEvents(events: eventList.events).count)
+                        .tabItem {
+                            Label("Events", systemImage: "list.bullet")
+                        }
+                        .tag(0)
+                        
+                        if lastTab == 0 {
                             EventListView(data: $eventList.events) {
                                 Task {
                                     do {
@@ -55,6 +81,9 @@ struct TimelyApp: App {
                                     }
                                 }
                             }
+                            .tag(1)
+                        } else if lastTab == 2 {
+                            CalendarView(data: $eventList.events, saveAction: {}, month: currentMonth, year: currentYear)
                             .task {
                                 do {
                                     try await eventList.load()
@@ -63,58 +92,22 @@ struct TimelyApp: App {
                                     fatalError(error.localizedDescription)
                                 }
                             }
-                            .badge(filterPassedEvents(events: eventList.events).count)
-                            .tabItem {
-                                Label("Events", systemImage: "list.bullet")
-                            }
-                            .tag(0)
-                            
-                            if lastTab == 0 {
-                                EventListView(data: $eventList.events) {
-                                    Task {
-                                        do {
-                                            try await eventList.save(events: eventList.events)
-                                        } catch {
-                                            fatalError(error.localizedDescription)
-                                        }
-                                    }
-                                }
-                                .tag(1)
-                            } else if lastTab == 2 {
-                                CalendarView(data: $eventList.events) {
-                                    Task {
-                                        do {
-                                            try await eventList.save(events: eventList.events)
-                                        } catch {
-                                            fatalError(error.localizedDescription)
-                                        }
-                                    }
-                                }
-                                .tag(1)
-                            }
-                            
-                            CalendarView(data: $eventList.events) {
-                                Task {
-                                    do {
-                                        try await eventList.save(events: eventList.events)
-                                    } catch {
-                                        fatalError(error.localizedDescription)
-                                    }
-                                }
-                            }
-                            .task {
-                                do {
-                                    try await eventList.load()
-                                    print("Loading events: \(eventList.events)")
-                                } catch {
-                                    fatalError(error.localizedDescription)
-                                }
-                            }
-                            .tabItem {
-                                Label("Calendar", systemImage: "calendar")
-                            }
-                            .tag(2)
+                            .tag(1)
                         }
+                            
+                        CalendarView(data: $eventList.events, saveAction: {}, month: 12, year: 2007)
+                        .task {
+                            do {
+                                try await eventList.load()
+                                print("Loading events: \(eventList.events)")
+                            } catch {
+                                fatalError(error.localizedDescription)
+                            }
+                        }
+                        .tabItem {
+                            Label("Calendar", systemImage: "calendar")
+                        }
+                        .tag(2)
                     }
                     .onChange(of: selectedTab) { newTab in
                         if newTab == 0 || newTab == 2 {
