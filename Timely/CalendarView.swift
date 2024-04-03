@@ -29,6 +29,13 @@ struct CalendarView: View {
     var currentMonth = Calendar.current.component(.month, from: Date())
     var currentYear = Calendar.current.component(.year, from: Date())
     
+    var dayNames: [String] {
+        let localCalendar = Calendar(identifier: Calendar.current.identifier)
+        let daysOfTheWeek = localCalendar.weekdaySymbols
+        
+        return daysOfTheWeek
+    }
+    
     func isCurrentDay(day: CalendarDay) -> Bool {
         if day.date == currentDay && month == currentMonth && year == currentYear {
             return true
@@ -72,6 +79,15 @@ struct CalendarView: View {
             ScrollView {
                 VStack {
                     LazyVGrid(columns: columnLayout) {
+                        ForEach(dayNames, id: \.self) { name in
+                            Text(name)
+                                .foregroundStyle(.primary)
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.top)
+                    
+                    LazyVGrid(columns: columnLayout) {
                         ForEach(daysInMonth) { day in
                             if day.isPlaceholder {
                                 RoundedRectangle(cornerRadius: 10)
@@ -91,7 +107,7 @@ struct CalendarView: View {
                             }
                         }
                     }
-                    .padding()
+                    .padding(.horizontal)
                     
                     Spacer()
                 }
