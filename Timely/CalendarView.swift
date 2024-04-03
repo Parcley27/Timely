@@ -69,30 +69,34 @@ struct CalendarView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                LazyVGrid(columns: columnLayout) {
-                    ForEach(daysInMonth) { day in
-                        if day.isPlaceholder {
-                            RoundedRectangle(cornerRadius: 10)
-                                .aspectRatio(1.0, contentMode: ContentMode.fit)
-                                .foregroundStyle(.clear)
-                        } else {
-                            ZStack {
+            ScrollView {
+                VStack {
+                    LazyVGrid(columns: columnLayout) {
+                        ForEach(daysInMonth) { day in
+                            if day.isPlaceholder {
                                 RoundedRectangle(cornerRadius: 10)
                                     .aspectRatio(1.0, contentMode: ContentMode.fit)
-                                    .foregroundStyle(isCurrentDay(day: day) ? Color.accentColor : .secondary)
+                                    .foregroundStyle(.clear)
                                 
-                                Text("\(day.date)")
-                                    .foregroundStyle(.background)
-                                    .bold()
+                            } else {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .aspectRatio(1.0, contentMode: ContentMode.fit)
+                                        .foregroundStyle(isCurrentDay(day: day) ? Color.accentColor : .secondary)
+                                    
+                                    Text("\(day.date)")
+                                        .foregroundStyle(.background)
+                                        .bold()
+                                }
                             }
                         }
                     }
+                    .padding()
+                    
+                    Spacer()
                 }
-                .padding()
-                
-                Spacer()
             }
+            .scrollDisabled(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button() {
