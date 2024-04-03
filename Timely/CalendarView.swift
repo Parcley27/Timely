@@ -25,12 +25,22 @@ struct CalendarView: View {
     let month: Int
     let year: Int
     
+    var currentDay = Calendar.current.component(.day, from: Date())
     var currentMonth = Calendar.current.component(.month, from: Date())
     var currentYear = Calendar.current.component(.year, from: Date())
+    
+    func isCurrentDay(day: CalendarDay) -> Bool {
+        if day.date == currentDay && month == currentMonth && year == currentYear {
+            return true
+        }
+        
+        return false
+    }
     
     var firstDayOfMonth: Int {
         let dateComponents = DateComponents(year: year, month: month)
         guard let startDate = Calendar.current.date(from: dateComponents) else { return 1 }
+        
         return Calendar.current.component(.weekday, from: startDate)
         
     }
@@ -52,6 +62,7 @@ struct CalendarView: View {
         for day in 1...totalDaysInMonth {
             days.append(CalendarDay(id: day, date: day, isPlaceholder: false))
         }
+        
         return days
     }
     
@@ -69,7 +80,7 @@ struct CalendarView: View {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 10)
                                     .aspectRatio(1.0, contentMode: ContentMode.fit)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(isCurrentDay(day: day) ? Color.accentColor : .secondary)
                                 
                                 Text("\(day.date)")
                                     .foregroundStyle(.background)
