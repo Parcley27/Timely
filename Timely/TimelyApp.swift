@@ -95,7 +95,7 @@ struct TimelyApp: App {
                             .tag(1)
                         }
                             
-                        CalendarView(data: $eventList.events, saveAction: {}, month: 12, year: 2007)
+                        CalendarView(data: $eventList.events, saveAction: {}, month: currentMonth, year: currentYear)
                         .task {
                             do {
                                 try await eventList.load()
