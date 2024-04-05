@@ -7,10 +7,25 @@
 
 import SwiftUI
 
-struct CalendarDay: Identifiable {
+struct CalendarDay: Identifiable, Hashable {
     let id: Int
-    let date: Int
     let isPlaceholder: Bool
+    
+    let date: Date?
+    
+    let year: Int?
+    let month: Int?
+    let day: Int?
+    
+    init(id: Int, isPlaceholder: Bool, date: Date? = nil) {
+            self.id = id
+            self.isPlaceholder = isPlaceholder
+            self.date = date
+            
+            self.year = date != nil ? Calendar.current.component(.year, from: date!) : nil
+            self.month = date != nil ? Calendar.current.component(.month, from: date!) : nil
+            self.day = date != nil ? Calendar.current.component(.day, from: date!) : nil
+        }
 }
 
 struct CalendarView: View {
@@ -36,8 +51,8 @@ struct CalendarView: View {
         return daysOfTheWeek
     }
     
-    func isCurrentDay(day: CalendarDay) -> Bool {
-        if day.date == currentDay && month == currentMonth && year == currentYear {
+    func isCurrentDay(possibleDay: CalendarDay) -> Bool {
+        if possibleDay.day == currentDay && possibleDay.month == currentMonth && possibleDay.year == currentYear {
             return true
         }
         
@@ -64,10 +79,22 @@ struct CalendarView: View {
     
     var daysInMonth: [CalendarDay] {
         var days: [CalendarDay] = []
-        let placeholderDays = Array(repeating: CalendarDay(id: 0, date: 0, isPlaceholder: true), count: firstDayOfMonth - 1)
+        let placeholderDays = Array(repeating: CalendarDay(id: 0, isPlaceholder: true), count: firstDayOfMonth - 1)
         days.append(contentsOf: placeholderDays)
         for day in 1...totalDaysInMonth {
-            days.append(CalendarDay(id: day, date: day, isPlaceholder: false))
+            
+            var components = DateComponents()
+            
+            components.day = day
+            components.month = month
+            components.year = year
+            
+            if let date = Calendar.current.date(from: components) {
+                print(date)
+                days.append(CalendarDay(id: day, isPlaceholder: false, date: date))
+            } else {
+                print("Invalid date components") // Handle invalid date components
+            }
         }
         
         return days
@@ -88,19 +115,15 @@ struct CalendarView: View {
                     .padding(.top)
                     
                     LazyVGrid(columns: columnLayout) {
-                        ForEach(daysInMonth) { day in
-                            if day.isPlaceholder {
+                        ForEach(daysInMonth, id: \.self) { item in
+                            
+                            ZStack {
                                 RoundedRectangle(cornerRadius: 10)
-                                    .aspectRatio(1.0, contentMode: ContentMode.fit)
-                                    .foregroundStyle(.clear)
+                                    .aspectRatio(1.0, contentMode: .fit)
+                                    .foregroundStyle(item.isPlaceholder ? .clear : isCurrentDay(possibleDay: item) ? Color.accentColor : .secondary)
                                 
-                            } else {
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .aspectRatio(1.0, contentMode: ContentMode.fit)
-                                        .foregroundStyle(isCurrentDay(day: day) ? Color.accentColor : .secondary)
-                                    
-                                    Text("\(day.date)")
+                                if !item.isPlaceholder {
+                                    Text("\(item.day!)")
                                         .foregroundStyle(.background)
                                         .bold()
                                 }
