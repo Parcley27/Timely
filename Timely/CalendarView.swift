@@ -37,8 +37,8 @@ struct CalendarView: View {
     
     let columnLayout = Array(repeating: GridItem(spacing: 10, alignment: .center), count: 7)
     
-    let month: Int
-    let year: Int
+    @State var month: Int
+    @State var year: Int
     
     var currentDay = Calendar.current.component(.day, from: Date())
     var currentMonth = Calendar.current.component(.month, from: Date())
@@ -139,7 +139,8 @@ struct CalendarView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button() {
-                        // SHOW TODAY VIEW
+                        month = currentMonth
+                        year = currentYear
                     } label: {
                         Text("Today")
                     }
