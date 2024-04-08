@@ -161,6 +161,7 @@ struct CalendarView: View {
                                 RoundedRectangle(cornerRadius: 10)
                                     .aspectRatio(1.0, contentMode: .fit)
                                     .foregroundStyle(item.isPlaceholder ? .clear : isCurrentDay(possibleDay: item) ? Color.accentColor : .secondary)
+                                    .opacity(month == currentMonth && year == currentYear ? 1.0 : 0.75)
                                 
                                 if !item.isPlaceholder {
                                     Text("\(item.day!)")
