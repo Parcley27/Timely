@@ -51,6 +51,16 @@ struct CalendarView: View {
         return daysOfTheWeek
     }
     
+    var monthNames: [String] {
+        let formatter = DateFormatter()
+        if let monthComponents = formatter.monthSymbols {
+            print(monthComponents)
+            return monthComponents
+        }
+        
+        return [""]
+    }
+    
     func isCurrentDay(possibleDay: CalendarDay) -> Bool {
         if possibleDay.day == currentDay && possibleDay.month == currentMonth && possibleDay.year == currentYear {
             return true
@@ -90,20 +100,51 @@ struct CalendarView: View {
             components.year = year
             
             if let date = Calendar.current.date(from: components) {
-                print(date)
                 days.append(CalendarDay(id: day, isPlaceholder: false, date: date))
+                
             } else {
-                print("Invalid date components") // Handle invalid date components
+                print("Invalid date components")
+                
             }
         }
         
         return days
     }
     
-    
     var body: some View {
         NavigationStack {
             ScrollView {
+                HStack {
+                    Text("\(monthNames[month - 1]) \(String(year))")
+                        .font(.title2)
+                    
+                    Spacer()
+                    
+                    Button() {
+                        if month == 1 {
+                            month = 12
+                            year -= 1
+                        } else {
+                            month -= 1
+                        }
+                        
+                    } label: {
+                        Label("", systemImage: "lessthan")
+                    }
+                    
+                    Button() {
+                        if month == 12 {
+                            month = 1
+                            year += 1
+                        } else {
+                            month += 1
+                        }
+                    } label: {
+                        Label("", systemImage: "greaterthan")
+                    }
+                }
+                .padding(.horizontal)
+                
                 VStack {
                     LazyVGrid(columns: columnLayout) {
                         ForEach(dayNames, id: \.self) { name in
@@ -112,11 +153,10 @@ struct CalendarView: View {
                         }
                     }
                     .padding(.horizontal)
-                    .padding(.top)
+                    //.padding(.top)
                     
                     LazyVGrid(columns: columnLayout) {
                         ForEach(daysInMonth, id: \.self) { item in
-                            
                             ZStack {
                                 RoundedRectangle(cornerRadius: 10)
                                     .aspectRatio(1.0, contentMode: .fit)
