@@ -35,7 +35,7 @@ struct CalendarView: View {
     
     @State private var showingSettings = false
     
-    let columnLayout = Array(repeating: GridItem(spacing: 10, alignment: .center), count: 7)
+    let columnLayout = Array(repeating: GridItem(spacing: 8, alignment: .center), count: 7)
     
     @State var month: Int
     @State var year: Int
@@ -54,7 +54,7 @@ struct CalendarView: View {
     var monthNames: [String] {
         let formatter = DateFormatter()
         if let monthComponents = formatter.monthSymbols {
-            print(monthComponents)
+            //print(monthComponents)
             return monthComponents
         }
         
@@ -80,7 +80,7 @@ struct CalendarView: View {
     var totalDaysInMonth: Int {
         let dateComponents = DateComponents(year: year, month: month)
         guard let startDate = Calendar.current.date(from: dateComponents),
-            let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
+              let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
             return 30
         }
         
@@ -109,6 +109,46 @@ struct CalendarView: View {
         }
         
         return days
+    }
+    
+    func eventsOnDay(searchingDay: CalendarDay) -> [Event] {
+        var matchingEvents = [Event(name: "")]
+        matchingEvents.removeAll()
+        
+        let matchingYear = searchingDay.year
+        let matchingMonth = searchingDay.month
+        let matchingDay = searchingDay.day
+        
+        for event in data {
+            let eventYear = Calendar.current.component(.year, from: event.dateAndTime)
+            let eventMonth = Calendar.current.component(.month, from: event.dateAndTime)
+            let eventDay = Calendar.current.component(.day, from: event.dateAndTime)
+            
+            if matchingYear == eventYear && matchingMonth == eventMonth && matchingDay == eventDay {
+                matchingEvents.append(event)
+            }
+        }
+        
+        return matchingEvents
+    }
+    
+    func computedOpacity(day: CalendarDay) -> Double {
+        var opacity = 1.0
+        
+        let multiplier = 0.15
+        
+        if isCurrentDay(possibleDay: day) && month == currentMonth && year == currentYear {
+            opacity = 1.0
+        } else  {
+            opacity = 0.4 + (Double(eventsOnDay(searchingDay: day).count) * multiplier)
+            
+            if opacity > 0.75 {
+                opacity = 0.75
+            }
+            
+        }
+        
+        return opacity
     }
     
     var body: some View {
@@ -156,24 +196,32 @@ struct CalendarView: View {
                     //.padding(.top)
                     
                     LazyVGrid(columns: columnLayout) {
-                        ForEach(daysInMonth, id: \.self) { item in
+                        ForEach(daysInMonth, id: \.self) { tile in
                             ZStack {
                                 RoundedRectangle(cornerRadius: 10)
                                     .aspectRatio(1.0, contentMode: .fit)
-                                    .foregroundStyle(item.isPlaceholder ? .clear : isCurrentDay(possibleDay: item) ? Color.accentColor : .secondary)
-                                    .opacity(month == currentMonth && year == currentYear ? 1.0 : 0.75)
-                                
-                                if !item.isPlaceholder {
-                                    Text("\(item.day!)")
-                                        .foregroundStyle(.background)
-                                        .bold()
+                                    .foregroundStyle(tile.isPlaceholder ? .clear : isCurrentDay(possibleDay: tile) ? Color.accentColor : .primary)
+                                    .opacity(computedOpacity(day: tile))
+
+                                if !tile.isPlaceholder {
+                                    VStack(spacing: 4) {
+                                        Text("\(tile.day!)")
+                                            .foregroundStyle(.background)
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                                            .bold()
+                                        
+                                        Image(systemName: "circle.fill")
+                                            .resizable()
+                                            .opacity(eventsOnDay(searchingDay: tile).count > 0 ? 1.0 : 0.0)
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 8, height: 12, alignment: .top)
+                                            .foregroundStyle(.background)
+                                    }
                                 }
                             }
                         }
                     }
                     .padding(.horizontal)
-                    
-                    Spacer()
                 }
             }
             .scrollDisabled(true)
