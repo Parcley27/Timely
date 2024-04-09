@@ -42,7 +42,7 @@ struct Event : Identifiable, Codable {
         let timeInterval = dateAndTime.timeIntervalSinceNow
         
         let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .abbreviated
+        formatter.unitsStyle = .full
         
         let oneDayInSeconds = 86000.0
         let oneHourInSeconds = 3600.0
