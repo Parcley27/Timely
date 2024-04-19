@@ -14,8 +14,6 @@
 		6EAEA0032B018D7C0029A8D4 /* TimelyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0022B018D7C0029A8D4 /* TimelyTests.swift */; };
 		6EAEA00D2B018D7C0029A8D4 /* TimelyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA00C2B018D7C0029A8D4 /* TimelyUITests.swift */; };
 		6EAEA00F2B018D7C0029A8D4 /* TimelyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA00E2B018D7C0029A8D4 /* TimelyUITestsLaunchTests.swift */; };
-		6EAEA01C2B0193680029A8D4 /* AccessFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA01B2B0193680029A8D4 /* AccessFile.swift */; };
-		6EAEA01E2B01942F0029A8D4 /* Names.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6EAEA01D2B01942F0029A8D4 /* Names.txt */; };
 		6EAEA0222B0196A90029A8D4 /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0212B0196A90029A8D4 /* EventData.swift */; };
 		6EAEA0242B0196C30029A8D4 /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0232B0196C30029A8D4 /* EventDetailView.swift */; };
 		6EAEA0262B0196E50029A8D4 /* EventListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0252B0196E50029A8D4 /* EventListView.swift */; };
@@ -53,8 +51,6 @@
 		6EAEA0082B018D7C0029A8D4 /* TimelyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimelyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EAEA00C2B018D7C0029A8D4 /* TimelyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelyUITests.swift; sourceTree = "<group>"; };
 		6EAEA00E2B018D7C0029A8D4 /* TimelyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelyUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		6EAEA01B2B0193680029A8D4 /* AccessFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessFile.swift; sourceTree = "<group>"; };
-		6EAEA01D2B01942F0029A8D4 /* Names.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Names.txt; sourceTree = "<group>"; };
 		6EAEA0212B0196A90029A8D4 /* EventData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventData.swift; sourceTree = "<group>"; };
 		6EAEA0232B0196C30029A8D4 /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
 		6EAEA0252B0196E50029A8D4 /* EventListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListView.swift; sourceTree = "<group>"; };
@@ -112,17 +108,9 @@
 		6EAE9FEE2B018D7B0029A8D4 /* Timely */ = {
 			isa = PBXGroup;
 			children = (
-				6EAEA01B2B0193680029A8D4 /* AccessFile.swift */,
-				6EAEA0212B0196A90029A8D4 /* EventData.swift */,
-				6E843E172B7F49D000C8761E /* EventStore.swift */,
-				6EAEA0232B0196C30029A8D4 /* EventDetailView.swift */,
-				6EE9B5172B64E8C4005895DC /* EditEventSheetView.swift */,
-				6EAEA0252B0196E50029A8D4 /* EventListView.swift */,
-				6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */,
-				6EAEA0272B0196FC0029A8D4 /* NewEventSheetView.swift */,
-				6EAEA02B2B0197270029A8D4 /* Settings.swift */,
+				6EFDF1DF2BD25E3000D6904F /* Views */,
+				6EFDF1DE2BD25DF600D6904F /* Data */,
 				6EAE9FEF2B018D7B0029A8D4 /* TimelyApp.swift */,
-				6EAEA01D2B01942F0029A8D4 /* Names.txt */,
 				6EAE9FF52B018D7C0029A8D4 /* Assets.xcassets */,
 				6EAE9FF72B018D7C0029A8D4 /* Preview Content */,
 			);
@@ -152,6 +140,28 @@
 				6EAEA00E2B018D7C0029A8D4 /* TimelyUITestsLaunchTests.swift */,
 			);
 			path = TimelyUITests;
+			sourceTree = "<group>";
+		};
+		6EFDF1DE2BD25DF600D6904F /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				6EAEA0212B0196A90029A8D4 /* EventData.swift */,
+				6E843E172B7F49D000C8761E /* EventStore.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		6EFDF1DF2BD25E3000D6904F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6EAEA0232B0196C30029A8D4 /* EventDetailView.swift */,
+				6EE9B5172B64E8C4005895DC /* EditEventSheetView.swift */,
+				6EAEA0252B0196E50029A8D4 /* EventListView.swift */,
+				6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */,
+				6EAEA0272B0196FC0029A8D4 /* NewEventSheetView.swift */,
+				6EAEA02B2B0197270029A8D4 /* Settings.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -260,7 +270,6 @@
 			files = (
 				6EAE9FF92B018D7C0029A8D4 /* Preview Assets.xcassets in Resources */,
 				6EAE9FF62B018D7C0029A8D4 /* Assets.xcassets in Resources */,
-				6EAEA01E2B01942F0029A8D4 /* Names.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,7 +298,6 @@
 				6EAEA0282B0196FC0029A8D4 /* NewEventSheetView.swift in Sources */,
 				6EAEA0222B0196A90029A8D4 /* EventData.swift in Sources */,
 				6EAEA02C2B0197270029A8D4 /* Settings.swift in Sources */,
-				6EAEA01C2B0193680029A8D4 /* AccessFile.swift in Sources */,
 				6EAE9FF02B018D7B0029A8D4 /* TimelyApp.swift in Sources */,
 				6E843E182B7F49D000C8761E /* EventStore.swift in Sources */,
 				6EE9B5182B64E8C4005895DC /* EditEventSheetView.swift in Sources */,
