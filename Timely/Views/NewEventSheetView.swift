@@ -59,6 +59,7 @@ struct NewEventSheetView: View {
         )
                 
         data.append(newEvent)
+        data.sort(by: { $0.dateAndTime < $1.dateAndTime })
         
         Task {
             do {

@@ -102,6 +102,8 @@ struct EditEventSheetView: View {
                         event.isFavourite = editedFavourite
                         event.isMuted = editedMute
                         
+                        data.sort(by: { $0.dateAndTime < $1.dateAndTime })
+                        
                         print(event)
                         
                         dismiss()

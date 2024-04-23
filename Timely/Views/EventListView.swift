@@ -169,10 +169,7 @@ struct EventListView: View {
             }
             .onDelete { indexSet in
                 data.remove(atOffsets: indexSet)
-                saveAction()
-            }
-            .onMove { indices, newOffset in
-                data.move(fromOffsets: indices, toOffset: newOffset)
+                data.sort(by: { $0.dateAndTime < $1.dateAndTime })
                 saveAction()
             }
         }
