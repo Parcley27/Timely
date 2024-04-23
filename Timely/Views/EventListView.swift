@@ -9,28 +9,11 @@ import SwiftUI
 import Foundation
 
 struct noEventsView: View {
-    @Binding var data: [Event]
-    
-    @State private var showingSheet = false
-    
     var body: some View {
         VStack {
             Text("No Saved Events")
                 .font(.title2)
                 .bold()
-            
-            Button() {
-                showingSheet.toggle()
-            
-            } label: {
-                HStack {
-                    Text("Add a New Event")
-                    Image(systemName: "plus")
-                }
-            }
-                .sheet(isPresented: $showingSheet, content: {
-                    NewEventSheetView(data: $data)
-                })
         }
     }
 }
