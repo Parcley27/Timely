@@ -110,8 +110,8 @@
 		6EAE9FEE2B018D7B0029A8D4 /* Timely */ = {
 			isa = PBXGroup;
 			children = (
-				6EFDF1DF2BD25E3000D6904F /* Views */,
 				6EFDF1DE2BD25DF600D6904F /* Data */,
+				6EFDF1DF2BD25E3000D6904F /* Views */,
 				6EAE9FEF2B018D7B0029A8D4 /* TimelyApp.swift */,
 				6EAE9FF52B018D7C0029A8D4 /* Assets.xcassets */,
 				6EAE9FF72B018D7C0029A8D4 /* Preview Content */,
