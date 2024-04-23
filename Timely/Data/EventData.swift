@@ -32,6 +32,8 @@ struct Event : Identifiable, Codable {
         // Auto adapts to user system settings
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .short
+        
+        dateFormatter.dateFormat = "h:mm a 'on' EEEE, MMMM d, yyyy"
 
         let formattedDate = dateFormatter.string(from: dateAndTime)
 
