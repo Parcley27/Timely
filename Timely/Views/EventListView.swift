@@ -20,9 +20,10 @@ struct noEventsView: View {
 
 struct EventListView: View {
     @Binding var data: [Event]
-    @Environment(\.scenePhase) private var scenePhase
+    let saveAction: () -> Void
+    var dateToDisplay: Date?
     
-    let saveAction: ()->Void
+    @Environment(\.scenePhase) private var scenePhase
     
     @State private var isEditing =  false
     @State private var editMode = EditMode.inactive
@@ -31,7 +32,7 @@ struct EventListView: View {
     
     @State private var timeUpdater: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
+        
     func showNewEventSheetView() {
         showingSheet = true
     }
