@@ -197,25 +197,27 @@ struct CalendarView: View {
                     
                     LazyVGrid(columns: columnLayout) {
                         ForEach(daysInMonth, id: \.self) { tile in
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .aspectRatio(1.0, contentMode: .fit)
-                                    .foregroundStyle(tile.isPlaceholder ? .clear : isCurrentDay(possibleDay: tile) ? Color.accentColor : .primary)
-                                    .opacity(computedOpacity(day: tile))
+                            NavigationLink(destination: EventListView(data: $data, saveAction: {}, dateToDisplay: tile.date)) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .aspectRatio(1.0, contentMode: .fit)
+                                        .foregroundStyle(tile.isPlaceholder ? .clear : isCurrentDay(possibleDay: tile) ? Color.accentColor : .primary)
+                                        .opacity(computedOpacity(day: tile))
 
-                                if !tile.isPlaceholder {
-                                    VStack(spacing: 4) {
-                                        Text("\(tile.day!)")
-                                            .foregroundStyle(.background)
-                                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                                            .bold()
-                                        
-                                        Image(systemName: "circle.fill")
-                                            .resizable()
-                                            .opacity(eventsOnDay(searchingDay: tile).count > 0 ? 1.0 : 0.0)
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 8, height: 12, alignment: .top)
-                                            .foregroundStyle(.background)
+                                    if !tile.isPlaceholder {
+                                        VStack(spacing: 4) {
+                                            Text("\(tile.day!)")
+                                                .foregroundStyle(.background)
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                                                .bold()
+                                            
+                                            Image(systemName: "circle.fill")
+                                                .resizable()
+                                                .opacity(eventsOnDay(searchingDay: tile).count > 0 ? 1.0 : 0.0)
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 8, height: 12, alignment: .top)
+                                                .foregroundStyle(.background)
+                                        }
                                     }
                                 }
                             }

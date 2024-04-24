@@ -64,6 +64,49 @@ struct EventListView: View {
         return muteIcon
     }
     
+    func compareDates(event: Event, date: Date?) -> Bool {
+        if date != nil {
+            let eventDay = Calendar.current.component(.day, from: event.dateAndTime)
+            let eventMonth = Calendar.current.component(.month, from: event.dateAndTime)
+            let eventYear = Calendar.current.component(.year, from: event.dateAndTime)
+            
+            let dateDay = Calendar.current.component(.day, from: date!)
+            let dateMonth = Calendar.current.component(.month, from: date!)
+            let dateYear = Calendar.current.component(.year, from: date!)
+            
+            if eventDay == dateDay && eventMonth == dateMonth && eventYear == dateYear {
+                return true
+                
+            } else {
+                return false
+                
+            }
+            
+        } else {
+            return false
+            
+        }
+    }
+    
+    var eventsToShow: Int {
+        var agreeingEvents = 0
+        
+        if dateToDisplay != nil {
+            for event in data {
+                if compareDates(event: event, date: dateToDisplay ?? nil) {
+                    agreeingEvents += 1
+                }
+            }
+            
+        } else {
+            for _ in data {
+                agreeingEvents += 1
+            }
+        }
+        
+        return agreeingEvents
+    }
+    
     func listItem(event: Event) -> some View {
         HStack {
             Text(event.emoji ?? "📅")
@@ -100,55 +143,57 @@ struct EventListView: View {
     var listDisplay: some View {
         List {
             ForEach($data) { $event in
-                NavigationLink(destination: EventDetailView(data: $data, event: $event)) {
-                    listItem(event: event)
-                        .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                            Button {
-                                event.isFavourite.toggle()
-                                saveAction()
-                                
-                                print("Toggling favourite on \(event)")
-                                
-                            } label: {
-                                if event.isFavourite == true {
-                                    Label("Unfavourite", systemImage: "star.slash.fill")
-                                } else {
-                                    Label("Favourite", systemImage: "star.fill")
-                                }
-                            }
-                            .tint(.yellow)
-                        }
-                    
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                    data.remove(at: index)
-                                    saveAction()
-                                }
-                                print("Deleting \($event)")
-                                
-                            } label: {
-                                Label("Delete", systemImage: "trash.fill")
-                            }
-                            .tint(.red)
-                            
-                            if editMode == .inactive {
+                if dateToDisplay == nil || compareDates(event: event, date: dateToDisplay ?? nil) {
+                    NavigationLink(destination: EventDetailView(data: $data, event: $event)) {
+                        listItem(event: event)
+                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                 Button {
-                                    event.isMuted.toggle()
+                                    event.isFavourite.toggle()
                                     saveAction()
                                     
-                                    print("Toggling mute on \(event)")
+                                    print("Toggling favourite on \(event)")
                                     
                                 } label: {
-                                    if event.isMuted == true {
-                                        Label("Unmute", systemImage: "bell.fill")
+                                    if event.isFavourite == true {
+                                        Label("Unfavourite", systemImage: "star.slash.fill")
                                     } else {
-                                        Label("Mute", systemImage: "bell.slash.fill")
+                                        Label("Favourite", systemImage: "star.fill")
                                     }
                                 }
-                                .tint(.indigo)
+                                .tint(.yellow)
                             }
-                        }
+                        
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                        data.remove(at: index)
+                                        saveAction()
+                                    }
+                                    print("Deleting \($event)")
+                                    
+                                } label: {
+                                    Label("Delete", systemImage: "trash.fill")
+                                }
+                                .tint(.red)
+                                
+                                if editMode == .inactive {
+                                    Button {
+                                        event.isMuted.toggle()
+                                        saveAction()
+                                        
+                                        print("Toggling mute on \(event)")
+                                        
+                                    } label: {
+                                        if event.isMuted == true {
+                                            Label("Unmute", systemImage: "bell.fill")
+                                        } else {
+                                            Label("Mute", systemImage: "bell.slash.fill")
+                                        }
+                                    }
+                                    .tint(.indigo)
+                                }
+                            }
+                    }
                 }
             }
             .onDelete { indexSet in
@@ -162,16 +207,20 @@ struct EventListView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                if $data.count == 0 {
-                    noEventsView(data: $data)
+                if eventsToShow == 0 {
+                    noEventsView()
+                    
                 } else {
                     listDisplay
+                    
                 }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton()
-                        .disabled($data.count == 0)
+                    if dateToDisplay == nil {
+                        EditButton()
+                            .disabled($data.count == 0)
+                    }
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
