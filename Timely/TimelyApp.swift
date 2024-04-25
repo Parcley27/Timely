@@ -81,9 +81,25 @@ struct TimelyApp: App {
                                     }
                                 }
                             }
+                            .task {
+                                do {
+                                    try await eventList.load()
+                                    print("Loading events: \(eventList.events)")
+                                } catch {
+                                    fatalError(error.localizedDescription)
+                                }
+                            }
                             .tag(1)
                         } else if lastTab == 2 {
-                            CalendarView(data: $eventList.events, saveAction: {}, month: currentMonth, year: currentYear)
+                            CalendarView(data: $eventList.events, month: currentMonth, year: currentYear) {
+                                Task {
+                                    do {
+                                        try await eventList.save(events: eventList.events)
+                                    } catch {
+                                        fatalError(error.localizedDescription)
+                                    }
+                                }
+                            }
                             .task {
                                 do {
                                     try await eventList.load()
@@ -95,7 +111,15 @@ struct TimelyApp: App {
                             .tag(1)
                         }
                             
-                        CalendarView(data: $eventList.events, saveAction: {}, month: currentMonth, year: currentYear)
+                        CalendarView(data: $eventList.events, month: currentMonth, year: currentYear) {
+                            Task {
+                                do {
+                                    try await eventList.save(events: eventList.events)
+                                } catch {
+                                    fatalError(error.localizedDescription)
+                                }
+                            }
+                        }
                         .task {
                             do {
                                 try await eventList.load()

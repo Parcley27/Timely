@@ -31,14 +31,17 @@ struct CalendarDay: Identifiable, Hashable {
 struct CalendarView: View {
     @Binding var data: [Event]
     
-    let saveAction: ()->Void
+    @State var month: Int
+    @State var year: Int
+    
+    let saveAction: () -> Void
     
     @State private var showingSettings = false
     
     let columnLayout = Array(repeating: GridItem(spacing: 8, alignment: .center), count: 7)
     
-    @State var month: Int
-    @State var year: Int
+    //@State var month: Int
+    //@State var year: Int
     
     var currentDay = Calendar.current.component(.day, from: Date())
     var currentMonth = Calendar.current.component(.month, from: Date())
@@ -268,5 +271,5 @@ struct CalendarView: View {
     let currentMonth = Calendar.current.component(.month, from: Date())
     let currentYear = Calendar.current.component(.year, from: Date())
     
-    return CalendarView(data: previewEvents, saveAction: {}, month: currentMonth, year: currentYear)
+    return CalendarView(data: previewEvents, month: currentMonth, year: currentYear, saveAction: {})
 }
