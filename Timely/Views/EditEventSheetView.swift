@@ -40,10 +40,6 @@ struct EditEventSheetView: View {
                             .onAppear() {
                                 editedEmoji = event.emoji ?? "📅"
                             }
-                            .onChange(of: editedEmoji) { _ in
-                                editedEmoji = String(editedEmoji.prefix(1))
-
-                            }
                             .opacity(editedEmoji == "" ? 0.5: 1.0)
                     }
                     
@@ -91,6 +87,7 @@ struct EditEventSheetView: View {
                         if editedEmoji == "" {
                             event.emoji = "📅"
                         } else {
+                            editedEmoji = String(editedEmoji.prefix(1))
                             event.emoji = editedEmoji
                         }
                         

@@ -47,6 +47,8 @@ struct NewEventSheetView: View {
     private func createEvent() {
         if formEmoji.isEmpty {
             formEmoji = "📅"
+        } else {
+            formEmoji = String(formEmoji.prefix(1))
         }
         
         let newEvent = Event (
@@ -88,10 +90,8 @@ struct NewEventSheetView: View {
                                 // Set the focus to the text field when the view appears
                                 isTextFieldFocused = true
                             }
+                        
                         TextField("Event Emoji (Optional)", text: $formEmoji)
-                            .onChange(of: formEmoji) { _ in
-                                    formEmoji = String(formEmoji.prefix(1))
-                                }
                     }
                     
                     Section("Details") {
