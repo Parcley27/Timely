@@ -28,7 +28,7 @@ struct TimelyApp: App {
     var plusButton: some View {
         ZStack {
             Circle()
-                .stroke(.tertiary, lineWidth: 5)
+                .stroke(.gray, lineWidth: 5.0)
                 .frame(width: 100)
                 .background(
                       .bar,
