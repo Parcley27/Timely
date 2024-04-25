@@ -200,7 +200,7 @@ struct CalendarView: View {
                     
                     LazyVGrid(columns: columnLayout) {
                         ForEach(daysInMonth, id: \.self) { tile in
-                            NavigationLink(destination: EventListView(data: $data, saveAction: {}, dateToDisplay: tile.date)) {
+                            NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date, saveAction: {})) {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 10)
                                         .aspectRatio(1.0, contentMode: .fit)

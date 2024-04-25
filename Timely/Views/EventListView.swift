@@ -20,8 +20,8 @@ struct noEventsView: View {
 
 struct EventListView: View {
     @Binding var data: [Event]
-    let saveAction: () -> Void
     var dateToDisplay: Date?
+    let saveAction: () -> Void
     
     @Environment(\.scenePhase) private var scenePhase
     
