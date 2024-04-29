@@ -29,6 +29,7 @@ struct CalendarDay: Identifiable, Hashable {
 }
 
 struct CalendarView: View {
+    //@StateObject private var eventList = EventStore()
     @Binding var data: [Event]
     
     @State var month: Int
@@ -156,7 +157,6 @@ struct CalendarView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
                 HStack {
                     Text("\(monthNames[month - 1]) \(String(year))")
                         .font(.title2)
@@ -227,9 +227,8 @@ struct CalendarView: View {
                         }
                     }
                     .padding(.horizontal)
+                    Spacer()
                 }
-            }
-            .scrollDisabled(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button() {

@@ -144,7 +144,8 @@ struct EventListView: View {
         List {
             ForEach($data) { $event in
                 if dateToDisplay == nil || compareDates(event: event, date: dateToDisplay ?? nil) {
-                    NavigationLink(destination: EventDetailView(data: $data, event: $event)) {
+                    NavigationLink(destination: EventDetailView(data: $data, event: event)) {
+                    //NavigationLink(destination: DayView(data: $data, event: event)) {
                         listItem(event: event)
                             .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                 Button {

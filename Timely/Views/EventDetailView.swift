@@ -9,12 +9,14 @@ import SwiftUI
 
 struct EventDetailView: View {
     @Binding var data: [Event]
-    @Binding var event: Event
+    @State var event: Event
         
-    @Environment(\.presentationMode) var presentationMode
-        
+    @Environment(\.presentationMode) private var presentationMode
+    
+    /*
     @State private var timeUpdater: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    */
     
     @State private var showEditEventSheet = false
     @State private var confirmationIsShowing = false
@@ -42,10 +44,12 @@ struct EventDetailView: View {
                                 .font(.title)
                                 .bold()
                             Text(event.timeUntil)
+                            /*
                                 .onReceive(timer) { _ in
                                     timeUpdater = " "
                                     timeUpdater = ""
                                 }
+                             */
                                 .font(.title3)
                                 .foregroundStyle(event.hasPassed ? .red : .primary)
                                 .bold(event.hasPassed)
@@ -150,6 +154,6 @@ struct EventDetailViewPreviews: PreviewProvider {
         // Create a binding to the events array in previewData
         let previewEvents = Binding.constant(previewData.events)
 
-        return EventDetailView(data: previewEvents, event: Binding.constant(previewData.events[0]))
+        return DayView(data: previewEvents, event: previewData.events[1])
     }
 }
