@@ -30,116 +30,127 @@ struct EventDetailView: View {
         .foregroundStyle(.red)
     }
     
+    func calculateTime(event: Event) -> String {
+        return event.timeUntil
+    }
+    
     var body: some View {
-        NavigationStack {
-            // Alternate navigation bar title
-            //let navigationTitleWrapper = (event.emoji ?? "📅") + " " + (event.name ?? "Event Name")
-            let navigationTitleWrapper = (event.name ?? "Details")
-            
-            List {
-                Section {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(event.name ?? "Event Name")
-                                .font(.title)
-                                .bold()
-                            Text(event.timeUntil)
-                            /*
-                                .onReceive(timer) { _ in
-                                    timeUpdater = " "
-                                    timeUpdater = ""
-                                }
-                             */
-                                .font(.title3)
-                                .foregroundStyle(event.hasPassed ? .red : .primary)
-                                .bold(event.hasPassed)
-                        }
-                        
-                        Spacer()
-                        
-                        Text(event.emoji ?? "📅")
-                            .font(.system(size: 42))
-                    }
-                }
-                
-                Section {
-                    HStack {
-                        Text(event.dateString ?? "Event date and time")
+        // Alternate navigation bar title
+        //let navigationTitleWrapper = (event.emoji ?? "📅") + " " + (event.name ?? "Event Name")
+        let navigationTitleWrapper = (event.name ?? "Details")
+        
+        List {
+            Section {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(event.name ?? "Event Name")
+                            .font(.title)
+                            .bold()
+                        Text(timeUntilEvent)
+                            .onAppear {
+                                updateTimeUntilEvent()
+                            }
+                            .font(.title3)
                             .foregroundStyle(event.hasPassed ? .red : .primary)
                             .bold(event.hasPassed)
                     }
-                }
-                
-                if event.description != nil {
-                    Section {
-                        Text(event.description ?? "")
-                    }
-                }
-                
-                Section {
-                    Toggle("Favourite", isOn: $event.isFavourite)
-                        .onChange(of: event.isFavourite) { newValue in
-                            //data.toggleFavouriteEvent(event: event)
-                        }
                     
-                    Toggle("Mute", isOn: $event.isMuted)
-                        .onChange(of: event.isMuted) { newValue in
-                            //data.toggleMutedEvent(event: event)
-                        }
+                    Spacer()
+                    
+                    Text(event.emoji ?? "📅")
+                        .font(.system(size: 42))
                 }
-
+            }
+            
+            Section {
+                HStack {
+                    Text(event.dateString ?? "Event date and time")
+                        .foregroundStyle(event.hasPassed ? .red : .primary)
+                        .bold(event.hasPassed)
+                }
+            }
+            
+            if event.description != nil {
                 Section {
-                    Button {
-                        confirmationIsShowing = true
-                    } label: {
-                        deleteButton
+                    Text(event.description ?? "")
+                }
+            }
+            
+            Section {
+                Toggle("Favourite", isOn: $event.isFavourite)
+                    .onChange(of: event.isFavourite) { newValue in
+                        //data.toggleFavouriteEvent(event: event)
                     }
-                    .alert(Text("Delete \(event.name!)?"),
-                        isPresented: $confirmationIsShowing,
-                        actions: {
-                        Button("Delete", role: .destructive) {
-                            print("dele")
-                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                data.remove(at: index)
-                                //saveAction()
-                                print("hee")
-                                presentationMode.wrappedValue.dismiss()
+                
+                Toggle("Mute", isOn: $event.isMuted)
+                    .onChange(of: event.isMuted) { newValue in
+                        //data.toggleMutedEvent(event: event)
+                    }
+            }
+            
+            Section {
+                Button {
+                    confirmationIsShowing = true
+                } label: {
+                    deleteButton
+                }
+                .alert(Text("Delete \(event.name!)?"),
+                    isPresented: $confirmationIsShowing,
+                    actions: {
+                    Button("Delete", role: .destructive) {
+                        print("dele")
+                        if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                            data.remove(at: index)
+                            //saveAction()
+                            print("hee")
+                            presentationMode.wrappedValue.dismiss()
+                            
+                        }
+                    }
+                    
+                    Button("Cancel", role: .cancel) {}
+                    }, message: {
+                        Text("This action cannot be undone")
+                    })
+                    .actionSheet(isPresented: $confirmationIsShowing) {
+                        ActionSheet(
+                            title: Text("This action can not be undone"),
+                            buttons: [
+                                .cancel(Text("Cancel")),
+                                .destructive(Text("Delete Event"), action: {
+                                    //data.removeEvent(event:event)
+                                    presentationMode.wrappedValue.dismiss()
+                                })
+                            ]
+                        )
+                    }
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    print("Edit event")
+                    showEditEventSheet = true
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }
+            }
+        }
+        .navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
+        .sheet(isPresented: $showEditEventSheet) {
+            EditEventSheetView(data: $data, event: $event)
+        }
+    }
+    
+    @State private var timeUntilEvent: String = ""
 
-                            }
-                        }
-                        
-                        Button("Cancel", role: .cancel) {}
-                        }, message: {
-                            Text("This action cannot be undone")
-                        })
-                        .actionSheet(isPresented: $confirmationIsShowing) {
-                            ActionSheet(
-                                title: Text("This action can not be undone"),
-                                buttons: [
-                                    .cancel(Text("Cancel")),
-                                    .destructive(Text("Delete Event"), action: {
-                                        //data.removeEvent(event:event)
-                                        presentationMode.wrappedValue.dismiss()
-                                    })
-                                ]
-                            )
-                        }
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        print("Edit event")
-                        showEditEventSheet = true
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
-                    }
-                }
-            }
-            .navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
-            .sheet(isPresented: $showEditEventSheet) {
-                EditEventSheetView(data: $data, event: $event)
-            }
+    private func updateTimeUntilEvent() {
+        // Function to compute the time until event
+        timeUntilEvent = calculateTime(event: event)
+        
+        // Schedule the next update
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.updateTimeUntilEvent() // Recur every second
         }
     }
 }
