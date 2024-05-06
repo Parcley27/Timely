@@ -39,10 +39,7 @@ struct CalendarView: View {
     
     @State private var showingSettings = false
     
-    let columnLayout = Array(repeating: GridItem(spacing: 8, alignment: .center), count: 7)
-    
-    //@State var month: Int
-    //@State var year: Int
+    let columnLayout = Array(repeating: GridItem(spacing: 5, alignment: .center), count: 7)
     
     var currentDay = Calendar.current.component(.day, from: Date())
     var currentMonth = Calendar.current.component(.month, from: Date())
@@ -197,12 +194,12 @@ struct CalendarView: View {
                     .padding(.horizontal)
                     //.padding(.top)
                     
-                    LazyVGrid(columns: columnLayout) {
+                    LazyVGrid(columns: columnLayout, spacing: 5) {
                         ForEach(daysInMonth, id: \.self) { tile in
                             NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date, saveAction: {})) {
                                 ZStack {
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .aspectRatio(1.0, contentMode: .fit)
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .aspectRatio(0.9, contentMode: .fit)
                                         .foregroundStyle(tile.isPlaceholder ? .clear : isCurrentDay(possibleDay: tile) ? Color.accentColor : .primary)
                                         .opacity(computedOpacity(day: tile))
 
