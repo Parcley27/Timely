@@ -169,6 +169,7 @@ struct CalendarView: View {
                         
                     } label: {
                         Label("", systemImage: "lessthan")
+                            .bold()
                     }
                     
                     Button() {
@@ -180,6 +181,7 @@ struct CalendarView: View {
                         }
                     } label: {
                         Label("", systemImage: "greaterthan")
+                            .bold()
                     }
                 }
                 .padding(.horizontal)
