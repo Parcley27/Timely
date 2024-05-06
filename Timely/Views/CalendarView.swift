@@ -58,7 +58,6 @@ struct CalendarView: View {
     var monthNames: [String] {
         let formatter = DateFormatter()
         if let monthComponents = formatter.monthSymbols {
-            //print(monthComponents)
             return monthComponents
         }
         
@@ -211,6 +210,7 @@ struct CalendarView: View {
                                         VStack(spacing: 4) {
                                             Text("\(tile.day!)")
                                                 .foregroundStyle(.background)
+                                                .font(.title2)
                                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                                                 .bold()
                                             

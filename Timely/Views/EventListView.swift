@@ -143,9 +143,10 @@ struct EventListView: View {
     var listDisplay: some View {
         List {
             ForEach($data) { $event in
+                let index = $data.firstIndex(where: { $0.id == event.id })
                 if dateToDisplay == nil || compareDates(event: event, date: dateToDisplay ?? nil) {
-                    NavigationLink(destination: EventDetailView(data: $data, event: event)) {
-                    //NavigationLink(destination: DayView(data: $data, event: event)) {
+                    NavigationLink(destination: EventDetailView(data: $data, event: index!, saveAction: {})) {
+                    //NavigationLink(destination: DayView(data: $data, event: index!, saveAction: {})) {
                         listItem(event: event)
                             .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                 Button {
