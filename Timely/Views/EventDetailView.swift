@@ -143,7 +143,7 @@ struct EventDetailView: View {
             }
             .navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
             .sheet(isPresented: $showEditEventSheet) {
-                //EditEventSheetView(data: $data, event: $event)
+                EditEventSheetView(data: $data, event: event)
             }
         //}
     }

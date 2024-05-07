@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditEventSheetView: View {
     @Binding var data: [Event]
-    @Binding var event: Event
+    let event: Int
     
     @FocusState private var isTextFieldFocused: Bool
     
@@ -28,25 +28,25 @@ struct EditEventSheetView: View {
             VStack {
                 Form {
                     Section("About") {
-                        TextField(event.name ?? "Event Name", text: $editedName)
+                        TextField(data[event].name ?? "Event Name", text: $editedName)
                             .focused($isTextFieldFocused)
                             .onAppear() {
                                 // Set the focus to the text field when the view appears
                                 isTextFieldFocused = true
-                                editedName = event.name ?? "Event Name"
+                                editedName = data[event].name ?? "Event Name"
                             }
                         
-                        TextField(event.emoji ?? "📅", text: $editedEmoji)
+                        TextField(data[event].emoji ?? "📅", text: $editedEmoji)
                             .onAppear() {
-                                editedEmoji = event.emoji ?? "📅"
+                                editedEmoji = data[event].emoji ?? "📅"
                             }
                             .opacity(editedEmoji == "" ? 0.5: 1.0)
                     }
                     
                     Section("Details") {
-                        TextField(event.description ?? "Event Description", text: $editedDescription)
+                        TextField(data[event].description ?? "Event Description", text: $editedDescription)
                             .onAppear() {
-                                editedDescription = event.description ?? ""
+                                editedDescription = data[event].description ?? ""
                             }
                     }
                     
@@ -55,18 +55,18 @@ struct EditEventSheetView: View {
                         DatePicker("Time", selection: $editedDateAndTime, displayedComponents: [.hourAndMinute])
                     }
                     .onAppear() {
-                        editedDateAndTime = event.dateAndTime
+                        editedDateAndTime = data[event].dateAndTime
                     }
                     
                     Section("More") {
                         Toggle("Favourite", isOn: $editedFavourite)
                             .onAppear() {
-                                editedFavourite = event.isFavourite
+                                editedFavourite = data[event].isFavourite
                             }
                         
                         Toggle("Mute", isOn: $editedMute)
                             .onAppear() {
-                                editedMute = event.isMuted
+                                editedMute = data[event].isMuted
                             }
                     }
                 }
@@ -82,22 +82,22 @@ struct EditEventSheetView: View {
                     Button("Save") {
                         // Update event data
                         
-                        event.name = editedName
+                        data[event].name = editedName
                         
                         if editedEmoji == "" {
-                            event.emoji = "📅"
+                            data[event].emoji = "📅"
                         } else {
                             editedEmoji = String(editedEmoji.prefix(1))
-                            event.emoji = editedEmoji
+                            data[event].emoji = editedEmoji
                         }
                         
                         if editedDescription != "" {
-                            event.description = editedDescription
+                            data[event].description = editedDescription
                         }
                         
-                        event.dateAndTime = editedDateAndTime
-                        event.isFavourite = editedFavourite
-                        event.isMuted = editedMute
+                        data[event].dateAndTime = editedDateAndTime
+                        data[event].isFavourite = editedFavourite
+                        data[event].isMuted = editedMute
                         
                         data.sort(by: { $0.dateAndTime < $1.dateAndTime })
                         
@@ -123,6 +123,6 @@ struct EditEventSheetViewPreviews: PreviewProvider {
         // Create a binding to the events array in previewData
         let previewEvents = Binding.constant(previewData.events)
 
-        return EditEventSheetView(data: previewEvents, event: Binding.constant(previewData.events[0]))
+        return EditEventSheetView(data: previewEvents, event: 0)
     }
 }
