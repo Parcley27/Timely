@@ -88,6 +88,18 @@ struct EventListView: View {
         }
     }
     
+    func formatStringForDate(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        
+        dateFormatter.dateStyle = .medium
+        
+        //dateFormatter.dateFormat = "h:mm a 'on' EEEE, MMMM d, yyyy"
+
+        let dateString = dateFormatter.string(from: date)
+
+        return dateString
+    }
+    
     var eventsToShow: Int {
         var agreeingEvents = 0
         
@@ -257,7 +269,7 @@ struct EventListView: View {
                     addButton
                 }
             }
-            .navigationBarTitle("Events")
+            .navigationBarTitle(dateToDisplay != nil ? formatStringForDate(date: dateToDisplay!) : "Events")
             .environment(\.editMode, $editMode)
             .sheet(isPresented: $showingSheet) {
                 NewEventSheetView(data: $data)
@@ -291,5 +303,6 @@ struct EventListView_Previews: PreviewProvider {
         let previewEvents = Binding.constant(previewData.events)
 
         return EventListView(data: previewEvents, saveAction: {})
+        //return EventListView(data: previewEvents, dateToDisplay: Date(), saveAction: {})
     }
 }
