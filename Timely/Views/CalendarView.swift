@@ -29,6 +29,8 @@ struct CalendarDay: Identifiable, Hashable {
 }
 
 struct CalendarView: View {
+    @StateObject private var eventList = EventStore()
+
     //@StateObject private var eventList = EventStore()
     @Binding var data: [Event]
     
@@ -198,7 +200,23 @@ struct CalendarView: View {
                     
                     LazyVGrid(columns: columnLayout, spacing: 5) {
                         ForEach(daysInMonth, id: \.self) { tile in
-                            NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date, saveAction: {})) {
+                            NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date) {
+                                Task {
+                                    do {
+                                        try await eventList.save(events: eventList.events)
+                                    } catch {
+                                        fatalError(error.localizedDescription)
+                                    }
+                                }
+                            }
+                            .task {
+                                do {
+                                    try await eventList.load()
+                                    print("Loading events: \(eventList.events)")
+                                } catch {
+                                    fatalError(error.localizedDescription)
+                                }
+                            }) {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 8)
                                         .aspectRatio(0.9, contentMode: .fit)

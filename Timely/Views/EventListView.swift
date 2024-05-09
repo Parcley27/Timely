@@ -145,13 +145,21 @@ struct EventListView: View {
             ForEach($data) { $event in
                 let index = $data.firstIndex(where: { $0.id == event.id })
                 if dateToDisplay == nil || compareDates(event: event, date: dateToDisplay ?? nil) {
-                    NavigationLink(destination: EventDetailView(data: $data, event: index!, saveAction: {})) {
+                    NavigationLink(destination: EventDetailView(data: $data, event: index!)) {
                     //NavigationLink(destination: DayView(data: $data, event: index!, saveAction: {})) {
                         listItem(event: event)
                             .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                 Button {
-                                    event.isFavourite.toggle()
-                                    saveAction()
+                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                        data[index].isFavourite.toggle()
+                                        Task {
+                                            do {
+                                                try await EventStore().save(events: data)
+                                            } catch {
+                                                fatalError(error.localizedDescription)
+                                            }
+                                        }
+                                    }
                                     
                                     print("Toggling favourite on \(event)")
                                     
@@ -169,7 +177,13 @@ struct EventListView: View {
                                 Button(role: .destructive) {
                                     if let index = $data.firstIndex(where: { $0.id == event.id }) {
                                         data.remove(at: index)
-                                        saveAction()
+                                        Task {
+                                            do {
+                                                try await EventStore().save(events: data)
+                                            } catch {
+                                                fatalError(error.localizedDescription)
+                                            }
+                                        }
                                     }
                                     print("Deleting \($event)")
                                     
@@ -180,8 +194,16 @@ struct EventListView: View {
                                 
                                 if editMode == .inactive {
                                     Button {
-                                        event.isMuted.toggle()
-                                        saveAction()
+                                        if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                            data[index].isMuted.toggle()
+                                            Task {
+                                                do {
+                                                    try await EventStore().save(events: data)
+                                                } catch {
+                                                    fatalError(error.localizedDescription)
+                                                }
+                                            }
+                                        }
                                         
                                         print("Toggling mute on \(event)")
                                         
@@ -201,7 +223,13 @@ struct EventListView: View {
             .onDelete { indexSet in
                 data.remove(atOffsets: indexSet)
                 data.sort(by: { $0.dateAndTime < $1.dateAndTime })
-                saveAction()
+                Task {
+                    do {
+                        try await EventStore().save(events: data)
+                    } catch {
+                        fatalError(error.localizedDescription)
+                    }
+                }
             }
         }
     }
@@ -237,7 +265,13 @@ struct EventListView: View {
             }
             .onChange(of: scenePhase) { phase in
                 if phase == .inactive {
-                    saveAction()
+                    Task {
+                        do {
+                            try await EventStore().save(events: data)
+                        } catch {
+                            fatalError(error.localizedDescription)
+                        }
+                    }
                 }
             }
         }

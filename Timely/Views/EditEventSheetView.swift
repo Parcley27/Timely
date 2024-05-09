@@ -10,7 +10,7 @@ import SwiftUI
 struct EditEventSheetView: View {
     @Binding var data: [Event]
     let event: Int
-    
+        
     @FocusState private var isTextFieldFocused: Bool
     
     @Environment(\.dismiss) var dismiss
@@ -100,6 +100,14 @@ struct EditEventSheetView: View {
                         data[event].isMuted = editedMute
                         
                         data.sort(by: { $0.dateAndTime < $1.dateAndTime })
+                                                
+                        Task {
+                            do {
+                                try await EventStore().save(events: data)
+                            } catch {
+                                fatalError(error.localizedDescription)
+                            }
+                        }
                         
                         print(event)
                         

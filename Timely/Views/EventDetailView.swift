@@ -10,8 +10,6 @@ import SwiftUI
 struct EventDetailView: View {
     @Binding var data: [Event]
     let event: Int
-    
-    let saveAction: () -> Void
         
     @Environment(\.presentationMode) private var presentationMode
     
@@ -87,13 +85,24 @@ struct EventDetailView: View {
                 Section {
                     Toggle("Favourite", isOn: $data[event].isFavourite)
                         .onChange(of: data[event].isFavourite) { newValue in
-                            //data.toggleFavouriteEvent(event: event)
-                            saveAction()
+                            Task {
+                                do {
+                                    try await EventStore().save(events: data)
+                                } catch {
+                                    fatalError(error.localizedDescription)
+                                }
+                            }
                         }
                     
                     Toggle("Mute", isOn: $data[event].isMuted)
                         .onChange(of: data[event].isMuted) { newValue in
-                            //data.toggleMutedEvent(event: event)
+                            Task {
+                                do {
+                                    try await EventStore().save(events: data)
+                                } catch {
+                                    fatalError(error.localizedDescription)
+                                }
+                            }
                         }
                 }
 

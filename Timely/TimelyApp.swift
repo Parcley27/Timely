@@ -5,6 +5,10 @@
 //  Created by Pierce Oxley on 2023-06-14.
 //
 
+// some sort of issue between calendarview and eventlist view
+// it works fine from timely - eventlist
+// broken for detal - eventlist, and calendarview - eventlist
+
 import SwiftUI
 
 @main
