@@ -7,7 +7,7 @@
 
 import SwiftUI
         
-struct Settings: View {
+struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     
     //@EnvironmentObject var data: EventData
@@ -18,22 +18,6 @@ struct Settings: View {
                 Image(systemName: "gearshape.fill")
                 Text("Hello, Settings!")
                 
-                // Fix reference
-                //Text(outsideTest)
-                /*
-                List($data) { $event in
-                    Text(event.name ?? "eventName")
-                    /*
-                    ForEach($scrums.event) { $event in
-                        HStack {
-                            Text(event.name ?? "EventName")
-                            Spacer()
-                            Text(event.emoji ?? "📅")
-                        }
-                     */
-
-                }
-                 */
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -47,8 +31,8 @@ struct Settings: View {
     }
 }
 
-struct Settings_Previews: PreviewProvider {
+struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        Settings()
+        SettingsView()
     }
 }
