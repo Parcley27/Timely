@@ -121,8 +121,14 @@ struct EventListView: View {
     
     func listItem(event: Event) -> some View {
         HStack {
-            Text(event.emoji ?? "📅")
-                .font(.title)
+            ZStack {
+                Text("📅")
+                    .font(.title)
+                    .opacity(0)
+                Text(event.emoji ?? "📅")
+                    .font(.title)
+                
+            }
             
             VStack(alignment: .leading) {
                 Text(event.name ?? "Event Name")
