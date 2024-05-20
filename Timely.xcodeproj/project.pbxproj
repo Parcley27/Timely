@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		6E843E182B7F49D000C8761E /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E843E172B7F49D000C8761E /* EventStore.swift */; };
+		6EA0FCA22BFB0D0200981724 /* SettingsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA0FCA12BFB0D0200981724 /* SettingsData.swift */; };
+		6EA0FCA42BFB0EA000981724 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA0FCA32BFB0EA000981724 /* SettingsStore.swift */; };
 		6EAE9FF02B018D7B0029A8D4 /* TimelyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAE9FEF2B018D7B0029A8D4 /* TimelyApp.swift */; };
 		6EAE9FF62B018D7C0029A8D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6EAE9FF52B018D7C0029A8D4 /* Assets.xcassets */; };
 		6EAE9FF92B018D7C0029A8D4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6EAE9FF82B018D7C0029A8D4 /* Preview Assets.xcassets */; };
@@ -43,6 +45,8 @@
 
 /* Begin PBXFileReference section */
 		6E843E172B7F49D000C8761E /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
+		6EA0FCA12BFB0D0200981724 /* SettingsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsData.swift; sourceTree = "<group>"; };
+		6EA0FCA32BFB0EA000981724 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		6EAE9FEC2B018D7B0029A8D4 /* Timely.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timely.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EAE9FEF2B018D7B0029A8D4 /* TimelyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelyApp.swift; sourceTree = "<group>"; };
 		6EAE9FF52B018D7C0029A8D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -157,6 +161,8 @@
 			children = (
 				6EAEA0212B0196A90029A8D4 /* EventData.swift */,
 				6E843E172B7F49D000C8761E /* EventStore.swift */,
+				6EA0FCA12BFB0D0200981724 /* SettingsData.swift */,
+				6EA0FCA32BFB0EA000981724 /* SettingsStore.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -307,7 +313,9 @@
 			files = (
 				6EF4F6CD2BB292C000288AE3 /* CalendarView.swift in Sources */,
 				6ED5B6682BD3853200B0A728 /* DayView.swift in Sources */,
+				6EA0FCA22BFB0D0200981724 /* SettingsData.swift in Sources */,
 				6EAEA0282B0196FC0029A8D4 /* NewEventSheetView.swift in Sources */,
+				6EA0FCA42BFB0EA000981724 /* SettingsStore.swift in Sources */,
 				6EAEA0222B0196A90029A8D4 /* EventData.swift in Sources */,
 				6EAEA02C2B0197270029A8D4 /* SettingsView.swift in Sources */,
 				6EAE9FF02B018D7B0029A8D4 /* TimelyApp.swift in Sources */,
