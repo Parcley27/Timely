@@ -11,11 +11,18 @@ import SwiftUI
 @main
 struct TimelyApp: App {
     @StateObject private var eventList = EventStore()
+    //@EnvironmentObject private var preferences = SettingsStore()
     
-    func filterPassedEvents(events: [Event]) -> [Event] {
+    func filterPassedEvents(events: [Event]) -> [Event]? {
         let passedEvents = events.filter { $0.hasPassed == true }
         
-        return passedEvents
+        if SettingsStore().showBadge {
+            return passedEvents
+            
+        } else {
+            return nil
+
+        }
     }
     
     @State var selectedTab: Int = 0
@@ -66,7 +73,7 @@ struct TimelyApp: App {
                                 fatalError(error.localizedDescription)
                             }
                         }
-                        .badge(filterPassedEvents(events: eventList.events).count)
+                        .badge(filterPassedEvents(events: eventList.events) != nil ? filterPassedEvents(events: eventList.events)!.count : 0)
                         .tabItem {
                             Label("Events", systemImage: "list.bullet")
                         }

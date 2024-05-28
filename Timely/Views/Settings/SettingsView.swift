@@ -8,20 +8,29 @@
 import SwiftUI
         
 struct SettingsView: View {
-    @Environment(\.dismiss) var dismiss
+    @StateObject private var preferences = SettingsStore()
+    @State var editedAutoDelete: Bool = false
     
-    //@EnvironmentObject var data: EventData
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         NavigationStack {
             VStack {
-                Image(systemName: "gearshape.fill")
-                Text("Hello, Settings!")
                 
+                //Image(systemName: "gearshape.fill")
+                //Text("Hello, Settings!")
+                
+                Form {
+                    Section("App Behaviour") {
+                        Toggle(isOn: $preferences.showBadge) {
+                            Text("In-app Notifications")
+                        }
+                    }
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button ("Done") {
+                    Button("Done") {
                         dismiss()
                     }
                 }

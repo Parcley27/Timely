@@ -6,41 +6,32 @@
 //
 
 import Foundation
-import SwiftUI
 
 @MainActor
 class SettingsStore: ObservableObject {
-    @Published var settings: [Settings] = []
-    
-    private static func fileURL() throws -> URL {
-        try FileManager.default.url(for: .documentDirectory,
-                                    in: .userDomainMask,
-                                    appropriateFor: nil,
-                                    create: false)
-        .appendingPathComponent("settings.data")
+    @Published var showBadge: Bool = true {
+        didSet {
+            UserDefaults.standard.set(showBadge, forKey: "showBadge")
+        }
     }
     
-    func load() async throws {
-        let task = Task<[Settings], Error> {
-            let fileURL = try Self.fileURL()
-            guard let data = try? Data(contentsOf: fileURL) else {
-                return []
-            }
-            
-            let loadedEvents = try JSONDecoder().decode([Settings].self, from: data)
-            return loadedEvents
+    @Published var deletePassedEvents: Bool = true {
+        didSet {
+            UserDefaults.standard.set(deletePassedEvents, forKey: "deletePassedEvents")
         }
-        
-        let settings = try await task.value
-        self.settings = settings
     }
     
-    func save(settings: [Settings]) async throws {
-        let task = Task {
-            let data = try JSONEncoder().encode(settings)
-            let outfile = try Self.fileURL()
-            try data.write(to: outfile)
+    /*
+    @Published var userName: String {
+        didSet {
+            UserDefaults.standard.set(userName, forKey: "userName")
         }
-        _ = try await task.value
+    }
+     */
+    
+    init() {
+        self.showBadge = UserDefaults.standard.bool(forKey: "showBadge")
+        self.deletePassedEvents = UserDefaults.standard.bool(forKey: "deletePassedEvents")
+        //self.deletePassedEvents = UserDefaults.standard.string(forKey: "userName") ?? ""
     }
 }
