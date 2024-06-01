@@ -12,6 +12,16 @@ struct SettingsView: View {
     @State var editedAutoDelete: Bool = false
     
     @Environment(\.dismiss) var dismiss
+    @Environment(\.openURL) var openURL
+    
+    private var gitHubLink: some View {
+        HStack {
+            Text("Contribute to Timely")
+            Spacer()
+            Image(systemName: "arrow.up.forward.app")
+        }
+        .foregroundStyle(.blue)
+    }
     
     var body: some View {
         NavigationStack {
@@ -20,10 +30,23 @@ struct SettingsView: View {
                 //Image(systemName: "gearshape.fill")
                 //Text("Hello, Settings!")
                 
-                Form {
+                List {
                     Section("App Behaviour") {
                         Toggle(isOn: $preferences.showBadge) {
                             Text("In-app Notifications")
+                            
+                        }
+                    }
+                    
+                    Section("Credits") {
+                        Text("Created by Pierce Oxley")
+                        Text("Special thanks to my family, Dale Dai, and everyone else along the way.")
+                        Button {
+                            openURL(URL(string: "https://github.com/Parcley27/Timely")!)
+
+                        } label: {
+                            gitHubLink
+                            
                         }
                     }
                 }
