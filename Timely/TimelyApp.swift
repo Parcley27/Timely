@@ -14,7 +14,8 @@ struct TimelyApp: App {
     //@EnvironmentObject private var preferences = SettingsStore()
     
     func filterPassedEvents(events: [Event]) -> [Event]? {
-        let passedEvents = events.filter { $0.hasPassed == true }
+        var passedEvents = events.filter { $0.hasPassed == true }
+        passedEvents = passedEvents.filter { $0.isMuted == false }
         
         if SettingsStore().showBadge {
             return passedEvents
