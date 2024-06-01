@@ -156,11 +156,6 @@ struct CalendarView: View {
     var body: some View {
         NavigationStack {
                 HStack {
-                    Text("\(monthNames[month - 1]) \(String(year))")
-                        .font(.title2)
-                    
-                    Spacer()
-                    
                     Button() {
                         if month == 1 {
                             month = 12
@@ -174,6 +169,9 @@ struct CalendarView: View {
                             .bold()
                     }
                     
+                    Text("\(monthNames[month - 1]) \(String(year))")
+                        .font(.title2)
+                    
                     Button() {
                         if month == 12 {
                             month = 1
@@ -185,6 +183,10 @@ struct CalendarView: View {
                         Label("", systemImage: "greaterthan")
                             .bold()
                     }
+                    .padding(.leading)
+                    
+                    Spacer()
+                    
                 }
                 .padding(.horizontal)
                 
