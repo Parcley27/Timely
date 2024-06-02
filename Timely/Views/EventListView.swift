@@ -32,7 +32,7 @@ struct EventListView: View {
     
     @State private var timeUpdater: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-        
+            
     func showNewEventSheetView() {
         showingSheet = true
     }
@@ -132,6 +132,7 @@ struct EventListView: View {
             
             VStack(alignment: .leading) {
                 Text(event.name ?? "Event Name")
+                    .font(.title3)
                     .bold()
                 
                 HStack {
