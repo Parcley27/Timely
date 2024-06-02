@@ -169,8 +169,11 @@ struct CalendarView: View {
                             .bold()
                     }
                     
-                    Text("\(monthNames[month - 1]) \(String(year))")
-                        .font(.title2)
+                    Button("\(monthNames[month - 1]) \(String(year))") {
+                        month = currentMonth
+                        year = currentYear
+                    }
+                    .font(.title2)
                     
                     Button() {
                         if month == 12 {
