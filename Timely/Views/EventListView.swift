@@ -11,7 +11,7 @@ import Foundation
 struct noEventsView: View {
     var body: some View {
         VStack {
-            Text("No Saved Events")
+            Text("No Events")
                 .font(.title2)
                 .bold()
         }
