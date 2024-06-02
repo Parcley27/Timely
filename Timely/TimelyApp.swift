@@ -174,7 +174,7 @@ struct TimelyApp: App {
             .onReceive(timer) { _ in
                 if SettingsStore().deletePassedEvents {
                     eventList.removeExpiredEvents()
-
+                    
                 }
             }
         }

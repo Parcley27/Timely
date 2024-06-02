@@ -188,6 +188,7 @@ struct EventListView: View {
                                 Button(role: .destructive) {
                                     if let index = $data.firstIndex(where: { $0.id == event.id }) {
                                         data.remove(at: index)
+                                        
                                         Task {
                                             do {
                                                 try await EventStore().save(events: data)
@@ -234,12 +235,15 @@ struct EventListView: View {
             .onDelete { indexSet in
                 data.remove(atOffsets: indexSet)
                 data.sort(by: { $0.dateAndTime < $1.dateAndTime })
+                
                 Task {
                     do {
                         try await EventStore().save(events: data)
+                        
                     } catch {
                         fatalError(error.localizedDescription)
                     }
+                    
                 }
             }
         }
@@ -257,25 +261,6 @@ struct EventListView: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    if dateToDisplay == nil {
-                        Button("Clear All") {
-                            confirmationIsShowing = true
-                        }
-                        .alert(Text("Delete All Events?"),
-                            isPresented: $confirmationIsShowing,
-                            actions: {
-                            Button("Delete", role: .destructive) {
-                                EventStore().removeAllEvents()
-                            }
-                            
-                            Button("Cancel", role: .cancel) {}
-                            }, message: {
-                                Text("This action cannot be undone")
-                            })
-                    }
-                }
-                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button() {
                         showNewEventSheetView()
@@ -295,8 +280,10 @@ struct EventListView: View {
                     Task {
                         do {
                             try await EventStore().save(events: data)
+                            
                         } catch {
                             fatalError(error.localizedDescription)
+                            
                         }
                     }
                 }

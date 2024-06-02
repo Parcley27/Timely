@@ -60,18 +60,4 @@ class EventStore: ObservableObject {
             }
         }
     }
-    
-    func removeAllEvents() {
-        events.removeAll()
-        
-        Task {
-            do {
-                try await save(events: events)
-                
-            } catch {
-                fatalError(error.localizedDescription)
-                
-            }
-        }
-    }
 }
