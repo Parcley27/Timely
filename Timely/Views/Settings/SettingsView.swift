@@ -36,6 +36,11 @@ struct SettingsView: View {
                             Text("In-app Notifications")
                             
                         }
+                        
+                        Toggle(isOn: $preferences.deletePassedEvents) {
+                            Text("Delete Passed Events")
+                        }
+                        
                     }
                     
                     Section("Credits") {

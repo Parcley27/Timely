@@ -43,4 +43,19 @@ class EventStore: ObservableObject {
         }
         _ = try await task.value
     }
+    
+    func removeExpiredEvents() {
+        events.removeAll { event in
+            event.hasExpired()
+            
+        }
+        
+        Task {
+            do {
+                try await save(events: events)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
+    }
 }

@@ -76,6 +76,18 @@ struct Event : Identifiable, Codable {
         }
     }
     
+    func hasExpired(maxTime: Int = 0) -> Bool {
+        let timeInterval = dateAndTime.timeIntervalSinceNow
+        
+        if timeInterval < Double(maxTime) {
+            return true
+            
+        } else {
+            return false
+            
+        }
+    }
+    
     var isFavourite: Bool = false
     var isMuted: Bool = false
     

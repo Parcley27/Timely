@@ -9,15 +9,17 @@ import Foundation
 
 @MainActor
 class SettingsStore: ObservableObject {
-    @Published var showBadge: Bool = true {
+    @Published var showBadge: Bool {
         didSet {
             UserDefaults.standard.set(showBadge, forKey: "showBadge")
+            
         }
     }
     
-    @Published var deletePassedEvents: Bool = true {
+    @Published var deletePassedEvents: Bool {
         didSet {
             UserDefaults.standard.set(deletePassedEvents, forKey: "deletePassedEvents")
+            
         }
     }
     
@@ -30,8 +32,7 @@ class SettingsStore: ObservableObject {
      */
     
     init() {
-        self.showBadge = UserDefaults.standard.bool(forKey: "showBadge")
-        self.deletePassedEvents = UserDefaults.standard.bool(forKey: "deletePassedEvents")
-        //self.deletePassedEvents = UserDefaults.standard.string(forKey: "userName") ?? ""
+        self.showBadge = UserDefaults.standard.object(forKey: "showBadge") as? Bool ?? true
+        self.deletePassedEvents = UserDefaults.standard.object(forKey: "deletePassedEvents") as? Bool ?? true
     }
 }

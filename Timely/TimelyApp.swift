@@ -26,6 +26,8 @@ struct TimelyApp: App {
         }
     }
     
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
     @State var selectedTab: Int = 0
     @State var lastTab: Int = 0
 
@@ -168,6 +170,12 @@ struct TimelyApp: App {
                     .sheet(isPresented: $showNewSheet) {
                         NewEventSheetView(data: $eventList.events)
                     }
+                }
+            }
+            .onReceive(timer) { _ in
+                if SettingsStore().deletePassedEvents {
+                    eventList.removeExpiredEvents()
+
                 }
             }
         }
