@@ -29,6 +29,8 @@ struct EventListView: View {
     @State private var editMode = EditMode.inactive
     
     @State private var showingSheet = false
+    @State private var confirmationIsShowing = false
+
     
     @State private var timeUpdater: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -257,8 +259,20 @@ struct EventListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     if dateToDisplay == nil {
-                        EditButton()
-                            .disabled($data.count == 0)
+                        Button("Clear All") {
+                            confirmationIsShowing = true
+                        }
+                        .alert(Text("Delete All Events?"),
+                            isPresented: $confirmationIsShowing,
+                            actions: {
+                            Button("Delete", role: .destructive) {
+                                EventStore().removeAllEvents()
+                            }
+                            
+                            Button("Cancel", role: .cancel) {}
+                            }, message: {
+                                Text("This action cannot be undone")
+                            })
                     }
                 }
                 
