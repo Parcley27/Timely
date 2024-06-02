@@ -11,7 +11,6 @@ import SwiftUI
 @main
 struct TimelyApp: App {
     @StateObject private var eventList = EventStore()
-    //@EnvironmentObject private var preferences = SettingsStore()
     
     func filterPassedEvents(events: [Event]) -> [Event]? {
         var passedEvents = events.filter { $0.hasPassed == true }

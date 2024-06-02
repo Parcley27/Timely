@@ -165,7 +165,6 @@ struct EventListView: View {
                 let index = $data.firstIndex(where: { $0.id == event.id })
                 if dateToDisplay == nil || compareDates(event: event, date: dateToDisplay ?? nil) {
                     NavigationLink(destination: EventDetailView(data: $data, event: index!)) {
-                    //NavigationLink(destination: DayView(data: $data, event: index!, saveAction: {})) {
                         listItem(event: event)
                             .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                 Button {
@@ -280,7 +279,6 @@ struct EventListView: View {
             .environment(\.editMode, $editMode)
             .sheet(isPresented: $showingSheet) {
                 NewEventSheetView(data: $data)
-                //.environmentObject(data)
             }
             .onChange(of: scenePhase) { phase in
                 if phase == .inactive {
@@ -310,6 +308,5 @@ struct EventListView_Previews: PreviewProvider {
         let previewEvents = Binding.constant(previewData.events)
 
         return EventListView(data: previewEvents, saveAction: {})
-        //return EventListView(data: previewEvents, dateToDisplay: Date(), saveAction: {})
     }
 }

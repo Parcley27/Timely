@@ -25,11 +25,7 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                
-                //Image(systemName: "gearshape.fill")
-                //Text("Hello, Settings!")
-                
+            VStack {                
                 List {
                     Section("App Behaviour") {
                         Toggle(isOn: $preferences.showBadge) {
