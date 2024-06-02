@@ -253,10 +253,23 @@ struct CalendarView: View {
                 }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button() {
-                        month = currentMonth
-                        year = currentYear
-                    } label: {
+                    NavigationLink(destination: EventListView(data: $data, dateToDisplay: Date()) {
+                        Task {
+                            do {
+                                try await eventList.save(events: eventList.events)
+                            } catch {
+                                fatalError(error.localizedDescription)
+                            }
+                        }
+                    }
+                    .task {
+                        do {
+                            try await eventList.load()
+                            print("Loading events: \(eventList.events)")
+                        } catch {
+                            fatalError(error.localizedDescription)
+                        }
+                    }) {
                         Text("Today")
                     }
                 }
