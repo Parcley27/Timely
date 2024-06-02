@@ -37,15 +37,6 @@ struct EventListView: View {
         showingSheet = true
     }
     
-    private var addButton: some View {
-        switch editMode {
-        case .inactive:
-            return AnyView(Button(action: showNewEventSheetView) { Image(systemName: "plus.circle") })
-        default:
-            return AnyView(EmptyView())
-        }
-    }
-    
     func favouriteStatusIcon(event: Event) -> some View {
         var favouriteIcon: some View {
             Image(systemName: event.isFavourite == true ? "star.fill" : "star.slash.fill")
@@ -272,7 +263,12 @@ struct EventListView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    addButton
+                    Button() {
+                        showNewEventSheetView()
+                    } label: {
+                        Label("New", systemImage: "plus.circle")
+                    }
+                    .disabled(editMode .isEditing ? true : false)
                 }
             }
             .navigationBarTitle(dateToDisplay != nil ? formatStringForDate(date: dateToDisplay!) : "Events")
