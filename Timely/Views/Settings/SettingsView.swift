@@ -14,10 +14,11 @@ struct SettingsView: View {
     
     @State private var result: Result<MFMailComposeResult, Error>? = nil
     @State private var isShowingMailView = false
-    @State var subject: String? = "Contact"
+    @State var subject: String = "Contact"
     
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
+
     
     private var gitHubLink: some View {
         HStack {
@@ -59,10 +60,8 @@ struct SettingsView: View {
                     
                     Section("Contact") {
                         Button() {
-                            //subject = "Support"
-                            self.isShowingMailView.toggle()
                             subject = "Support"
-
+                            self.isShowingMailView.toggle()
                             
                         } label: {
                             customButton(text: "Get Support", icon: "person.circle")
@@ -86,7 +85,15 @@ struct SettingsView: View {
                     }
                     
                     Section("Credits") {
-                        Text("Created by Pierce Oxley")
+                        Button() {
+                            openURL(URL(string: "https://github.com/Parcley27")!)
+                            
+                        } label: {
+                            Text("Created by Pierce Oxley")
+                            
+                        }
+                        
+                        //Text("Created by Pierce Oxley")
                         
                         Text("Special thanks to my family, Dale Dai, and everyone else along the way.")
                         
