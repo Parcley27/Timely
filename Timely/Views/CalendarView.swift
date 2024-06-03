@@ -25,13 +25,13 @@ struct CalendarDay: Identifiable, Hashable {
             self.year = date != nil ? Calendar.current.component(.year, from: date!) : nil
             self.month = date != nil ? Calendar.current.component(.month, from: date!) : nil
             self.day = date != nil ? Calendar.current.component(.day, from: date!) : nil
+        
         }
 }
 
 struct CalendarView: View {
     @StateObject private var eventList = EventStore()
-
-    //@StateObject private var eventList = EventStore()
+    
     @Binding var data: [Event]
     
     @State var month: Int
@@ -52,12 +52,14 @@ struct CalendarView: View {
         let daysOfTheWeek = localCalendar.weekdaySymbols
         
         return daysOfTheWeek
+        
     }
     
     var monthNames: [String] {
         let formatter = DateFormatter()
         if let monthComponents = formatter.monthSymbols {
             return monthComponents
+            
         }
         
         return [""]
@@ -66,6 +68,7 @@ struct CalendarView: View {
     func isCurrentDay(possibleDay: CalendarDay) -> Bool {
         if possibleDay.day == currentDay && possibleDay.month == currentMonth && possibleDay.year == currentYear {
             return true
+            
         }
         
         return false
@@ -82,11 +85,13 @@ struct CalendarView: View {
     var totalDaysInMonth: Int {
         let dateComponents = DateComponents(year: year, month: month)
         guard let startDate = Calendar.current.date(from: dateComponents),
-              let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
-            return 30
-        }
+            let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
+                return 30
+            
+            }
         
         return range.count
+        
     }
     
     var daysInMonth: [CalendarDay] {
@@ -111,6 +116,7 @@ struct CalendarView: View {
         }
         
         return days
+        
     }
     
     func eventsOnDay(searchingDay: CalendarDay) -> [Event] {
@@ -128,10 +134,12 @@ struct CalendarView: View {
             
             if matchingYear == eventYear && matchingMonth == eventMonth && matchingDay == eventDay {
                 matchingEvents.append(event)
+                
             }
         }
         
         return matchingEvents
+        
     }
     
     func computedOpacity(day: CalendarDay) -> Double {
@@ -141,16 +149,18 @@ struct CalendarView: View {
         
         if isCurrentDay(possibleDay: day) && month == currentMonth && year == currentYear {
             opacity = 1.0
+            
         } else  {
             opacity = 0.4 + (Double(eventsOnDay(searchingDay: day).count) * multiplier)
-            
             if opacity > 0.75 {
                 opacity = 0.75
+                
             }
             
         }
         
         return opacity
+        
     }
     
     var body: some View {
@@ -160,18 +170,22 @@ struct CalendarView: View {
                         if month == 1 {
                             month = 12
                             year -= 1
+                            
                         } else {
                             month -= 1
+                            
                         }
                         
                     } label: {
                         Label("", systemImage: "arrow.left")
                             .bold()
+                        
                     }
                     
                     Button("\(monthNames[month - 1]) \(String(year))") {
                         month = currentMonth
                         year = currentYear
+                        
                     }
                     .font(.title2)
                     
@@ -179,12 +193,15 @@ struct CalendarView: View {
                         if month == 12 {
                             month = 1
                             year += 1
+                            
                         } else {
                             month += 1
+                            
                         }
                     } label: {
                         Label("", systemImage: "arrow.right")
                             .bold()
+                        
                     }
                     .padding(.leading)
                     
@@ -209,8 +226,10 @@ struct CalendarView: View {
                                 Task {
                                     do {
                                         try await eventList.save(events: eventList.events)
+                                        
                                     } catch {
                                         fatalError(error.localizedDescription)
+                                        
                                     }
                                 }
                             }
@@ -218,8 +237,10 @@ struct CalendarView: View {
                                 do {
                                     try await eventList.load()
                                     print("Loading events: \(eventList.events)")
+                                    
                                 } catch {
                                     fatalError(error.localizedDescription)
+                                    
                                 }
                             }) {
                                 ZStack {
@@ -227,7 +248,7 @@ struct CalendarView: View {
                                         .aspectRatio(0.9, contentMode: .fit)
                                         .foregroundStyle(tile.isPlaceholder ? .clear : isCurrentDay(possibleDay: tile) ? Color.accentColor : .primary)
                                         .opacity(computedOpacity(day: tile))
-
+                                    
                                     if !tile.isPlaceholder {
                                         VStack(spacing: 4) {
                                             Text("\(tile.day!)")
@@ -251,41 +272,41 @@ struct CalendarView: View {
                     .padding(.horizontal)
                     Spacer()
                 }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    NavigationLink(destination: EventListView(data: $data, dateToDisplay: Date()) {
-                        Task {
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        NavigationLink(destination: EventListView(data: $data, dateToDisplay: Date()) {
+                            Task {
+                                do {
+                                    try await eventList.save(events: eventList.events)
+                                } catch {
+                                    fatalError(error.localizedDescription)
+                                }
+                            }
+                        }
+                        .task {
                             do {
-                                try await eventList.save(events: eventList.events)
+                                try await eventList.load()
+                                print("Loading events: \(eventList.events)")
                             } catch {
                                 fatalError(error.localizedDescription)
                             }
+                        }) {
+                            Text("Today")
                         }
                     }
-                    .task {
-                        do {
-                            try await eventList.load()
-                            print("Loading events: \(eventList.events)")
-                        } catch {
-                            fatalError(error.localizedDescription)
+                    
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button() {
+                            showingSettings = true
+                        } label: {
+                            Image(systemName: "gearshape")
                         }
-                    }) {
-                        Text("Today")
                     }
                 }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button() {
-                        showingSettings = true
-                    } label: {
-                        Image(systemName: "gearshape")
-                    }
+                .sheet(isPresented: $showingSettings) {
+                    SettingsView()
                 }
-            }
-            .sheet(isPresented: $showingSettings) {
-                SettingsView()
-            }
-            .navigationBarTitle("Calendar")
+                .navigationBarTitle("Calendar")
             
         }
     }
@@ -306,4 +327,5 @@ struct CalendarView: View {
     let currentYear = Calendar.current.component(.year, from: Date())
     
     return CalendarView(data: previewEvents, month: currentMonth, year: currentYear, saveAction: {})
+    
 }

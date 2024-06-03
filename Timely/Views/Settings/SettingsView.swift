@@ -25,6 +25,7 @@ struct SettingsView: View {
             Text("Contribute to Timely")
             Spacer()
             Image(systemName: "arrow.up.forward.app")
+            
         }
         .foregroundStyle(.blue)
     }
@@ -35,8 +36,10 @@ struct SettingsView: View {
             Spacer()
             ZStack {
                 Image(systemName: icon)
+                
                 Text("📅")
                     .opacity(0)
+                
             }
         }
         .foregroundStyle(.blue)
@@ -54,6 +57,7 @@ struct SettingsView: View {
                         
                         Toggle(isOn: $preferences.deletePassedEvents) {
                             Text("Delete Passed Events")
+                            
                         }
                         
                     }
@@ -65,6 +69,7 @@ struct SettingsView: View {
                             
                         } label: {
                             customButton(text: "Get Support", icon: "person.circle")
+                            
                         }
                         
                         Button() {
@@ -73,6 +78,7 @@ struct SettingsView: View {
                             
                         } label: {
                             customButton(text: "Report an Issue", icon: "exclamationmark.bubble")
+                            
                         }
                         
                         Button() {
@@ -81,6 +87,7 @@ struct SettingsView: View {
                             
                         } label: {
                             customButton(text: "Request a Feature", icon: "sparkles")
+                            
                         }
                     }
                     
@@ -92,8 +99,6 @@ struct SettingsView: View {
                             Text("Created by Pierce Oxley")
                             
                         }
-                        
-                        //Text("Created by Pierce Oxley")
                         
                         Text("Special thanks to my family, Dale Dai, and everyone else along the way.")
                         
@@ -114,6 +119,7 @@ struct SettingsView: View {
                 } else {
                     Text("Cannot Send Mail")
                         .bold()
+                    
                     Text("Check that email is set up on your device")
                     
                 }
@@ -122,6 +128,7 @@ struct SettingsView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {
                         dismiss()
+                        
                     }
                 }
             }
@@ -133,5 +140,6 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+        
     }
 }

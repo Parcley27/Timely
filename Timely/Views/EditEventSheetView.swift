@@ -31,14 +31,15 @@ struct EditEventSheetView: View {
                         TextField(data[event].name ?? "Event Name", text: $editedName)
                             .focused($isTextFieldFocused)
                             .onAppear() {
-                                // Set the focus to the text field when the view appears
                                 isTextFieldFocused = true
                                 editedName = data[event].name ?? "Event Name"
+                                
                             }
                         
                         TextField(data[event].emoji ?? "📅", text: $editedEmoji)
                             .onAppear() {
                                 editedEmoji = data[event].emoji ?? "📅"
+                                
                             }
                             .opacity(editedEmoji == "" ? 0.5: 1.0)
                     }
@@ -47,26 +48,31 @@ struct EditEventSheetView: View {
                         TextField(data[event].description ?? "Event Description", text: $editedDescription)
                             .onAppear() {
                                 editedDescription = data[event].description ?? ""
+                                
                             }
                     }
                     
                     Section("Date and Time") {
                         DatePicker("Date", selection: $editedDateAndTime, displayedComponents: [.date])
                         DatePicker("Time", selection: $editedDateAndTime, displayedComponents: [.hourAndMinute])
+                        
                     }
                     .onAppear() {
                         editedDateAndTime = data[event].dateAndTime
+                        
                     }
                     
                     Section("More") {
                         Toggle("Favourite", isOn: $editedFavourite)
                             .onAppear() {
                                 editedFavourite = data[event].isFavourite
+                                
                             }
                         
                         Toggle("Mute", isOn: $editedMute)
                             .onAppear() {
                                 editedMute = data[event].isMuted
+                                
                             }
                     }
                 }
@@ -75,24 +81,26 @@ struct EditEventSheetView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
                         dismiss()
+                        
                     }
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        // Update event data
-                        
                         data[event].name = editedName
                         
                         if editedEmoji == "" {
                             data[event].emoji = "📅"
+                            
                         } else {
                             editedEmoji = String(editedEmoji.prefix(1))
                             data[event].emoji = editedEmoji
+                            
                         }
                         
                         if editedDescription != "" {
                             data[event].description = editedDescription
+                            
                         }
                         
                         data[event].dateAndTime = editedDateAndTime
@@ -104,8 +112,10 @@ struct EditEventSheetView: View {
                         Task {
                             do {
                                 try await EventStore().save(events: data)
+                                
                             } catch {
                                 fatalError(error.localizedDescription)
+                                
                             }
                         }
                         
@@ -127,10 +137,10 @@ struct EditEventSheetViewPreviews: PreviewProvider {
         previewData.events = [
             Event(name: "Sample Event 1", dateAndTime: Date()),
         ]
-
-        // Create a binding to the events array in previewData
+        
         let previewEvents = Binding.constant(previewData.events)
-
+        
         return EditEventSheetView(data: previewEvents, event: 0)
+        
     }
 }

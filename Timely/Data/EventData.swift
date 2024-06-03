@@ -24,6 +24,7 @@ struct Event : Identifiable, Codable {
         let currentDate = Date()
         let oneDayInSeconds: TimeInterval = 24 * 60 * 60
         return currentDate.addingTimeInterval(oneDayInSeconds)
+        
     }()
     
     var dateString: String? {
@@ -34,10 +35,11 @@ struct Event : Identifiable, Codable {
         dateFormatter.timeStyle = .short
         
         dateFormatter.dateFormat = "h:mm a 'on' EEEE, MMMM d, yyyy"
-
+        
         let formattedDate = dateFormatter.string(from: dateAndTime)
-
+        
         return formattedDate
+        
     }
     
     var timeUntil: String {
@@ -61,8 +63,10 @@ struct Event : Identifiable, Codable {
                 
         if let formattedString = formatter.string(from: timeInterval) {
             return formattedString
+            
         } else {
             return "Time Until Date"
+            
         }
     }
     
@@ -71,8 +75,10 @@ struct Event : Identifiable, Codable {
         
         if timeInterval <= 0.0 {
             return true
+            
         } else {
             return false
+            
         }
     }
     
@@ -94,19 +100,18 @@ struct Event : Identifiable, Codable {
     var id = UUID()
 }
 
-
-// Should be hidden probably
-// ^^^ Where did this come from????
 extension EventData {
     func removeEvent(event: Event) {
         if let index = events.firstIndex(where: {$0.id == event.id}) {
             events.remove(at: index)
+            
         }
     }
     
     func updateEventName(event: Event, newName: String) {
         if let index = events.firstIndex(where: {$0.id == event.id}) {
             events[index].name = newName
+            
         }
     }
     
@@ -114,8 +119,10 @@ extension EventData {
         if let index = events.firstIndex(where: {$0.id == event.id}) {
             if events[index].isFavourite == true {
                 events[index].isFavourite = false
+                
             } else {
                 events[index].isFavourite = true
+                
             }
         }
     }
@@ -124,8 +131,10 @@ extension EventData {
         if let index = events.firstIndex(where: {$0.id == event.id}) {
             if events[index].isMuted == true {
                 events[index].isMuted = false
+                
             } else {
                 events[index].isMuted = true
+                
             }
         }
     }
@@ -138,18 +147,22 @@ extension EventData {
         if format == "Full Date" {
             formatter.unitsStyle = .abbreviated
             formatter.allowedUnits = [.year, .day, .hour, .minute, .second]
+            
         }
         
         if format == "Seconds" {
             formatter.unitsStyle = .positional
             formatter.allowedUnits = [.second]
+            
         }
         
         if var formattedString = formatter.string(from: timeInterval) {
             formattedString = formattedString.replacingOccurrences(of: ",", with: "")
             return formattedString
+            
         } else {
             return "Time unknown"
+            
         }
     }
     
@@ -163,8 +176,10 @@ extension EventData {
         
         if dateString != "" {
             return dateString
+            
         } else {
             return "Date unknown"
+            
         }
     }
     
@@ -174,26 +189,21 @@ extension EventData {
         for event in events {
             if event.timeUntil.prefix(1) == "-" {
                 count += 1
+                
             }
         }
         
         return count
+        
     }
-    
-    /*
-    func sortEvents(filter: String? = "Date Ascending") {
-        if filter == "Date Ascending" {
-            for event in events {
-                // Sort by lowest date -> highest date
-            }
-        }
-    }
-    */
     
     func indexFor(_ event: Event) ->  Double {
         if let index = events.firstIndex(where: { $0.id == event.id }) {
             return Double(index)
+            
         }
+        
         return 0.0
+        
     }
 }

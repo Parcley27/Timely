@@ -25,6 +25,7 @@ class EventStore: ObservableObject {
             let fileURL = try Self.fileURL()
             guard let data = try? Data(contentsOf: fileURL) else {
                 return []
+                
             }
             
             let loadedEvents = try JSONDecoder().decode([Event].self, from: data)
@@ -40,6 +41,7 @@ class EventStore: ObservableObject {
             let data = try JSONEncoder().encode(events)
             let outfile = try Self.fileURL()
             try data.write(to: outfile)
+            
         }
         _ = try await task.value
     }

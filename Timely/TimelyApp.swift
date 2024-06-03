@@ -40,11 +40,8 @@ struct TimelyApp: App {
             Circle()
                 .stroke(.gray, lineWidth: 5.0)
                 .frame(width: 100)
-                .background(
-                      .bar,
-                      in: Circle()
-                   )
-
+                .background(.bar, in: Circle())
+            
             Image(systemName: "plus")
                 .resizable()
                 .frame(width: 50.0, height: 50.0)
@@ -62,8 +59,10 @@ struct TimelyApp: App {
                             Task {
                                 do {
                                     try await eventList.save(events: eventList.events)
+                                    
                                 } catch {
                                     fatalError(error.localizedDescription)
+                                    
                                 }
                             }
                         }
@@ -71,13 +70,16 @@ struct TimelyApp: App {
                             do {
                                 try await eventList.load()
                                 print("Loading events: \(eventList.events)")
+                                
                             } catch {
                                 fatalError(error.localizedDescription)
+                                
                             }
                         }
                         .badge(filterPassedEvents(events: eventList.events) != nil ? filterPassedEvents(events: eventList.events)!.count : 0)
                         .tabItem {
                             Label("Events", systemImage: "list.bullet")
+                            
                         }
                         .tag(0)
                         
@@ -86,8 +88,10 @@ struct TimelyApp: App {
                                 Task {
                                     do {
                                         try await eventList.save(events: eventList.events)
+                                        
                                     } catch {
                                         fatalError(error.localizedDescription)
+                                        
                                     }
                                 }
                             }
@@ -95,8 +99,10 @@ struct TimelyApp: App {
                                 do {
                                     try await eventList.load()
                                     print("Loading events: \(eventList.events)")
+                                    
                                 } catch {
                                     fatalError(error.localizedDescription)
+                                    
                                 }
                             }
                             .tag(1)
@@ -105,8 +111,10 @@ struct TimelyApp: App {
                                 Task {
                                     do {
                                         try await eventList.save(events: eventList.events)
+                                        
                                     } catch {
                                         fatalError(error.localizedDescription)
+                                        
                                     }
                                 }
                             }
@@ -114,8 +122,10 @@ struct TimelyApp: App {
                                 do {
                                     try await eventList.load()
                                     print("Loading events: \(eventList.events)")
+                                    
                                 } catch {
                                     fatalError(error.localizedDescription)
+                                    
                                 }
                             }
                             .tag(1)
@@ -125,8 +135,10 @@ struct TimelyApp: App {
                             Task {
                                 do {
                                     try await eventList.save(events: eventList.events)
+                                    
                                 } catch {
                                     fatalError(error.localizedDescription)
+                                    
                                 }
                             }
                         }
@@ -134,12 +146,15 @@ struct TimelyApp: App {
                             do {
                                 try await eventList.load()
                                 print("Loading events: \(eventList.events)")
+                                
                             } catch {
                                 fatalError(error.localizedDescription)
+                                
                             }
                         }
                         .tabItem {
                             Label("Calendar", systemImage: "calendar")
+                            
                         }
                         .tag(2)
                     }
@@ -147,6 +162,7 @@ struct TimelyApp: App {
                         if newTab == 0 || newTab == 2 {
                             lastTab = selectedTab
                             print(selectedTab)
+                            
                         }
                         
                         if newTab == 1 {
@@ -154,6 +170,7 @@ struct TimelyApp: App {
                             selectedTab = lastTab
                             print("Switching tab")
                             print(selectedTab)
+                            
                         }
                     }
                     
@@ -163,11 +180,13 @@ struct TimelyApp: App {
                             .onTapGesture {
                                 print("plus")
                                 showNewSheet = true
+                                
                             }
                             .position(x: metrics.size.width * 0.5, y: metrics.size.height - 48)
                     }
                     .sheet(isPresented: $showNewSheet) {
                         NewEventSheetView(data: $eventList.events)
+                        
                     }
                 }
             }

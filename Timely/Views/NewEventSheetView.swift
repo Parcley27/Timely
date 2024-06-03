@@ -9,7 +9,6 @@ import SwiftUI
 import Foundation
 
 struct NewEventSheetView: View {
-    //@EnvironmentObject var data: EventData
     @Binding var data: [Event]
     @StateObject private var store = EventStore()
 
@@ -39,16 +38,20 @@ struct NewEventSheetView: View {
         
         if let formattedDate = calendar.date(from: components) {
             return formattedDate
+            
         } else {
             return inputDate
+            
         }
     }
     
     private func createEvent() {
         if formEmoji.isEmpty {
             formEmoji = "📅"
+            
         } else {
             formEmoji = String(formEmoji.prefix(1))
+            
         }
         
         let newEvent = Event (
@@ -58,6 +61,7 @@ struct NewEventSheetView: View {
             dateAndTime: formDateAndTime,
             isFavourite: formFavourited,
             isMuted: formMuted
+            
         )
                 
         data.append(newEvent)
@@ -66,8 +70,10 @@ struct NewEventSheetView: View {
         Task {
             do {
                 try await store.save(events: data)
+                
             } catch {
                 fatalError(error.localizedDescription)
+                
             }
         }
         
@@ -75,6 +81,7 @@ struct NewEventSheetView: View {
         
         for event in data {
             print(event)
+            
         }
 
     }
@@ -87,15 +94,17 @@ struct NewEventSheetView: View {
                         TextField("Event Name", text: $formName)
                             .focused($isTextFieldFocused)
                             .onAppear {
-                                // Set the focus to the text field when the view appears
                                 isTextFieldFocused = true
+                                
                             }
                         
                         TextField("Event Emoji (Optional)", text: $formEmoji)
+                        
                     }
                     
                     Section("Details") {
                         TextField("Description (Optional)", text: $formDescription)
+                        
                     }
                     
                     Section("Date and Time") {
@@ -103,11 +112,13 @@ struct NewEventSheetView: View {
                         DatePicker("Time", selection: $formDateAndTime, displayedComponents: [.hourAndMinute])
                         // DEBUG - Display date information
                         //Text("\(formatTime(inputDate: formDateAndTime))")
+                        
                     }
                     
                     Section("More") {
                         Toggle("Favourite", isOn: $formFavourited)
                         Toggle("Mute", isOn: $formMuted)
+                        
                     }
                 }
             }
@@ -115,6 +126,7 @@ struct NewEventSheetView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
                         dismiss()
+                        
                     }
                 }
 
@@ -123,6 +135,7 @@ struct NewEventSheetView: View {
                         createEvent()
                         
                         dismiss()
+                        
                     }
                     .disabled(formName.isEmpty)
                 }
@@ -137,5 +150,6 @@ struct NewEventSheetView_Previews: PreviewProvider {
         @StateObject var eventList = EventStore()
         
         return NewEventSheetView(data: $eventList.events)
+        
     }
 }

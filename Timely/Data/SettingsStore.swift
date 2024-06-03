@@ -24,9 +24,10 @@ class SettingsStore: ObservableObject {
     }
     
     /*
-    @Published var userName: String {
+    @Published var stringData: String {
         didSet {
-            UserDefaults.standard.set(userName, forKey: "userName")
+            UserDefaults.standard.set(stringData, forKey: "stringData")
+     
         }
     }
      */
@@ -34,5 +35,7 @@ class SettingsStore: ObservableObject {
     init() {
         self.showBadge = UserDefaults.standard.object(forKey: "showBadge") as? Bool ?? true
         self.deletePassedEvents = UserDefaults.standard.object(forKey: "deletePassedEvents") as? Bool ?? true
+        //self.stringData = UserDefaults.standard.object(forKey: "stringData") as? String ?? ""
+        
     }
 }

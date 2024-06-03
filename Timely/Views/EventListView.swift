@@ -14,6 +14,7 @@ struct noEventsView: View {
             Text("No Events")
                 .font(.title2)
                 .bold()
+            
         }
     }
 }
@@ -37,24 +38,29 @@ struct EventListView: View {
             
     func showNewEventSheetView() {
         showingSheet = true
+        
     }
     
     func favouriteStatusIcon(event: Event) -> some View {
         var favouriteIcon: some View {
             Image(systemName: event.isFavourite == true ? "star.fill" : "star.slash.fill")
                 .foregroundStyle(event.isFavourite == true ? .yellow : .gray)
+            
         }
         
         return favouriteIcon
+        
     }
     
     func mutedStatusIcon(event: Event) -> some View {
         var muteIcon: some View {
             Image(systemName: event.isMuted == true ? "bell.slash.fill" : "bell.fill")
                 .foregroundStyle(event.isMuted == true ? .indigo : .gray)
+            
         }
         
         return muteIcon
+        
     }
     
     func compareDates(event: Event, date: Date?) -> Bool {
@@ -87,10 +93,11 @@ struct EventListView: View {
         dateFormatter.dateStyle = .medium
         
         //dateFormatter.dateFormat = "h:mm a 'on' EEEE, MMMM d, yyyy"
-
+        
         let dateString = dateFormatter.string(from: date)
-
+        
         return dateString
+        
     }
     
     var eventsToShow: Int {
@@ -100,16 +107,19 @@ struct EventListView: View {
             for event in data {
                 if compareDates(event: event, date: dateToDisplay ?? nil) {
                     agreeingEvents += 1
+                    
                 }
             }
             
         } else {
             for _ in data {
                 agreeingEvents += 1
+                
             }
         }
         
         return agreeingEvents
+        
     }
     
     func listItem(event: Event) -> some View {
@@ -118,6 +128,7 @@ struct EventListView: View {
                 Text("📅")
                     .font(.title)
                     .opacity(0)
+                
                 Text(event.emoji ?? "📅")
                     .font(.title)
                 
@@ -136,6 +147,7 @@ struct EventListView: View {
                             // This tricks the text object into getting a new timeUntil
                             timeUpdater = " "
                             timeUpdater = ""
+                            
                         }
                         .foregroundStyle(event.hasPassed ? .red : .primary)
                         .bold(event.hasPassed)
@@ -147,6 +159,7 @@ struct EventListView: View {
             HStack {
                 favouriteStatusIcon(event: event)
                 mutedStatusIcon(event: event)
+                
             }
             .padding(.horizontal, 10)
         }
@@ -166,8 +179,10 @@ struct EventListView: View {
                                         Task {
                                             do {
                                                 try await EventStore().save(events: data)
+                                                
                                             } catch {
                                                 fatalError(error.localizedDescription)
+                                                
                                             }
                                         }
                                     }
@@ -177,8 +192,10 @@ struct EventListView: View {
                                 } label: {
                                     if event.isFavourite == true {
                                         Label("Unfavourite", systemImage: "star.slash.fill")
+                                        
                                     } else {
                                         Label("Favourite", systemImage: "star.fill")
+                                        
                                     }
                                 }
                                 .tint(.yellow)
@@ -192,8 +209,10 @@ struct EventListView: View {
                                         Task {
                                             do {
                                                 try await EventStore().save(events: data)
+                                                
                                             } catch {
                                                 fatalError(error.localizedDescription)
+                                                
                                             }
                                         }
                                     }
@@ -201,6 +220,7 @@ struct EventListView: View {
                                     
                                 } label: {
                                     Label("Delete", systemImage: "trash.fill")
+                                    
                                 }
                                 .tint(.red)
                                 
@@ -211,8 +231,10 @@ struct EventListView: View {
                                             Task {
                                                 do {
                                                     try await EventStore().save(events: data)
+                                                    
                                                 } catch {
                                                     fatalError(error.localizedDescription)
+                                                    
                                                 }
                                             }
                                         }
@@ -222,8 +244,10 @@ struct EventListView: View {
                                     } label: {
                                         if event.isMuted == true {
                                             Label("Unmute", systemImage: "bell.fill")
+                                            
                                         } else {
                                             Label("Mute", systemImage: "bell.slash.fill")
+                                            
                                         }
                                     }
                                     .tint(.indigo)
@@ -242,6 +266,7 @@ struct EventListView: View {
                         
                     } catch {
                         fatalError(error.localizedDescription)
+                        
                     }
                     
                 }
@@ -264,8 +289,10 @@ struct EventListView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button() {
                         showNewEventSheetView()
+                        
                     } label: {
                         Label("New", systemImage: "plus.circle")
+                        
                     }
                     .disabled(editMode .isEditing ? true : false)
                 }
@@ -303,7 +330,8 @@ struct EventListView_Previews: PreviewProvider {
         ]
         
         let previewEvents = Binding.constant(previewData.events)
-
+        
         return EventListView(data: previewEvents, saveAction: {})
+        
     }
 }

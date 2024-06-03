@@ -21,12 +21,14 @@ struct EventDetailView: View {
             Text("Delete")
             Spacer()
             Image(systemName: "trash")
+            
         }
         .foregroundStyle(.red)
     }
     
     func calculateTime(event: Event) -> String {
         return event.timeUntil
+        
     }
     
     var body: some View {
@@ -41,18 +43,16 @@ struct EventDetailView: View {
                         Text(data[event].name ?? "EventName")
                             .font(.title)
                             .bold()
+                        
                         Text(timeUntilEvent)
                             .onAppear {
-                                // Update the time until event initially
                                 updateTimeUntilEvent()
+                                
                             }
-                            //.onReceive(timer) { _ in
-                              //  timeUpdater = " "
-                                //timeUpdater = ""
-                            //}
                             .font(.title3)
                             .foregroundStyle(data[event].hasPassed ? .red : .primary)
                             .bold(data[event].hasPassed)
+                        
                     }
                     
                     Spacer()
@@ -73,6 +73,7 @@ struct EventDetailView: View {
             if data[event].description != nil {
                 Section {
                     Text(data[event].description ?? "")
+                    
                 }
             }
             
@@ -82,8 +83,10 @@ struct EventDetailView: View {
                         Task {
                             do {
                                 try await EventStore().save(events: data)
+                                
                             } catch {
                                 fatalError(error.localizedDescription)
+                                
                             }
                         }
                     }
@@ -93,8 +96,10 @@ struct EventDetailView: View {
                         Task {
                             do {
                                 try await EventStore().save(events: data)
+                                
                             } catch {
                                 fatalError(error.localizedDescription)
+                                
                             }
                         }
                     }
@@ -103,8 +108,10 @@ struct EventDetailView: View {
             Section {
                 Button {
                     confirmationIsShowing = true
+                    
                 } label: {
                     deleteButton
+                    
                 }
                 .alert(Text("Delete \(data[event].name!)?"),
                     isPresented: $confirmationIsShowing,
@@ -139,26 +146,27 @@ struct EventDetailView: View {
                 Button {
                     print("Edit event")
                     showEditEventSheet = true
+                    
                 } label: {
                     Image(systemName: "ellipsis.circle")
+                    
                 }
             }
         }
         .navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
         .sheet(isPresented: $showEditEventSheet) {
             EditEventSheetView(data: $data, event: event)
+            
         }
     }
     
     @State private var timeUntilEvent: String = ""
 
     private func updateTimeUntilEvent() {
-        // Function to compute the time until event
         timeUntilEvent = calculateTime(event: data[event])
         
-        // Schedule the next update
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.updateTimeUntilEvent() // Recur every second
+            self.updateTimeUntilEvent()
         }
     }
 }
@@ -169,10 +177,10 @@ struct EventDetailViewPreviews: PreviewProvider {
         previewData.events = [
             Event(name: "Sample Event 1", dateAndTime: Date()),
         ]
-
-        // Create a binding to the events array in previewData
+        
         let previewEvents = Binding.constant(previewData.events)
-
-        return DayView(data: previewEvents, event: 0, saveAction: {})
+        
+        return EventDetailView(data: previewEvents, event: 0)
+        
     }
 }
