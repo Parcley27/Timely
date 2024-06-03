@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
+import MessageUI
         
 struct SettingsView: View {
     @StateObject private var preferences = SettingsStore()
     @State var editedAutoDelete: Bool = false
+    
+    @State private var result: Result<MFMailComposeResult, Error>? = nil
+    @State private var isShowingMailView = false
+    @State var subject: String? = "Contact"
     
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
@@ -19,6 +24,19 @@ struct SettingsView: View {
             Text("Contribute to Timely")
             Spacer()
             Image(systemName: "arrow.up.forward.app")
+        }
+        .foregroundStyle(.blue)
+    }
+    
+    func customButton(text: String, icon: String) -> some View {
+        HStack {
+            Text(text)
+            Spacer()
+            ZStack {
+                Image(systemName: icon)
+                Text("📅")
+                    .opacity(0)
+            }
         }
         .foregroundStyle(.blue)
     }
@@ -39,17 +57,58 @@ struct SettingsView: View {
                         
                     }
                     
+                    Section("Contact") {
+                        Button() {
+                            //subject = "Support"
+                            self.isShowingMailView.toggle()
+                            subject = "Support"
+
+                            
+                        } label: {
+                            customButton(text: "Get Support", icon: "person.circle")
+                        }
+                        
+                        Button() {
+                            subject = "Issue Report"
+                            self.isShowingMailView.toggle()
+                            
+                        } label: {
+                            customButton(text: "Report an Issue", icon: "exclamationmark.bubble")
+                        }
+                        
+                        Button() {
+                            subject = "Feature Request"
+                            self.isShowingMailView.toggle()
+                            
+                        } label: {
+                            customButton(text: "Request a Feature", icon: "sparkles")
+                        }
+                    }
+                    
                     Section("Credits") {
                         Text("Created by Pierce Oxley")
+                        
                         Text("Special thanks to my family, Dale Dai, and everyone else along the way.")
-                        Button {
+                        
+                        Button() {
                             openURL(URL(string: "https://github.com/Parcley27/Timely")!)
 
                         } label: {
-                            gitHubLink
+                            customButton(text: "Contribute to Timely", icon: "arrow.up.forward.app")
                             
                         }
                     }
+                }
+            }
+            .sheet(isPresented: $isShowingMailView) {
+                if MFMailComposeViewController.canSendMail() {
+                    MailView(result: self.$result, subject: subject)
+                    
+                } else {
+                    Text("Cannot Send Mail")
+                        .bold()
+                    Text("Check that email is set up on your device")
+                    
                 }
             }
             .toolbar {

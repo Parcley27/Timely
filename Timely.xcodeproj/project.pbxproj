@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6E6DCD332C0CE58200A69CC8 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6E6DCD322C0CE58200A69CC8 /* Launch Screen.storyboard */; };
+		6E6DCD372C0D50BE00A69CC8 /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6DCD362C0D50BE00A69CC8 /* MailView.swift */; };
 		6E843E182B7F49D000C8761E /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E843E172B7F49D000C8761E /* EventStore.swift */; };
 		6EA0FCA42BFB0EA000981724 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA0FCA32BFB0EA000981724 /* SettingsStore.swift */; };
 		6EAE9FF02B018D7B0029A8D4 /* TimelyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAE9FEF2B018D7B0029A8D4 /* TimelyApp.swift */; };
@@ -45,6 +46,7 @@
 
 /* Begin PBXFileReference section */
 		6E6DCD322C0CE58200A69CC8 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		6E6DCD362C0D50BE00A69CC8 /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		6E843E172B7F49D000C8761E /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
 		6EA0FCA32BFB0EA000981724 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		6EAE9FEC2B018D7B0029A8D4 /* Timely.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timely.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				6EAEA02B2B0197270029A8D4 /* SettingsView.swift */,
+				6E6DCD362C0D50BE00A69CC8 /* MailView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -319,6 +322,7 @@
 				6EAEA0222B0196A90029A8D4 /* EventData.swift in Sources */,
 				6EAEA02C2B0197270029A8D4 /* SettingsView.swift in Sources */,
 				6EAE9FF02B018D7B0029A8D4 /* TimelyApp.swift in Sources */,
+				6E6DCD372C0D50BE00A69CC8 /* MailView.swift in Sources */,
 				6E843E182B7F49D000C8761E /* EventStore.swift in Sources */,
 				6EE9B5182B64E8C4005895DC /* EditEventSheetView.swift in Sources */,
 				6EAEA0242B0196C30029A8D4 /* EventDetailView.swift in Sources */,

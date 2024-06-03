@@ -165,7 +165,7 @@ struct CalendarView: View {
                         }
                         
                     } label: {
-                        Label("", systemImage: "lessthan")
+                        Label("", systemImage: "arrow.left")
                             .bold()
                     }
                     
@@ -183,7 +183,7 @@ struct CalendarView: View {
                             month += 1
                         }
                     } label: {
-                        Label("", systemImage: "greaterthan")
+                        Label("", systemImage: "arrow.right")
                             .bold()
                     }
                     .padding(.leading)
