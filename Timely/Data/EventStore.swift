@@ -47,8 +47,9 @@ class EventStore: ObservableObject {
     }
     
     func removeExpiredEvents() {
+        let oneHourInSeconds = 60 * 60
         events.removeAll { event in
-            event.hasExpired()
+            event.hasExpired(maxTime: oneHourInSeconds)
             
         }
         

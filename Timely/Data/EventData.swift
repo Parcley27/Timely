@@ -85,7 +85,7 @@ struct Event : Identifiable, Codable {
     func hasExpired(maxTime: Int = 0) -> Bool {
         let timeInterval = dateAndTime.timeIntervalSinceNow
         
-        if timeInterval < Double(maxTime) {
+        if timeInterval < -Double(maxTime) {
             return true
             
         } else {
