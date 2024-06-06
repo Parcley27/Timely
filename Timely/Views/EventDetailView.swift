@@ -148,7 +148,7 @@ struct EventDetailView: View {
                     showEditEventSheet = true
                     
                 } label: {
-                    Image(systemName: "ellipsis.circle")
+                    Label("Edit", systemImage: "slider.horizontal.3")
                     
                 }
             }
