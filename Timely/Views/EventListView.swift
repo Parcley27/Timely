@@ -335,7 +335,7 @@ struct EventListView: View {
                             }
                             
                         } label: {
-                            Label("filter", systemImage: "line.3.horizontal.decrease.circle")
+                            Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
                             
                         }
                         .disabled(editMode .isEditing ? true : false)
