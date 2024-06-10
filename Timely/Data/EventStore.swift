@@ -63,4 +63,45 @@ class EventStore: ObservableObject {
             }
         }
     }
+    
+    func scheduleNotificationsForAllEvents() {
+        for event in events {
+            scheduleNotification(for: event)
+            
+        }
+    }
+    
+    func scheduleNotification(for event: Event) {
+        // Clear any existing notifications for the event
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [event.id.uuidString])
+        
+        if !event.isMuted {
+            let triggerDate = Calendar.current.date(byAdding: .minute, value: -5, to: event.dateAndTime)
+            
+            guard let triggerDate = triggerDate else { return }
+            let triggerComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
+            
+            let content = UNMutableNotificationContent()
+            content.title = "\(event.name!)  \(event.emoji!)"
+            content.body = "Your event is starting in 5 minutes"
+            content.sound = .default
+            
+            if event.isFavourite {
+                content.interruptionLevel = .timeSensitive
+                
+            }
+            
+            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: false)
+            
+            let request = UNNotificationRequest(identifier: event.id.uuidString, content: content, trigger: trigger)
+            
+            // Schedule notification for the event
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    print("Error scheduling notification: \(error)")
+                    
+                }
+            }
+        }
+    }
 }

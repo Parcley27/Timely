@@ -47,6 +47,7 @@
 		6E6DCD322C0CE58200A69CC8 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		6E6DCD362C0D50BE00A69CC8 /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		6E843E172B7F49D000C8761E /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
+		6E88B1CC2C117D5600027AC4 /* Timely.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Timely.entitlements; sourceTree = "<group>"; };
 		6EA0FCA32BFB0EA000981724 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		6EAE9FEC2B018D7B0029A8D4 /* Timely.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timely.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EAE9FEF2B018D7B0029A8D4 /* TimelyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelyApp.swift; sourceTree = "<group>"; };
@@ -123,6 +124,7 @@
 		6EAE9FEE2B018D7B0029A8D4 /* Timely */ = {
 			isa = PBXGroup;
 			children = (
+				6E88B1CC2C117D5600027AC4 /* Timely.entitlements */,
 				6E6DCD322C0CE58200A69CC8 /* Launch Screen.storyboard */,
 				6EFDF1DE2BD25DF600D6904F /* Data */,
 				6EFDF1DF2BD25E3000D6904F /* Views */,
@@ -483,6 +485,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Timely/Timely.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Timely/Preview Content\"";
@@ -516,6 +519,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Timely/Timely.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Timely/Preview Content\"";

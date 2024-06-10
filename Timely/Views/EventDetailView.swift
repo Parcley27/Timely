@@ -117,10 +117,13 @@ struct EventDetailView: View {
                     isPresented: $confirmationIsShowing,
                     actions: {
                     Button("Delete", role: .destructive) {
-                        print("dele")
+                        print("Delete Event")
                         
-                        data.remove(at: event)
+                        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [data[event].id.uuidString])
+
                         presentationMode.wrappedValue.dismiss()
+                        data.remove(at: event)
+                        
                     }
                     
                     Button("Cancel", role: .cancel) {}

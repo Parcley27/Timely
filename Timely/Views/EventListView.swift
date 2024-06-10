@@ -263,6 +263,13 @@ struct EventListView: View {
                 }
             }
             .onDelete { indexSet in
+                for index in indexSet {
+                    let event = data[index]
+                    
+                    UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [event.id.uuidString])
+                    
+                }
+                
                 data.remove(atOffsets: indexSet)
                 data.sort(by: { $0.dateAndTime < $1.dateAndTime })
                 

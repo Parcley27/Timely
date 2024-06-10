@@ -70,6 +70,8 @@ struct NewEventSheetView: View {
         Task {
             do {
                 try await store.save(events: data)
+                store.scheduleNotification(for: newEvent)
+
                 
             } catch {
                 fatalError(error.localizedDescription)
@@ -83,7 +85,18 @@ struct NewEventSheetView: View {
             print(event)
             
         }
-
+    }
+    
+    func askForNotifications() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+            if success {
+                print("Notifications accepted")
+                
+            } else if let error {
+                print(error.localizedDescription)
+                
+            }
+        }
     }
     
     var body: some View {
@@ -133,6 +146,8 @@ struct NewEventSheetView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button ("Save") {
                         createEvent()
+                        
+                        askForNotifications()
                         
                         dismiss()
                         

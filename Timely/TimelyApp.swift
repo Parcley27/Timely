@@ -196,6 +196,11 @@ struct TimelyApp: App {
                     
                 }
             }
+            
+            .onAppear {
+                EventStore().scheduleNotificationsForAllEvents()
+                
+            }
         }
     }
 }

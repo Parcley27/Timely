@@ -108,10 +108,14 @@ struct EditEventSheetView: View {
                         data[event].isMuted = editedMute
                         
                         data.sort(by: { $0.dateAndTime < $1.dateAndTime })
-                                                
+                        
+                        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [data[event].id.uuidString])
+                        
                         Task {
                             do {
                                 try await EventStore().save(events: data)
+                                
+                                EventStore().scheduleNotification(for: data[event])
                                 
                             } catch {
                                 fatalError(error.localizedDescription)
