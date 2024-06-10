@@ -111,7 +111,7 @@ struct SettingsView: View {
                         }
                     }
                     
-                    Section("Timely v1.1 - Build #3"){
+                    Section("Timely v1.1 - Build 2"){
                         // Empty section to get title to show up as a caption
                     }
                 }
