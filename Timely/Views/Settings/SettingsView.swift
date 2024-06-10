@@ -110,6 +110,10 @@ struct SettingsView: View {
                             
                         }
                     }
+                    
+                    Section("Timely v1.1 - Build #3"){
+                        
+                    }
                 }
             }
             .sheet(isPresented: $isShowingMailView) {
