@@ -78,7 +78,7 @@ struct TimelyApp: App {
                         }
                         .badge(filterPassedEvents(events: eventList.events) != nil ? filterPassedEvents(events: eventList.events)!.count : 0)
                         .tabItem {
-                            Label("Events", systemImage: "list.bullet")
+                            Label("My Events", systemImage: "list.bullet")
                             
                         }
                         .tag(0)
