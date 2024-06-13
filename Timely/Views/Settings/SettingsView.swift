@@ -18,7 +18,9 @@ struct SettingsView: View {
     
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
-
+    
+    @State private var showConfirmationAlert: Bool = false
+    @State private var temporaryToggleState: Bool = false
     
     private var gitHubLink: some View {
         HStack {
@@ -51,15 +53,45 @@ struct SettingsView: View {
                 List {
                     Section("App Behaviour") {
                         Toggle(isOn: $preferences.showBadge) {
-                            Text("In-app Notifications")
+                            Text("In-App Notifications")
                             
                         }
                         
-                        Toggle(isOn: $preferences.deletePassedEvents) {
-                            Text("Delete Passed Events")
-                            
+                        Toggle(isOn: $preferences.removePassedEvents) {
+                            if preferences.keepEventHistory {
+                                Text("Archive Passed Events")
+                                
+                            } else {
+                                Text("Delete Passed Events")
+                                
+                            }
                         }
                         
+                        Toggle(isOn: Binding(
+                            get: { preferences.keepEventHistory },
+                            set: { newValue in
+                                if !newValue {
+                                    temporaryToggleState = newValue
+                                    showConfirmationAlert = true
+                                    
+                                } else {
+                                    preferences.keepEventHistory = newValue
+                                    
+                                }
+                            }
+                        )) {
+                            Text("Keep Event History")
+                        }
+                        .alert(isPresented: $showConfirmationAlert) {
+                            Alert(
+                                title: Text("Turn Off Event History?"),
+                                message: Text("All archived events will be permanently deleted!"),
+                                primaryButton: .destructive(Text("Turn Off")) {
+                                    preferences.keepEventHistory = temporaryToggleState
+                                },
+                                secondaryButton: .cancel()
+                            )
+                        }
                     }
                     
                     Section("Contact") {

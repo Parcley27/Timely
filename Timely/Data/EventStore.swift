@@ -46,10 +46,10 @@ class EventStore: ObservableObject {
         _ = try await task.value
     }
     
-    func removeExpiredEvents() {
-        let oneHourInSeconds = 60 * 60
+    func deleteExpiredEvents() {
+        //let oneHourInSeconds = 60 * 60
         events.removeAll { event in
-            event.hasExpired(maxTime: oneHourInSeconds)
+            event.hasExpired()
             
         }
         

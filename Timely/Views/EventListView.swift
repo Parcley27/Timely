@@ -169,12 +169,41 @@ struct EventListView: View {
         }
     }
     
+    func shouldDisplay(event: Event, dateToDisplay: Date?) -> Bool {
+        if dateToDisplay == nil {
+            if SettingsStore().removePassedEvents == false {
+                return true
+                
+            } else if SettingsStore().removePassedEvents == true {
+                if event.hasExpired() == false {
+                    return true
+                    
+                } else if event.hasExpired() == true {
+                    return false
+                    
+                }
+            }
+            
+        } else {
+            if compareDates(event: event, date: dateToDisplay) {
+                return true
+                
+            }
+        }
+        
+        return false
+        
+    }
+    
     var listDisplay: some View {
         List {
             ForEach($data) { $event in
                 let index = $data.firstIndex(where: { $0.id == event.id })
-                if dateToDisplay == nil || compareDates(event: event, date: dateToDisplay ?? nil) {
+                
+                if shouldDisplay(event: event, dateToDisplay: dateToDisplay) {
+                    
                     if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || event.isFavourite || event.isMuted) {
+                        
                         NavigationLink(destination: EventDetailView(data: $data, event: index!)) {
                             listItem(event: event)
                                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
@@ -304,7 +333,7 @@ struct EventListView: View {
                         Menu {
                             Button {
                                 showFavourite.toggle()
-
+                                
                             } label: {
                                 if showFavourite == true {
                                     Label("Hide Favourite Events", systemImage: "star")
@@ -317,7 +346,7 @@ struct EventListView: View {
                             
                             Button {
                                 showStandard.toggle()
-
+                                
                             } label: {
                                 if showStandard == true {
                                     Label("Hide Standard Events", systemImage: "calendar")
@@ -330,7 +359,7 @@ struct EventListView: View {
                             
                             Button {
                                 showMuted.toggle()
-
+                                
                             } label: {
                                 if showMuted == true {
                                     Label("Hide Muted Events", systemImage: "bell.slash")

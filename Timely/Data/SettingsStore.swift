@@ -16,9 +16,18 @@ class SettingsStore: ObservableObject {
         }
     }
     
-    @Published var deletePassedEvents: Bool {
+    // deletePassedEvents
+    @Published var removePassedEvents: Bool {
         didSet {
-            UserDefaults.standard.set(deletePassedEvents, forKey: "deletePassedEvents")
+            UserDefaults.standard.set(removePassedEvents, forKey: "removePassedEvents")
+            
+        }
+    }
+    
+    // archiveOldEvents
+    @Published var keepEventHistory: Bool {
+        didSet {
+            UserDefaults.standard.set(keepEventHistory, forKey: "keepEventHistory")
             
         }
     }
@@ -34,7 +43,8 @@ class SettingsStore: ObservableObject {
     
     init() {
         self.showBadge = UserDefaults.standard.object(forKey: "showBadge") as? Bool ?? true
-        self.deletePassedEvents = UserDefaults.standard.object(forKey: "deletePassedEvents") as? Bool ?? true
+        self.removePassedEvents = UserDefaults.standard.object(forKey: "removePassedEvents") as? Bool ?? true
+        self.keepEventHistory = UserDefaults.standard.object(forKey: "keepEventHistory") as? Bool ?? true
         //self.stringData = UserDefaults.standard.object(forKey: "stringData") as? String ?? ""
         
     }

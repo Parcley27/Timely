@@ -16,6 +16,11 @@ struct TimelyApp: App {
         var passedEvents = events.filter { $0.hasPassed == true }
         passedEvents = passedEvents.filter { $0.isMuted == false }
         
+        if SettingsStore().removePassedEvents {
+            passedEvents = passedEvents.filter { $0.hasExpired() == false }
+
+        }
+        
         if SettingsStore().showBadge {
             return passedEvents
             
@@ -191,8 +196,8 @@ struct TimelyApp: App {
                 }
             }
             .onReceive(timer) { _ in
-                if SettingsStore().deletePassedEvents {
-                    eventList.removeExpiredEvents()
+                if SettingsStore().removePassedEvents && SettingsStore().keepEventHistory == false {
+                    eventList.deleteExpiredEvents()
                     
                 }
             }
