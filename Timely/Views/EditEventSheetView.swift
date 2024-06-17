@@ -115,7 +115,7 @@ struct EditEventSheetView: View {
                             do {
                                 try await EventStore().save(events: data)
                                 
-                                EventStore().scheduleNotification(for: data[event])
+                                EventStore().scheduleNotifications(for: data[event])
                                 
                             } catch {
                                 fatalError(error.localizedDescription)

@@ -295,7 +295,7 @@ struct EventListView: View {
                 for index in indexSet {
                     let event = data[index]
                     
-                    UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [event.id.uuidString])
+                    EventStore().removeNotifications(for: event)
                     
                 }
                 

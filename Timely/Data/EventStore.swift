@@ -11,6 +11,7 @@ import SwiftUI
 @MainActor
 class EventStore: ObservableObject {
     @Published var events: [Event] = []
+    var notificationTimes: [Int] = [0, 15, 60]
     
     private static func fileURL() throws -> URL {
         try FileManager.default.url(for: .documentDirectory, 
@@ -66,42 +67,71 @@ class EventStore: ObservableObject {
     
     func scheduleNotificationsForAllEvents() {
         for event in events {
-            scheduleNotification(for: event)
+            scheduleNotifications(for: event)
             
         }
     }
     
-    func scheduleNotification(for event: Event) {
-        // Clear any existing notifications for the event
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [event.id.uuidString])
+    func scheduleNotifications(for event: Event) {
+        // Clear any existing notifications
+        removeNotifications(for: event)
         
-        if !event.isMuted {
-            let triggerDate = Calendar.current.date(byAdding: .minute, value: -5, to: event.dateAndTime)
-            
-            guard let triggerDate = triggerDate else { return }
-            let triggerComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
-            
-            let content = UNMutableNotificationContent()
-            content.title = "\(event.name!)  \(event.emoji!)"
-            content.body = "Your event is starting in 5 minutes"
-            content.sound = .default
-            
-            if event.isFavourite {
-                content.interruptionLevel = .timeSensitive
+        if !event.isMuted && !event.hasExpired() {
+            for time in notificationTimes {
+                addNotification(for: event, time: time)
                 
             }
+        }
+    }
+    
+    func addNotification(for event: Event, time: Int) {
+        let notificationIdentifier = "\(event.id.uuidString) \(time) minutes"
+        
+        let content = UNMutableNotificationContent()
+        content.title = "\(event.name!) \(event.emoji!)"
+        content.sound = .default
+        
+        
+        if time == 0 {
+            content.body = "Your event it starting now"
             
-            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: false)
+        } else if time < 60 {
+            content.body = "Your event is starting in \(time) minutes"
             
-            let request = UNNotificationRequest(identifier: event.id.uuidString, content: content, trigger: trigger)
+        } else if time == 60 {
+            content.body = "Your event is starting in 1 hour"
             
-            // Schedule notification for the event
-            UNUserNotificationCenter.current().add(request) { error in
-                if let error = error {
-                    print("Error scheduling notification: \(error)")
-                    
-                }
+        } else if time > 60 {
+            content.body = "Your event is starting in \(time/60) hours"
+            
+        }
+        
+        if event.isFavourite && time <= 15 {
+            content.interruptionLevel = .timeSensitive
+            
+        }
+        
+        let triggerDate = Calendar.current.date(byAdding: .minute, value: -time, to: event.dateAndTime)
+        guard let triggerDate = triggerDate else { return }
+        
+        let triggerComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: false)
+        
+        let request = UNNotificationRequest(identifier: notificationIdentifier, content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling notification: \(error)")
+                
             }
+        }
+    }
+    
+    func removeNotifications(for event: Event) {
+        for time in notificationTimes {
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(event.id.uuidString) \(time) minutes"])
+            
         }
     }
 }

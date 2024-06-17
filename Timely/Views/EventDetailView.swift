@@ -119,8 +119,8 @@ struct EventDetailView: View {
                     Button("Delete", role: .destructive) {
                         print("Delete Event")
                         
-                        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [data[event].id.uuidString])
-
+                        EventStore().removeNotifications(for: data[event])
+                        
                         presentationMode.wrappedValue.dismiss()
                         data.remove(at: event)
                         

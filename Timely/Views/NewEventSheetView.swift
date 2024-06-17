@@ -70,7 +70,7 @@ struct NewEventSheetView: View {
         Task {
             do {
                 try await store.save(events: data)
-                store.scheduleNotification(for: newEvent)
+                store.scheduleNotifications(for: newEvent)
 
                 
             } catch {
