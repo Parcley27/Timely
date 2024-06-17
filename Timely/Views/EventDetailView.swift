@@ -10,6 +10,8 @@ import SwiftUI
 struct EventDetailView: View {
     @Binding var data: [Event]
     let event: Int
+    
+    @Environment(\.dismiss) var dismiss
         
     @Environment(\.presentationMode) private var presentationMode
     
@@ -122,6 +124,8 @@ struct EventDetailView: View {
                         EventStore().removeNotifications(for: data[event])
                         
                         presentationMode.wrappedValue.dismiss()
+                        dismiss()
+                        
                         data.remove(at: event)
                         
                     }
