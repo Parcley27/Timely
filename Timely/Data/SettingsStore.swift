@@ -7,9 +7,8 @@
 
 import Foundation
 
-@MainActor
 class SettingsStore: ObservableObject {
-    @Published var showBadge: Bool {
+    var showBadge: Bool {
         didSet {
             UserDefaults.standard.set(showBadge, forKey: "showBadge")
             
@@ -17,7 +16,7 @@ class SettingsStore: ObservableObject {
     }
     
     // deletePassedEvents
-    @Published var removePassedEvents: Bool {
+    var removePassedEvents: Bool {
         didSet {
             UserDefaults.standard.set(removePassedEvents, forKey: "removePassedEvents")
             
@@ -25,7 +24,7 @@ class SettingsStore: ObservableObject {
     }
     
     // archiveOldEvents
-    @Published var keepEventHistory: Bool {
+    var keepEventHistory: Bool {
         didSet {
             UserDefaults.standard.set(keepEventHistory, forKey: "keepEventHistory")
             
