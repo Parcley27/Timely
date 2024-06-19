@@ -28,11 +28,11 @@ struct EditEventSheetView: View {
             VStack {
                 Form {
                     Section("About") {
-                        TextField(data[event].name ?? "Event Name", text: $editedName)
+                        TextField(data[event].name ?? "Name", text: $editedName)
                             .focused($isTextFieldFocused)
                             .onAppear() {
                                 isTextFieldFocused = true
-                                editedName = data[event].name ?? "Event Name"
+                                editedName = data[event].name ?? "Name"
                                 
                             }
                         
@@ -45,16 +45,28 @@ struct EditEventSheetView: View {
                     }
                     
                     Section("Details") {
-                        TextField(data[event].description ?? "Event Description", text: $editedDescription)
-                            .onAppear() {
-                                editedDescription = data[event].description ?? ""
+                        ZStack {
+                            HStack {
+                                Text("Description")
+                                    .foregroundStyle(.quaternary)
+                                    .opacity(editedDescription == "" ? 100 : 0)
+                                    .padding(.leading, 4)
+                                Spacer()
                                 
                             }
+                            
+                            TextEditor(text: $editedDescription)
+                            
+                        }
+                    }
+                    .onAppear() {
+                        editedDescription = data[event].description ?? ""
+                        
                     }
                     
                     Section("Date and Time") {
-                        DatePicker("Date", selection: $editedDateAndTime, displayedComponents: [.date])
-                        DatePicker("Time", selection: $editedDateAndTime, displayedComponents: [.hourAndMinute])
+                        DatePicker("Date and Time", selection: $editedDateAndTime, displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(GraphicalDatePickerStyle())
                         
                     }
                     .onAppear() {
@@ -62,14 +74,14 @@ struct EditEventSheetView: View {
                         
                     }
                     
-                    Section("More") {
+                    Section("Importance") {
                         Toggle("Favourite", isOn: $editedFavourite)
                             .onAppear() {
                                 editedFavourite = data[event].isFavourite
                                 
                             }
                         
-                        Toggle("Mute", isOn: $editedMute)
+                        Toggle("Muted", isOn: $editedMute)
                             .onAppear() {
                                 editedMute = data[event].isMuted
                                 
