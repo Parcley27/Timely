@@ -76,8 +76,8 @@ class EventStore: ObservableObject {
         // Clear any existing notifications
         removeNotifications(for: event)
         
-        var standardTimes: [Int] = [0, 60]
-        var favouriteTimes: [Int] = [0, 15, 60]
+        let standardTimes: [Int] = [0, 60]
+        let favouriteTimes: [Int] = [0, 15, 60]
         
         if !event.isMuted && !event.hasExpired() {
             if event.isFavourite {
@@ -120,6 +120,8 @@ class EventStore: ObservableObject {
             content.interruptionLevel = .timeSensitive
             
         }
+        
+        content.threadIdentifier = event.id.uuidString
         
         let triggerDate = Calendar.current.date(byAdding: .minute, value: -time, to: event.dateAndTime)
         guard let triggerDate = triggerDate else { return }
