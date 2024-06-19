@@ -11,7 +11,7 @@ import SwiftUI
 //@MainActor
 class EventStore: ObservableObject {
     var events: [Event] = []
-    var notificationTimes: [Int] = [0, 15, 60]
+    var allNotificationTimes: [Int] = [0, 15, 60]
     
     private static func fileURL() throws -> URL {
         try FileManager.default.url(for: .documentDirectory, 
@@ -76,10 +76,20 @@ class EventStore: ObservableObject {
         // Clear any existing notifications
         removeNotifications(for: event)
         
+        var standardTimes: [Int] = [0, 60]
+        var favouriteTimes: [Int] = [0, 15, 60]
+        
         if !event.isMuted && !event.hasExpired() {
-            for time in notificationTimes {
-                addNotification(for: event, time: time)
-                
+            if event.isFavourite {
+                for time in favouriteTimes {
+                    addNotification(for: event, time: time)
+                    
+                }
+            } else {
+                for time in standardTimes {
+                    addNotification(for: event, time: time)
+                    
+                }
             }
         }
     }
@@ -129,7 +139,7 @@ class EventStore: ObservableObject {
     }
     
     func removeNotifications(for event: Event) {
-        for time in notificationTimes {
+        for time in allNotificationTimes {
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(event.id.uuidString) \(time) minutes"])
             
         }
