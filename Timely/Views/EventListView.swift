@@ -9,9 +9,10 @@ import SwiftUI
 import Foundation
 
 struct noEventsView: View {
+    var singleDayDisplay: Bool
     var body: some View {
         VStack {
-            Text("No Events")
+            Text(singleDayDisplay ? "No Events" : "No Upcoming Events")
                 .font(.title2)
                 .bold()
             
@@ -320,7 +321,7 @@ struct EventListView: View {
         NavigationStack {
             VStack {
                 if eventsToShow == 0 {
-                    noEventsView()
+                    noEventsView(singleDayDisplay: dateToDisplay != nil ? true : false)
                     
                 } else {
                     listDisplay
