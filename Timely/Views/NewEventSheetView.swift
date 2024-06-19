@@ -104,33 +104,44 @@ struct NewEventSheetView: View {
             VStack {
                 List {
                     Section("About") {
-                        TextField("Event Name", text: $formName)
+                        TextField("Name", text: $formName)
                             .focused($isTextFieldFocused)
                             .onAppear {
                                 isTextFieldFocused = true
                                 
                             }
                         
-                        TextField("Event Emoji (Optional)", text: $formEmoji)
+                        TextField("Emoji", text: $formEmoji)
                         
                     }
                     
                     Section("Details") {
-                        TextField("Description (Optional)", text: $formDescription)
-                        
+                        ZStack {
+                            HStack {
+                                Text("Description")
+                                    .foregroundStyle(.quaternary)
+                                    .opacity(formDescription == "" ? 100 : 0)
+                                    .padding(.leading, 4)
+                                Spacer()
+                                
+                            }
+                            
+                            TextEditor(text: $formDescription)
+                                
+                        }
                     }
                     
                     Section("Date and Time") {
-                        DatePicker("Date", selection: $formDateAndTime, displayedComponents: [.date])
-                        DatePicker("Time", selection: $formDateAndTime, displayedComponents: [.hourAndMinute])
+                        DatePicker("Date and Time", selection: $formDateAndTime, displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(GraphicalDatePickerStyle())
                         // DEBUG - Display date information
                         //Text("\(formatTime(inputDate: formDateAndTime))")
                         
                     }
                     
-                    Section("More") {
+                    Section("Importance") {
                         Toggle("Favourite", isOn: $formFavourited)
-                        Toggle("Mute", isOn: $formMuted)
+                        Toggle("Muted", isOn: $formMuted)
                         
                     }
                 }
