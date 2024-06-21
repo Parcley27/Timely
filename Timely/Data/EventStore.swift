@@ -103,7 +103,7 @@ class EventStore: ObservableObject {
         
         
         if time == 0 {
-            content.body = "Your event it starting now"
+            content.body = "Your event is starting now"
             
         } else if time < 60 {
             content.body = "Your event is starting in \(time) minutes"
