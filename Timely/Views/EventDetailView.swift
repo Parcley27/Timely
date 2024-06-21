@@ -16,7 +16,7 @@ struct EventDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @State private var showEditEventSheet = false
-    @State private var confirmationIsShowing = false
+    @State private var showConfirmationDialog = false
     
     private var deleteButton: some View {
         HStack {
@@ -109,43 +109,33 @@ struct EventDetailView: View {
 
             Section {
                 Button {
-                    confirmationIsShowing = true
+                    showConfirmationDialog = true
                     
                 } label: {
                     deleteButton
                     
                 }
-                .alert(Text("Delete \(data[event].name!)?"),
-                    isPresented: $confirmationIsShowing,
+                .confirmationDialog(Text("Delete Your Event?"),
+                    isPresented: $showConfirmationDialog,
+                    titleVisibility: .visible,
                     actions: {
-                    Button("Delete", role: .destructive) {
-                        print("Delete Event")
-                        
-                        EventStore().removeNotifications(for: data[event])
-                        
-                        presentationMode.wrappedValue.dismiss()
-                        dismiss()
-                        
-                        data.remove(at: event)
-                        
-                    }
-                    
-                    Button("Cancel", role: .cancel) {}
-                    }, message: {
+                        Button("Delete", role: .destructive) {
+                            print("Delete Event")
+                            
+                            EventStore().removeNotifications(for: data[event])
+                            
+                            presentationMode.wrappedValue.dismiss()
+                            dismiss()
+                            
+                            data.remove(at: event)
+                            
+                        }
+                    },
+                    message: {
                         Text("This action cannot be undone")
-                    })
-                    .actionSheet(isPresented: $confirmationIsShowing) {
-                        ActionSheet(
-                            title: Text("This action can not be undone"),
-                            buttons: [
-                                .cancel(Text("Cancel")),
-                                .destructive(Text("Delete Event"), action: {
-                                    //data.removeEvent(event:event)
-                                    presentationMode.wrappedValue.dismiss()
-                                })
-                            ]
-                        )
+                    
                     }
+                )
             }
         }
         .toolbar {

@@ -19,7 +19,7 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
     
-    @State private var showConfirmationAlert: Bool = false
+    @State private var showConfirmationDialog: Bool = false
     @State private var temporaryToggleState: Bool = false
     
     private var gitHubLink: some View {
@@ -72,7 +72,7 @@ struct SettingsView: View {
                             set: { newValue in
                                 if !newValue {
                                     temporaryToggleState = newValue
-                                    showConfirmationAlert = true
+                                    showConfirmationDialog = true
                                     
                                 } else {
                                     preferences.keepEventHistory = newValue
@@ -82,16 +82,20 @@ struct SettingsView: View {
                         )) {
                             Text("Keep Event History")
                         }
-                        .alert(isPresented: $showConfirmationAlert) {
-                            Alert(
-                                title: Text("Turn Off Event History?"),
-                                message: Text("All archived events will be permanently deleted!"),
-                                primaryButton: .destructive(Text("Turn Off")) {
+                        .confirmationDialog(Text("Turn Off Event History?"),
+                            isPresented: $showConfirmationDialog,
+                            titleVisibility: .visible,
+                            actions: {
+                                Button("Turn Off and Delete", role: .destructive) {
                                     preferences.keepEventHistory = temporaryToggleState
-                                },
-                                secondaryButton: .cancel()
-                            )
-                        }
+                                    
+                                }
+                            },
+                            message: {
+                                Text("All archived events will be permanently deleted")
+                            
+                            }
+                        )
                     }
                     
                     Section("Contact") {
