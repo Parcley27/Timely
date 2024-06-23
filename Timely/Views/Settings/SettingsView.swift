@@ -104,7 +104,7 @@ struct SettingsView: View {
                             self.isShowingMailView.toggle()
                             
                         } label: {
-                            customButton(text: "Get Support", icon: "person.circle")
+                            customButton(text: "Get Support", icon: "questionmark.circle")
                             
                         }
                         
@@ -132,7 +132,7 @@ struct SettingsView: View {
                             openURL(URL(string: "https://github.com/Parcley27")!)
                             
                         } label: {
-                            Text("Created by Pierce Oxley")
+                            customButton(text: "Created by Pierce Oxley", icon: "person.circle")
                             
                         }
                         
@@ -143,9 +143,9 @@ struct SettingsView: View {
                     Section("App Information"){
                         Button() {
                             openURL(URL(string: "https://github.com/Parcley27/Timely")!)
-
+                            
                         } label: {
-                            customButton(text: "Contribute to Timely", icon: "arrow.up.forward.app")
+                            customButton(text: "Timely App GitHub", icon: "arrow.up.forward.app")
                             
                         }
                         
