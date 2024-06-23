@@ -138,6 +138,9 @@ struct SettingsView: View {
                         
                         Text("Special thanks to my family, Dale Dai, and everyone else along the way.")
                         
+                    }
+                    
+                    Section("App Information"){
                         Button() {
                             openURL(URL(string: "https://github.com/Parcley27/Timely")!)
 
@@ -145,10 +148,10 @@ struct SettingsView: View {
                             customButton(text: "Contribute to Timely", icon: "arrow.up.forward.app")
                             
                         }
-                    }
-                    
-                    Section("Timely v1.2 - Build 3"){
-                        // Empty section to get title to show up as a caption
+                        
+                        Text("Version")
+                            .badge("\(TimelyApp().versionNumber) - Build \(TimelyApp().buildNumber)")
+                        
                     }
                 }
             }
