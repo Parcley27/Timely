@@ -76,7 +76,7 @@ class EventStore: ObservableObject {
         // Clear any existing notifications
         removeNotifications(for: event)
         
-        let standardTimes: [Int] = [0, 60]
+        let standardTimes: [Int] = [0, 15]
         let favouriteTimes: [Int] = [0, 15, 60]
         
         if !event.isMuted && !event.hasExpired() {
