@@ -7,14 +7,26 @@
 
 import SwiftUI
 import MessageUI
+
+struct NoMailView: View {
+    var body: some View {
+        Text("Cannot Send Mail")
+            .bold()
         
+        Text("Check that email is set up on your device")
+        
+    }
+}
+
 struct SettingsView: View {
     @StateObject private var preferences = SettingsStore()
     @State var editedAutoDelete: Bool = false
     
     @State private var result: Result<MFMailComposeResult, Error>? = nil
-    @State private var isShowingMailView = false
-    @State var subject: String = "Contact"
+    
+    @State private var showGetSupport = false
+    @State private var showIssueReport = false
+    @State private var showFeatureRequest = false
     
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
@@ -49,7 +61,7 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {                
+            VStack {
                 List {
                     Section("App Behaviour") {
                         Toggle(isOn: $preferences.showBadge) {
@@ -100,8 +112,7 @@ struct SettingsView: View {
                     
                     Section("Contact") {
                         Button() {
-                            subject = "Support"
-                            self.isShowingMailView.toggle()
+                            self.showGetSupport.toggle()
                             
                         } label: {
                             customButton(text: "Get Support", icon: "questionmark.circle")
@@ -109,8 +120,7 @@ struct SettingsView: View {
                         }
                         
                         Button() {
-                            subject = "Issue Report"
-                            self.isShowingMailView.toggle()
+                            self.showIssueReport.toggle()
                             
                         } label: {
                             customButton(text: "Report an Issue", icon: "exclamationmark.bubble")
@@ -118,8 +128,7 @@ struct SettingsView: View {
                         }
                         
                         Button() {
-                            subject = "Feature Request"
-                            self.isShowingMailView.toggle()
+                            self.showFeatureRequest.toggle()
                             
                         } label: {
                             customButton(text: "Request a Feature", icon: "sparkles")
@@ -155,15 +164,30 @@ struct SettingsView: View {
                     }
                 }
             }
-            .sheet(isPresented: $isShowingMailView) {
+            .sheet(isPresented: $showGetSupport) {
                 if MFMailComposeViewController.canSendMail() {
-                    MailView(result: self.$result, subject: subject)
+                    MailView(result: self.$result, subject: "App Support")
                     
                 } else {
-                    Text("Cannot Send Mail")
-                        .bold()
+                    NoMailView()
                     
-                    Text("Check that email is set up on your device")
+                }
+            }
+            .sheet(isPresented: $showIssueReport) {
+                if MFMailComposeViewController.canSendMail() {
+                    MailView(result: self.$result, subject: "Issue Report")
+                    
+                } else {
+                    NoMailView()
+                    
+                }
+            }
+            .sheet(isPresented: $showFeatureRequest) {
+                if MFMailComposeViewController.canSendMail() {
+                    MailView(result: self.$result, subject: "Feature Request")
+                    
+                } else {
+                    NoMailView()
                     
                 }
             }
