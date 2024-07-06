@@ -184,7 +184,7 @@ struct CalendarView: View {
                     .padding(.vertical, 4)
                     .padding(.leading)
                     .padding(.trailing, 10)
-                    .background(.ultraThickMaterial , in: RoundedRectangle(cornerRadius: 5.0))
+                    .background(.ultraThickMaterial , in: RoundedRectangle(cornerRadius: 25.0))
                     
                     Button(" \(monthNames[month - 1]) \(String(year))") {
                         month = currentMonth
@@ -193,6 +193,7 @@ struct CalendarView: View {
                     }
                     .font(.title2)
                     .frame(width: 170)
+                    
                     
                     Button() {
                         if month == 12 {
@@ -211,9 +212,10 @@ struct CalendarView: View {
                     .padding(.vertical, 4)
                     .padding(.leading, 20)
                     .padding(.trailing, 8)
-                    .background(.ultraThickMaterial , in: RoundedRectangle(cornerRadius: 5.0))
+                    .background(.ultraThickMaterial, in: RoundedRectangle(cornerRadius: 25.0))
                     
                 }
+                .background(.bar, in: RoundedRectangle(cornerRadius: 25.0))
                 
                 VStack {
                     LazyVGrid(columns: columnLayout) {
