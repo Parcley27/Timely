@@ -106,7 +106,7 @@ struct EventDetailView: View {
                         }
                     }
             }
-
+            
             Section {
                 Button {
                     showConfirmationDialog = true
@@ -158,7 +158,7 @@ struct EventDetailView: View {
     }
     
     @State private var timeUntilEvent: String = ""
-
+    
     private func updateTimeUntilEvent() {
         timeUntilEvent = calculateTime(event: data[event])
         
