@@ -64,11 +64,6 @@ struct SettingsView: View {
             VStack {
                 List {
                     Section("App Behaviour") {
-                        Toggle(isOn: $preferences.showBadge) {
-                            Text("In-App Notifications")
-                            
-                        }
-                        
                         Toggle(isOn: $preferences.removePassedEvents) {
                             if preferences.keepEventHistory {
                                 Text("Archive Passed Events")

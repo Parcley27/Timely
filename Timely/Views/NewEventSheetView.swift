@@ -46,6 +46,17 @@ struct NewEventSheetView: View {
         }
     }
     
+    let dateRange: ClosedRange<Date> = {
+        let calendar = Calendar.current
+        
+        let startComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: Date())
+        let endComponents = DateComponents(year: 10000, month: 12, day: 31, hour: 23, minute: 59, second: 59)
+        
+        return calendar.date(from:startComponents)!
+            ...
+            calendar.date(from:endComponents)!
+    }()
+    
     private func createEvent() {
         if formEmoji.isEmpty {
             formEmoji = "📅"
@@ -128,15 +139,14 @@ struct NewEventSheetView: View {
                                     
                                 }
                                 
+                                TextEditor(text: $formDescription)
+                                    
                             }
-                            
-                            TextEditor(text: $formDescription)
-                                
                         }
                     }
                     
                     Section("Date and Time") {
-                        DatePicker("Date and Time", selection: $formDateAndTime, displayedComponents: [.date, .hourAndMinute])
+                        DatePicker("Date and Time", selection: $formDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute, .date])
                             .datePickerStyle(GraphicalDatePickerStyle())
                         // DEBUG - Display date information
                         //Text("\(formatTime(inputDate: formDateAndTime))")
