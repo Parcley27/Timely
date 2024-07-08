@@ -8,8 +8,15 @@
 import SwiftUI
 import Foundation
 
-struct noEventsView: View {
+struct UniqueDate: Identifiable {
+    var date: Date
+    
+    let id: UUID = UUID()
+}
+
+struct NoEventsView: View {
     var singleDayDisplay: Bool
+    
     var body: some View {
         VStack {
             Text(singleDayDisplay ? "No Events" : "No Upcoming Events")
@@ -36,7 +43,13 @@ struct EventListView: View {
     @State var showMuted = true
     @State var showStandard = true
     @State var showFavourite = true
-
+    
+    @State private var newTimeUntilEvent: String = ""
+    
+    func calculateTime(event: Event) -> String {
+        return event.timeUntil
+        
+    }
     
     @State private var timeUpdater: String = ""
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -105,21 +118,23 @@ struct EventListView: View {
         
     }
     
-    var eventsToShow: Int {
-        var agreeingEvents = 0
+    var eventsToShow: [Event] {
+        var agreeingEvents: [Event] = []
         
         if dateToDisplay != nil {
             for event in data {
-                if compareDates(event: event, date: dateToDisplay ?? nil) {
-                    agreeingEvents += 1
+                if compareDates(event: event, date: dateToDisplay){
+                    agreeingEvents.append(event)
                     
                 }
             }
             
         } else {
-            for _ in data {
-                agreeingEvents += 1
-                
+            for event in data {
+                if shouldDisplay(event: event, dateToDisplay: dateToDisplay) {
+                    agreeingEvents.append(event)
+                    
+                }
             }
         }
         
@@ -127,47 +142,29 @@ struct EventListView: View {
         
     }
     
-    func listItem(event: Event) -> some View {
-        HStack {
-            ZStack {
-                Text("📅")
-                    .font(.title)
-                    .opacity(0)
+    var uniqueDates: [UniqueDate] {
+        var datesSeen: [UniqueDate] = []
+        
+        for event in eventsToShow {
+            if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
+                var isUnique = true
                 
-                Text(event.emoji ?? "📅")
-                    .font(.title)
+                for seenDate in datesSeen {
+                    if compareDates(event: event, date: seenDate.date) {
+                        isUnique = false
+                        break
+                        
+                    }
+                }
                 
-            }
-            
-            VStack(alignment: .leading) {
-                Text(event.name ?? "Event Name")
-                    .font(.title3)
-                    .bold()
-                
-                HStack {
-                    Text(event.timeUntil)
-                        .font(.caption)
-                        .onReceive(timer) { _ in
-                            // Reset timeUpdater every second
-                            // This tricks the text object into getting a new timeUntil
-                            timeUpdater = " "
-                            timeUpdater = ""
-                            
-                        }
-                        .foregroundStyle(event.hasPassed ? .red : .primary)
-                        .bold(event.hasPassed)
+                if isUnique {
+                    datesSeen.append(UniqueDate(date: event.dateAndTime))
+                    
                 }
             }
-            
-            Spacer()
-            
-            HStack {
-                favouriteStatusIcon(event: event)
-                mutedStatusIcon(event: event)
-                
-            }
-            .padding(.horizontal, 10)
         }
+        
+        return datesSeen
     }
     
     func shouldDisplay(event: Event, dateToDisplay: Date?) -> Bool {
@@ -196,21 +193,118 @@ struct EventListView: View {
         
     }
     
-    var listDisplay: some View {
-        List {
-            ForEach($data) { $event in
-                let index = $data.firstIndex(where: { $0.id == event.id })
+    func eventTile(event: Event) -> some View {
+        HStack {
+            ZStack {
+                Text("📅")
+                    .font(.title)
+                    .opacity(0)
                 
-                if shouldDisplay(event: event, dateToDisplay: dateToDisplay) {
+                Text(event.emoji ?? "📅")
+                    .font(.title)
+                
+            }
+            
+            VStack(alignment: .leading) {
+                Text(event.name ?? "Event Name")
+                    .font(.title3)
+                    .bold()
+                
+                HStack {
+                    Text(event.timeUntil)
+                        .font(.caption)
+                        .onReceive(timer) { _ in
+                            // Reset timeUpdater every second
+                            // This tricks the text object into getting a new timeUntil
+                            timeUpdater = " "
+                            timeUpdater = ""
+                            
+                        }
+                        .foregroundStyle(event.hasPassed ? .red : .primary)
+                        .bold(event.hasPassed)
                     
-                    if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || event.isFavourite || event.isMuted) {
+                }
+            }
+            
+            Spacer()
+            
+            HStack {
+                favouriteStatusIcon(event: event)
+                mutedStatusIcon(event: event)
+                
+            }
+            .padding(.horizontal, 10)
+            
+        }
+    }
+    
+    func listSection(for section: UniqueDate) -> some View {
+        ForEach($data) { $event in
+            
+            let index = $data.firstIndex(where: { $0.id == event.id })
+            
+            if shouldDisplay(event: event, dateToDisplay: dateToDisplay) && shouldDisplay(event: event, dateToDisplay: section.date) {
+                if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
+                    
+                    NavigationLink(destination: EventDetailView(data: $data, event: index!)) {
+                        eventTile(event: event)
+                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                Button {
+                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                        data[index].isFavourite.toggle()
+                                        Task {
+                                            do {
+                                                try await EventStore().save(events: data)
+                                                
+                                            } catch {
+                                                fatalError(error.localizedDescription)
+                                                
+                                            }
+                                        }
+                                    }
+                                    
+                                    print("Toggling favourite on \(event)")
+                                    
+                                } label: {
+                                    if event.isFavourite == true {
+                                        Label("Unfavourite", systemImage: "star.slash.fill")
+                                        
+                                    } else {
+                                        Label("Favourite", systemImage: "star.fill")
+                                        
+                                    }
+                                }
+                                .tint(.yellow)
+                                
+                            }
                         
-                        NavigationLink(destination: EventDetailView(data: $data, event: index!)) {
-                            listItem(event: event)
-                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                        data.remove(at: index)
+                                        
+                                        Task {
+                                            do {
+                                                try await EventStore().save(events: data)
+                                                
+                                            } catch {
+                                                fatalError(error.localizedDescription)
+                                                
+                                            }
+                                        }
+                                    }
+                                    print("Deleting \($event)")
+                                    
+                                } label: {
+                                    Label("Delete", systemImage: "trash.fill")
+                                    
+                                }
+                                .tint(.red)
+                                
+                                if editMode == .inactive {
                                     Button {
                                         if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                            data[index].isFavourite.toggle()
+                                            data[index].isMuted.toggle()
                                             Task {
                                                 do {
                                                     try await EventStore().save(events: data)
@@ -222,116 +316,91 @@ struct EventListView: View {
                                             }
                                         }
                                         
-                                        print("Toggling favourite on \(event)")
+                                        print("Toggling mute on \(event)")
                                         
                                     } label: {
-                                        if event.isFavourite == true {
-                                            Label("Unfavourite", systemImage: "star.slash.fill")
+                                        if event.isMuted == true {
+                                            Label("Unmute", systemImage: "bell.fill")
                                             
                                         } else {
-                                            Label("Favourite", systemImage: "star.fill")
+                                            Label("Mute", systemImage: "bell.slash.fill")
                                             
                                         }
                                     }
-                                    .tint(.yellow)
-                                }
-                            
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) {
-                                        if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                            data.remove(at: index)
-                                            
-                                            Task {
-                                                do {
-                                                    try await EventStore().save(events: data)
-                                                    
-                                                } catch {
-                                                    fatalError(error.localizedDescription)
-                                                    
-                                                }
-                                            }
-                                        }
-                                        print("Deleting \($event)")
-                                        
-                                    } label: {
-                                        Label("Delete", systemImage: "trash.fill")
-                                        
-                                    }
-                                    .tint(.red)
+                                    .tint(.indigo)
                                     
-                                    if editMode == .inactive {
-                                        Button {
-                                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                                data[index].isMuted.toggle()
-                                                Task {
-                                                    do {
-                                                        try await EventStore().save(events: data)
-                                                        
-                                                    } catch {
-                                                        fatalError(error.localizedDescription)
-                                                        
-                                                    }
-                                                }
-                                            }
-                                            
-                                            print("Toggling mute on \(event)")
-                                            
-                                        } label: {
-                                            if event.isMuted == true {
-                                                Label("Unmute", systemImage: "bell.fill")
-                                                
-                                            } else {
-                                                Label("Mute", systemImage: "bell.slash.fill")
-                                                
-                                            }
-                                        }
-                                        .tint(.indigo)
-                                    }
                                 }
-                        }
+                            }
+                        //.disabled(!isEditing)
                     }
                 }
             }
-            .onDelete { indexSet in
-                for index in indexSet {
-                    let event = data[index]
+        }
+        .onDelete { indexSet in
+            for index in indexSet {
+                let event = data[index]
+                
+                EventStore().removeNotifications(for: event)
+                
+            }
+            
+            data.remove(atOffsets: indexSet)
+            data.sort(by: { $0.dateAndTime < $1.dateAndTime })
+            
+            Task {
+                do {
+                    try await EventStore().save(events: data)
                     
-                    EventStore().removeNotifications(for: event)
+                } catch {
+                    fatalError(error.localizedDescription)
                     
                 }
                 
-                data.remove(atOffsets: indexSet)
-                data.sort(by: { $0.dateAndTime < $1.dateAndTime })
-                
-                Task {
-                    do {
-                        try await EventStore().save(events: data)
-                        
-                    } catch {
-                        fatalError(error.localizedDescription)
+            }
+        }
+    }
+    
+    var listDisplay: some View {
+        List {
+            ForEach(uniqueDates) { UniqueDate in
+                if dateToDisplay == nil {
+                    Section(formatStringForDate(date: UniqueDate.date)) {
+                        listSection(for: UniqueDate)
                         
                     }
+                    
+                } else {
+                    listSection(for: UniqueDate)
                     
                 }
             }
         }
     }
-        
+    
     var body: some View {
         NavigationStack {
             VStack {
-                if eventsToShow == 0 {
-                    noEventsView(singleDayDisplay: dateToDisplay != nil ? true : false)
+                if eventsToShow.isEmpty {
+                    NoEventsView(singleDayDisplay: dateToDisplay != nil ? true : false)
                     
                 } else {
                     listDisplay
                     
                 }
             }
+            /*
             .toolbar {
-                if eventsToShow != 0 {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    EditButton()
+                    
+                }
+            }
+             */
+            .toolbar {
+                if !eventsToShow.isEmpty {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Menu {
+                            /*
                             Button {
                                 showFavourite.toggle()
                                 
@@ -344,6 +413,8 @@ struct EventListView: View {
                                     
                                 }
                             }
+                            .disabled((showStandard || showMuted) == false)
+                             */
                             
                             Button {
                                 showStandard.toggle()
@@ -357,6 +428,7 @@ struct EventListView: View {
                                     
                                 }
                             }
+                            //.disabled((showFavourite || showMuted) == false)
                             
                             Button {
                                 showMuted.toggle()
@@ -370,17 +442,23 @@ struct EventListView: View {
                                     
                                 }
                             }
+                            //.disabled((showFavourite || showStandard) == false)
                             
                         } label: {
-                            Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
-                            
+                            if !showStandard || !showMuted {
+                                Label("Filter", systemImage: "line.3.horizontal.decrease.circle.fill")
+
+                            } else {
+                                Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
+
+                            }
                         }
                         .disabled(editMode .isEditing ? true : false)
                         
                     }
                 }
             }
-            .navigationBarTitle(dateToDisplay != nil ? formatStringForDate(date: dateToDisplay!) : "Events")
+            .navigationBarTitle(dateToDisplay != nil ? formatStringForDate(date: dateToDisplay!) : "My Events")
             .environment(\.editMode, $editMode)
             .sheet(isPresented: $showingSheet) {
                 NewEventSheetView(data: $data)
