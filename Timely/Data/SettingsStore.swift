@@ -31,6 +31,13 @@ class SettingsStore: ObservableObject {
         }
     }
     
+    var quickAdd: Bool {
+        didSet {
+            UserDefaults.standard.set(quickAdd, forKey: "quickAdd")
+            
+        }
+    }
+    
     /*
     @Published var stringData: String {
         didSet {
@@ -44,6 +51,7 @@ class SettingsStore: ObservableObject {
         self.showBadge = UserDefaults.standard.object(forKey: "showBadge") as? Bool ?? true
         self.removePassedEvents = UserDefaults.standard.object(forKey: "removePassedEvents") as? Bool ?? true
         self.keepEventHistory = UserDefaults.standard.object(forKey: "keepEventHistory") as? Bool ?? true
+        self.quickAdd = UserDefaults.standard.object(forKey: "quickAdd") as? Bool ?? false
         //self.stringData = UserDefaults.standard.object(forKey: "stringData") as? String ?? ""
         
     }

@@ -108,6 +108,15 @@ struct SettingsView: View {
                             
                             }
                         )
+                        
+                        Toggle(isOn: $preferences.quickAdd) {
+                            Text("Quick-Add Events")
+                        }
+                        
+                        Toggle(isOn: $preferences.showBadge) {
+                            Text("In-App Notifications")
+                            
+                        }
                     }
                     
                     Section("Contact") {

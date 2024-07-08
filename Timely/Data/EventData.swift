@@ -96,6 +96,17 @@ struct Event : Identifiable, Codable {
     }
     
     var isFavourite: Bool = false
+    
+    var isStandard: Bool {
+        if !isFavourite && !isMuted {
+            return true
+            
+        } else {
+            return false
+            
+        }
+    }
+    
     var isMuted: Bool = false
     
     var id = UUID()

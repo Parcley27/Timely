@@ -11,7 +11,8 @@ import Foundation
 struct NewEventSheetView: View {
     @Binding var data: [Event]
     @StateObject private var store = EventStore()
-
+    @StateObject private var preferences = SettingsStore()
+    
     @Environment(\.dismiss) var dismiss
     
     @FocusState private var isTextFieldFocused: Bool
@@ -115,14 +116,17 @@ struct NewEventSheetView: View {
                         
                     }
                     
-                    Section("Details") {
-                        ZStack {
-                            HStack {
-                                Text("Description")
-                                    .foregroundStyle(.quaternary)
-                                    .opacity(formDescription == "" ? 100 : 0)
-                                    .padding(.leading, 4)
-                                Spacer()
+                    if !preferences.quickAdd {
+                        Section("Details") {
+                            ZStack {
+                                HStack {
+                                    Text("Description")
+                                        .foregroundStyle(.quaternary)
+                                        .opacity(formDescription == "" ? 100 : 0)
+                                        .padding(.leading, 4)
+                                    Spacer()
+                                    
+                                }
                                 
                             }
                             
@@ -139,10 +143,12 @@ struct NewEventSheetView: View {
                         
                     }
                     
-                    Section("Importance") {
-                        Toggle("Favourite", isOn: $formFavourited)
-                        Toggle("Muted", isOn: $formMuted)
-                        
+                    if !preferences.quickAdd {
+                        Section("Importance") {
+                            Toggle("Favourite", isOn: $formFavourited)
+                            Toggle("Muted", isOn: $formMuted)
+                            
+                        }
                     }
                 }
             }
