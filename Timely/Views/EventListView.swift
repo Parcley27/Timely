@@ -8,6 +8,13 @@
 import SwiftUI
 import Foundation
 
+enum EventType {
+    case isFavourite
+    case isStandard
+    case isMuted
+    
+}
+
 struct UniqueDate: Identifiable {
     var date: Date
     
@@ -165,6 +172,40 @@ struct EventListView: View {
         }
         
         return datesSeen
+    }
+    
+    func countEvents(withType type: EventType, in events: [Event]) -> Int {
+        switch type {
+        case .isFavourite:
+            return events.filter { $0.isFavourite }.count
+            
+        case .isStandard:
+            return events.filter { $0.isStandard }.count
+            
+        case .isMuted:
+            return events.filter { $0.isMuted }.count
+            
+        }
+    }
+    
+    var canHideStandard: Bool {
+        if ((countEvents(withType: .isFavourite, in: eventsToShow) == 0 && (!showMuted || countEvents(withType: .isMuted, in: eventsToShow) == 0)) || countEvents(withType: .isStandard, in: eventsToShow) == 0) {
+            return false
+            
+        } else {
+            return true
+            
+        }
+    }
+    
+    var canHideMuted: Bool {
+        if ((countEvents(withType: .isFavourite, in: eventsToShow) == 0 && (!showMuted || countEvents(withType: .isStandard, in: eventsToShow) == 0 )) || countEvents(withType: .isMuted, in: eventsToShow) == 0 ) {
+            return false
+            
+        } else {
+            return true
+            
+        }
     }
     
     func shouldDisplay(event: Event, dateToDisplay: Date?) -> Bool {
@@ -428,7 +469,7 @@ struct EventListView: View {
                                     
                                 }
                             }
-                            //.disabled((showFavourite || showMuted) == false)
+                            .disabled(!canHideStandard)
                             
                             Button {
                                 showMuted.toggle()
@@ -442,7 +483,7 @@ struct EventListView: View {
                                     
                                 }
                             }
-                            //.disabled((showFavourite || showStandard) == false)
+                            .disabled(!canHideMuted)
                             
                         } label: {
                             if !showStandard || !showMuted {
