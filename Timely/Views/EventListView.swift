@@ -462,10 +462,10 @@ struct EventListView: View {
                                 
                             } label: {
                                 if showStandard == true {
-                                    Label("Hide Standard Events", systemImage: "calendar")
+                                    Label("Hide Standard Events", systemImage: "diamond")
                                     
                                 } else {
-                                    Label("Show Standard Events", systemImage: "calendar")
+                                    Label("Show Standard Events", systemImage: "diamond.fill")
                                     
                                 }
                             }
@@ -479,7 +479,7 @@ struct EventListView: View {
                                     Label("Hide Muted Events", systemImage: "bell.slash")
                                     
                                 } else {
-                                    Label("Show Muted Events", systemImage: "bell.slash")
+                                    Label("Show Muted Events", systemImage: "bell.slash.fill")
                                     
                                 }
                             }
@@ -488,10 +488,10 @@ struct EventListView: View {
                         } label: {
                             if !showStandard || !showMuted {
                                 Label("Filter", systemImage: "line.3.horizontal.decrease.circle.fill")
-
+                                
                             } else {
                                 Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
-
+                                
                             }
                         }
                         .disabled(editMode .isEditing ? true : false)
