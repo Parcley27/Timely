@@ -16,9 +16,8 @@ enum EventType {
 }
 
 struct UniqueDate: Identifiable {
-    var date: Date
+    let id: Date
     
-    let id: UUID = UUID()
 }
 
 struct NoEventsView: View {
@@ -153,11 +152,11 @@ struct EventListView: View {
         var datesSeen: [UniqueDate] = []
         
         for event in eventsToShow {
-            if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
+            //if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
                 var isUnique = true
                 
                 for seenDate in datesSeen {
-                    if compareDates(event: event, date: seenDate.date) {
+                    if compareDates(event: event, date: seenDate.id) {
                         isUnique = false
                         break
                         
@@ -165,13 +164,14 @@ struct EventListView: View {
                 }
                 
                 if isUnique {
-                    datesSeen.append(UniqueDate(date: event.dateAndTime))
+                    datesSeen.append(UniqueDate(id: event.dateAndTime))
                     
                 }
-            }
+            //}
         }
         
         return datesSeen
+        
     }
     
     func countEvents(withType type: EventType, in events: [Event]) -> Int {
@@ -284,7 +284,7 @@ struct EventListView: View {
             
             let index = $data.firstIndex(where: { $0.id == event.id })
             
-            if shouldDisplay(event: event, dateToDisplay: dateToDisplay) && shouldDisplay(event: event, dateToDisplay: section.date) {
+            if shouldDisplay(event: event, dateToDisplay: dateToDisplay) && shouldDisplay(event: event, dateToDisplay: section.id) {
                 if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
                     
                     NavigationLink(destination: EventDetailView(data: $data, event: index!)) {
@@ -318,7 +318,6 @@ struct EventListView: View {
                                 .tint(.yellow)
                                 
                             }
-                        
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
                                     if let index = $data.firstIndex(where: { $0.id == event.id }) {
@@ -396,7 +395,6 @@ struct EventListView: View {
                     fatalError(error.localizedDescription)
                     
                 }
-                
             }
         }
     }
@@ -405,7 +403,7 @@ struct EventListView: View {
         List {
             ForEach(uniqueDates) { UniqueDate in
                 if dateToDisplay == nil {
-                    Section(formatStringForDate(date: UniqueDate.date)) {
+                    Section(dateToDisplay == nil ? formatStringForDate(date: UniqueDate.id) : "") {
                         listSection(for: UniqueDate)
                         
                     }
@@ -416,6 +414,8 @@ struct EventListView: View {
                 }
             }
         }
+        .listRowSpacing(5)
+        
     }
     
     var body: some View {
@@ -425,6 +425,17 @@ struct EventListView: View {
                     NoEventsView(singleDayDisplay: dateToDisplay != nil ? true : false)
                     
                 } else {
+                    /*
+                    HStack {
+                        Text("Favourite: \(countEvents(withType: .isFavourite, in: eventsToShow))")
+                        Spacer()
+                        Text("Standard: \(countEvents(withType: .isStandard, in: eventsToShow))")
+                        Spacer()
+                        Text("Muted: \(countEvents(withType: .isMuted, in: eventsToShow))")
+                        
+                    }
+                    .padding()
+                     */
                     listDisplay
                     
                 }
