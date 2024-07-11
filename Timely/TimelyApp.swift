@@ -21,7 +21,7 @@ struct TimelyApp: App {
         
         if SettingsStore().removePassedEvents {
             passedEvents = passedEvents.filter { $0.hasExpired() == false }
-
+            
         }
         
         if SettingsStore().showBadge {
@@ -29,7 +29,7 @@ struct TimelyApp: App {
             
         } else {
             return nil
-
+            
         }
     }
     
@@ -37,7 +37,7 @@ struct TimelyApp: App {
     
     @State var selectedTab: Int = 0
     @State var lastTab: Int = 0
-
+    
     @State private var showNewSheet: Bool = false
     
     var currentMonth = Calendar.current.component(.month, from: Date())
@@ -57,7 +57,7 @@ struct TimelyApp: App {
             
         }
     }
-
+    
     var body: some Scene {
         WindowGroup {
             VStack {
