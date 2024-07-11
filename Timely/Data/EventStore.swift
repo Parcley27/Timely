@@ -8,9 +8,10 @@
 import Foundation
 import SwiftUI
 
-//@MainActor
+@MainActor
 class EventStore: ObservableObject {
-    var events: [Event] = []
+    @Published var events: [Event] = []
+    
     var allNotificationTimes: [Int] = [0, 15, 60]
     
     private static func fileURL() throws -> URL {
