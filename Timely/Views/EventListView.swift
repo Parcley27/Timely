@@ -333,6 +333,7 @@ struct EventListView: View {
                                             }
                                         }
                                     }
+                                    
                                     print("Deleting \($event)")
                                     
                                 } label: {
@@ -372,6 +373,80 @@ struct EventListView: View {
                                 }
                             }
                         //.disabled(!isEditing)
+                    }
+                    .contextMenu {
+                        Button {
+                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                data[index].isFavourite.toggle()
+                                Task {
+                                    do {
+                                        try await EventStore().save(events: data)
+                                        
+                                    } catch {
+                                        fatalError(error.localizedDescription)
+                                        
+                                    }
+                                }
+                            }
+                        } label: {
+                            if event.isFavourite {
+                                Label("Unfavourite", systemImage: "star.slash")
+                                
+                            } else {
+                                Label("Favourite", systemImage: "star")
+                                
+                            }
+                        }
+                        
+                        Button {
+                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                data[index].isMuted.toggle()
+                                Task {
+                                    do {
+                                        try await EventStore().save(events: data)
+                                        
+                                    } catch {
+                                        fatalError(error.localizedDescription)
+                                        
+                                    }
+                                }
+                            }
+                        } label: {
+                            if event.isMuted {
+                                Label("Unmute", systemImage: "bell")
+                                
+                            } else {
+                                Label("Mute", systemImage: "bell.slash")
+                                
+                            }
+                        }
+                        
+                        NavigationLink(
+                            destination: EventDetailView(data: $data, event: 0, showEditEventSheet: true),
+                            label: {
+                                Label("Edit", systemImage: "slider.horizontal.3")
+                            })
+                        
+                        Divider()
+                        
+                        Button {
+                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                data.remove(at: index)
+                                
+                                Task {
+                                    do {
+                                        try await EventStore().save(events: data)
+                                        
+                                    } catch {
+                                        fatalError(error.localizedDescription)
+                                        
+                                    }
+                                }
+                            }
+                        } label: {
+                            Label("Delete \"\(event.name!)\"", systemImage: "trash")
+                            
+                        }
                     }
                 }
             }

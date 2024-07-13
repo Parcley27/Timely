@@ -12,11 +12,21 @@ struct EventDetailView: View {
     let event: Int
     
     @Environment(\.dismiss) var dismiss
-        
+    
     @Environment(\.presentationMode) private var presentationMode
     
-    @State private var showEditEventSheet = false
-    @State private var showConfirmationDialog = false
+    @State private var showEditEventSheet: Bool = false
+    @State private var showConfirmationDialog: Bool = false
+    
+    @State private var timeUntilEvent: String = ""
+    
+    init(data: Binding<[Event]>, event: Int, showEditEventSheet: Bool = false, showConfirmationDialog: Bool = false, timeUntilEvent: String = "") {
+        self._data = data
+        self.event = event
+        self._showEditEventSheet = State(initialValue: showEditEventSheet)
+        self._showConfirmationDialog = State(initialValue: showConfirmationDialog)
+        self._timeUntilEvent = State(initialValue: timeUntilEvent)
+    }
     
     private var deleteButton: some View {
         HStack {
@@ -156,8 +166,6 @@ struct EventDetailView: View {
             
         }
     }
-    
-    @State private var timeUntilEvent: String = ""
     
     private func updateTimeUntilEvent() {
         timeUntilEvent = calculateTime(event: data[event])
