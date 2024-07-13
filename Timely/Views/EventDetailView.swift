@@ -125,7 +125,7 @@ struct EventDetailView: View {
                     deleteButton
                     
                 }
-                .confirmationDialog(Text("Delete Your Event?"),
+                .confirmationDialog(Text("Delete \"\(data[event].name!)\" ?"),
                     isPresented: $showConfirmationDialog,
                     titleVisibility: .visible,
                     actions: {
