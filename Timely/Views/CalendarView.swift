@@ -177,16 +177,17 @@ struct CalendarView: View {
                         }
                         
                     } label: {
-                        Label("", systemImage: "lessthan")
-                            .font(.title2)
+                        Image(systemName: "lessthan")
+                            .font(.title)
                         
                     }
                     .padding(.vertical, 4)
-                    .padding(.leading)
-                    .padding(.trailing, 10)
+                    .padding(.horizontal)
+                    //.padding(.leading)
+                    //.padding(.trailing, 10)
                     .background(.ultraThickMaterial , in: RoundedRectangle(cornerRadius: 25.0))
                     
-                    Button(" \(monthNames[month - 1]) \(String(year))") {
+                    Button("\(monthNames[month - 1]) \(String(year))") {
                         month = currentMonth
                         year = currentYear
                         
@@ -205,13 +206,14 @@ struct CalendarView: View {
                             
                         }
                     } label: {
-                        Label("", systemImage: "greaterthan")
-                            .font(.title2)
+                        Image(systemName: "greaterthan")
+                            .font(.title)
                         
                     }
                     .padding(.vertical, 4)
-                    .padding(.leading, 20)
-                    .padding(.trailing, 8)
+                    .padding(.horizontal)
+                    //.padding(.leading, 20)
+                    //.padding(.trailing, 8)
                     .background(.ultraThickMaterial, in: RoundedRectangle(cornerRadius: 25.0))
                     
                 }
