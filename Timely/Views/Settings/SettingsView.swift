@@ -119,7 +119,7 @@ struct SettingsView: View {
                             self.showGetSupport.toggle()
                             
                         } label: {
-                            customButton(text: "Get Support", icon: "questionmark.circle")
+                            customButton(text: NSLocalizedString("Get Support", comment: ""), icon: "questionmark.circle")
                             
                         }
                         
@@ -127,7 +127,7 @@ struct SettingsView: View {
                             self.showIssueReport.toggle()
                             
                         } label: {
-                            customButton(text: "Report an Issue", icon: "exclamationmark.bubble")
+                            customButton(text: NSLocalizedString("Report an Issue", comment: ""), icon: "exclamationmark.bubble")
                             
                         }
                         
@@ -135,7 +135,7 @@ struct SettingsView: View {
                             self.showFeatureRequest.toggle()
                             
                         } label: {
-                            customButton(text: "Request a Feature", icon: "sparkles")
+                            customButton(text: NSLocalizedString("Request a Feature", comment: ""), icon: "sparkles")
                             
                         }
                     }
@@ -145,7 +145,7 @@ struct SettingsView: View {
                             openURL(URL(string: "https://github.com/Parcley27")!)
                             
                         } label: {
-                            customButton(text: "Created by Pierce Oxley", icon: "person.circle")
+                            customButton(text: NSLocalizedString("Created by Pierce Oxley", comment: ""), icon: "person.circle")
                             
                         }
                         
@@ -158,19 +158,19 @@ struct SettingsView: View {
                             openURL(URL(string: "https://github.com/Parcley27/Timely")!)
                             
                         } label: {
-                            customButton(text: "Timely App GitHub", icon: "arrow.up.forward.app")
+                            customButton(text: NSLocalizedString("Timely GitHub", comment: ""), icon: "arrow.up.forward.app")
                             
                         }
                         
                         Text("Version")
-                            .badge("\(TimelyApp().versionNumber) - Build \(TimelyApp().buildNumber)")
+                            .badge("v\(TimelyApp().versionNumber) - Build \(TimelyApp().buildNumber)")
                         
                     }
                 }
             }
             .sheet(isPresented: $showGetSupport) {
                 if MFMailComposeViewController.canSendMail() {
-                    MailView(result: self.$result, subject: "App Support")
+                    MailView(result: self.$result, subject: NSLocalizedString("App Support", comment: ""))
                     
                 } else {
                     NoMailView()
@@ -179,7 +179,7 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showIssueReport) {
                 if MFMailComposeViewController.canSendMail() {
-                    MailView(result: self.$result, subject: "Issue Report")
+                    MailView(result: self.$result, subject: NSLocalizedString("Issue Report", comment: ""))
                     
                 } else {
                     NoMailView()
@@ -188,7 +188,7 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showFeatureRequest) {
                 if MFMailComposeViewController.canSendMail() {
-                    MailView(result: self.$result, subject: "Feature Request")
+                    MailView(result: self.$result, subject: NSLocalizedString("Feature Request", comment: ""))
                     
                 } else {
                     NoMailView()

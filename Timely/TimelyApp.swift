@@ -12,7 +12,7 @@ import SwiftUI
 struct TimelyApp: App {
     @StateObject private var eventList = EventStore()
     
-    let versionNumber = "v1.2.1"
+    let versionNumber = "1.2.1"
     let buildNumber = "4"
     
     func filterPassedEvents(events: [Event]) -> [Event]? {
@@ -31,6 +31,13 @@ struct TimelyApp: App {
             return nil
             
         }
+    }
+    
+    func localizedNumber(_ number: Int) -> Int {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        return Int(formatter.string(from: NSNumber(value: number))!) ?? number
+        
     }
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -84,7 +91,7 @@ struct TimelyApp: App {
                                 
                             }
                         }
-                        .badge(filterPassedEvents(events: eventList.events)!.count)
+                        .badge(localizedNumber(filterPassedEvents(events: eventList.events)!.count))
                         .tabItem {
                             Label("My Events", systemImage: "list.bullet")
                             

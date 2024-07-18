@@ -22,6 +22,7 @@
 		6EAEA0262B0196E50029A8D4 /* EventListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0252B0196E50029A8D4 /* EventListView.swift */; };
 		6EAEA0282B0196FC0029A8D4 /* NewEventSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0272B0196FC0029A8D4 /* NewEventSheetView.swift */; };
 		6EAEA02C2B0197270029A8D4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA02B2B0197270029A8D4 /* SettingsView.swift */; };
+		6EAEA6172C462DBF00B602CF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6EAEA6162C462DBF00B602CF /* Localizable.xcstrings */; };
 		6EE9B5182B64E8C4005895DC /* EditEventSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE9B5172B64E8C4005895DC /* EditEventSheetView.swift */; };
 		6EF4F6CD2BB292C000288AE3 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */; };
 /* End PBXBuildFile section */
@@ -63,6 +64,7 @@
 		6EAEA0252B0196E50029A8D4 /* EventListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListView.swift; sourceTree = "<group>"; };
 		6EAEA0272B0196FC0029A8D4 /* NewEventSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventSheetView.swift; sourceTree = "<group>"; };
 		6EAEA02B2B0197270029A8D4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		6EAEA6162C462DBF00B602CF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6EE9B5172B64E8C4005895DC /* EditEventSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEventSheetView.swift; sourceTree = "<group>"; };
 		6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -131,6 +133,7 @@
 				6EAE9FEF2B018D7B0029A8D4 /* TimelyApp.swift */,
 				6EAE9FF52B018D7C0029A8D4 /* Assets.xcassets */,
 				6EAE9FF72B018D7C0029A8D4 /* Preview Content */,
+				6EAEA6162C462DBF00B602CF /* Localizable.xcstrings */,
 			);
 			path = Timely;
 			sourceTree = "<group>";
@@ -269,6 +272,9 @@
 			knownRegions = (
 				en,
 				Base,
+				"fr-CA",
+				"zh-Hant",
+				"zh-Hans",
 			);
 			mainGroup = 6EAE9FE32B018D7B0029A8D4;
 			productRefGroup = 6EAE9FED2B018D7B0029A8D4 /* Products */;
@@ -289,6 +295,7 @@
 			files = (
 				6E6DCD332C0CE58200A69CC8 /* Launch Screen.storyboard in Resources */,
 				6EAE9FF92B018D7C0029A8D4 /* Preview Assets.xcassets in Resources */,
+				6EAEA6172C462DBF00B602CF /* Localizable.xcstrings in Resources */,
 				6EAE9FF62B018D7C0029A8D4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -420,6 +427,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -476,6 +484,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

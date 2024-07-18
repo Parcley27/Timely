@@ -34,7 +34,7 @@ struct Event : Identifiable, Codable {
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .short
         
-        dateFormatter.dateFormat = "h:mm a 'on' EEEE, MMMM d, yyyy"
+        dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d, yyyy", comment: "")
         
         let formattedDate = dateFormatter.string(from: dateAndTime)
         
@@ -60,12 +60,32 @@ struct Event : Identifiable, Codable {
         } else {
             formatter.allowedUnits = [.minute, .second]
         }
-                
+           
+        /*
         if let formattedString = formatter.string(from: timeInterval) {
             return formattedString
             
         } else {
             return "Time Until Date"
+            
+        }
+         */
+        
+        if var formattedString = formatter.string(from: timeInterval) {
+            if hasPassed {
+                formattedString.remove(at: formattedString.startIndex)
+                
+                let timeAgoFormat = NSLocalizedString("%@ ago", comment: "")
+                
+                return String(format: timeAgoFormat, formattedString)
+                
+            } else {
+                return formattedString
+                
+            }
+            
+        } else {
+            return NSLocalizedString("Time Unknown", comment: "")
             
         }
     }
@@ -170,10 +190,13 @@ extension EventData {
         
         if var formattedString = formatter.string(from: timeInterval) {
             formattedString = formattedString.replacingOccurrences(of: ",", with: "")
-            return formattedString
+            
+            let timeAgoFormat = NSLocalizedString("%@ ago", comment: "")
+            
+            return String(format: timeAgoFormat, formattedString)
             
         } else {
-            return "Time unknown"
+            return NSLocalizedString("Time Unknown", comment: "")
             
         }
     }
@@ -199,7 +222,7 @@ extension EventData {
         var count = 0
         
         for event in events {
-            if event.timeUntil.prefix(1) == "-" {
+            if event.hasPassed {
                 count += 1
                 
             }

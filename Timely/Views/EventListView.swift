@@ -52,6 +52,20 @@ struct EventListView: View {
     
     @State private var newTimeUntilEvent: String = ""
     
+    func titleBarText(displayDate: Date?) -> String {
+        var titleText: String = ""
+        
+        if displayDate == nil {
+            titleText = NSLocalizedString("My Events", comment: "")
+            return titleText
+            
+        } else {
+            titleText = formatStringForDate(date: displayDate!, style: "long")
+            return titleText
+            
+        }
+    }
+    
     func calculateTime(event: Event) -> String {
         return event.timeUntil
         
@@ -597,7 +611,7 @@ struct EventListView: View {
                     }
                 }
             }
-            .navigationBarTitle(dateToDisplay != nil ? formatStringForDate(date: dateToDisplay!) : "My Events")
+            .navigationBarTitle(titleBarText(displayDate: dateToDisplay))
             .environment(\.editMode, $editMode)
             .sheet(isPresented: $showingSheet) {
                 NewEventSheetView(data: $data)

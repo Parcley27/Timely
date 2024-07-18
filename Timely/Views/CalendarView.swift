@@ -47,16 +47,29 @@ struct CalendarView: View {
     var currentMonth = Calendar.current.component(.month, from: Date())
     var currentYear = Calendar.current.component(.year, from: Date())
     
+    func localizedNumber(_ number: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        return formatter.string(from: NSNumber(value: number)) ?? "\(number)"
+    }
+    
     var dayNames: [String] {
-        let localCalendar = Calendar(identifier: Calendar.current.identifier)
-        let daysOfTheWeek = localCalendar.weekdaySymbols
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
         
-        return daysOfTheWeek
+        if let daysOfTheWeek = formatter.shortWeekdaySymbols {
+            return daysOfTheWeek
+            
+        }
+        
+        return [""]
         
     }
     
     var monthNames: [String] {
         let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        
         if let monthComponents = formatter.monthSymbols {
             return monthComponents
             
@@ -260,7 +273,7 @@ struct CalendarView: View {
                                     
                                     if !tile.isPlaceholder {
                                         VStack(spacing: 4) {
-                                            Text("\(tile.day!)")
+                                            Text(localizedNumber(tile.day!))
                                                 .foregroundStyle(.background)
                                                 .font(.title2)
                                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
@@ -316,6 +329,7 @@ struct CalendarView: View {
                     SettingsView()
                 }
                 .navigationBarTitle("Calendar")
+                //.navigationBarTitle("\(monthNames[month - 1]) \(String(year))")
             
         }
     }
