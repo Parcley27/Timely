@@ -111,10 +111,22 @@ struct EventListView: View {
         }
     }
     
-    func formatStringForDate(date: Date) -> String {
+    func formatStringForDate(date: Date, style: String?) -> String {
         let dateFormatter = DateFormatter()
         
-        dateFormatter.dateStyle = .medium
+        if style == "short" {
+            dateFormatter.dateStyle = .short
+            
+        } else if style == "long" {
+            dateFormatter.dateStyle = .long
+            
+        } else if style == "full" {
+            dateFormatter.dateStyle = .full
+            
+        } else {
+            dateFormatter.dateStyle = .medium
+            
+        }
         
         //dateFormatter.dateFormat = "h:mm a 'on' EEEE, MMMM d, yyyy"
         
@@ -478,7 +490,7 @@ struct EventListView: View {
         List {
             ForEach(uniqueDates) { UniqueDate in
                 if dateToDisplay == nil {
-                    Section(dateToDisplay == nil ? formatStringForDate(date: UniqueDate.id) : "") {
+                    Section(dateToDisplay == nil ? formatStringForDate(date: UniqueDate.id, style: "long") : "") {
                         listSection(for: UniqueDate)
                         
                     }
