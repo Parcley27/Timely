@@ -66,6 +66,15 @@ class EventStore: ObservableObject {
         }
     }
     
+    func formatTimeForNotification(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        
+        return formatter.string(from: date)
+        
+    }
+    
     func scheduleNotificationsForAllEvents() {
         for event in events {
             scheduleNotifications(for: event)
@@ -99,21 +108,22 @@ class EventStore: ObservableObject {
         let notificationIdentifier = "\(event.id.uuidString) \(time) minutes"
         
         let content = UNMutableNotificationContent()
-        content.title = "\(event.name!) \(event.emoji!)"
+        content.title = "\(event.name!) • \(event.emoji!)"
         content.sound = .default
         
+        let eventTime = formatTimeForNotification(from: event.dateAndTime)
         
         if time == 0 {
-            content.body = "Your event is starting now"
+            content.body = "Starting now!"
             
         } else if time < 60 {
-            content.body = "Your event is starting in \(time) minutes"
+            content.body = "Starting in \(time) minutes, at \(eventTime)."
             
         } else if time == 60 {
-            content.body = "Your event is starting in 1 hour"
+            content.body = "Starting in 1 hour, at \(eventTime)"
             
         } else if time > 60 {
-            content.body = "Your event is starting in \(time/60) hours"
+            content.body = "Starting in \(time/60) hours, at \(eventTime)."
             
         }
         
