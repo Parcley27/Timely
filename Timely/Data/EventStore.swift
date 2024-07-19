@@ -114,16 +114,20 @@ class EventStore: ObservableObject {
         let eventTime = formatTimeForNotification(from: event.dateAndTime)
         
         if time == 0 {
-            content.body = "Starting now!"
+            // Starting Now!
+            content.body = NSLocalizedString("Starting Now!", comment: "")
             
         } else if time < 60 {
-            content.body = "Starting in \(time) minutes, at \(eventTime)."
+            // Starting in \(time) minutes, at \(eventTime).
+            content.body = String(format: NSLocalizedString("Starting in %1$@ minutes, at %2$@.", comment: ""), String(time), eventTime)
             
         } else if time == 60 {
-            content.body = "Starting in 1 hour, at \(eventTime)"
+            // Starting in 1 hour, at \(eventTime).
+            content.body = String(format: NSLocalizedString("Starting in 1 hour, at %@.", comment: ""), eventTime)
             
         } else if time > 60 {
-            content.body = "Starting in \(time/60) hours, at \(eventTime)."
+            // Starting in \(time/60) hours, at \(eventTime).
+            content.body = String(format: NSLocalizedString("Starting in %1$@ hours, at %2$@.", comment: ""), String(format: "%.1f", Double(time) / 60.0), eventTime)
             
         }
         
