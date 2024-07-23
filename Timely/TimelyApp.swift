@@ -12,7 +12,7 @@ import SwiftUI
 struct TimelyApp: App {
     @StateObject private var eventList = EventStore()
     
-    let versionNumber = "2"
+    let versionNumber = "2.0"
     let buildNumber = "5"
     
     func filterPassedEvents(events: [Event]) -> [Event]? {
