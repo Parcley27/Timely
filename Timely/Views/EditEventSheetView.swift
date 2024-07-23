@@ -19,9 +19,22 @@ struct EditEventSheetView: View {
     @State var editedEmoji: String = ""
     @State var editedDescription: String = ""
     @State var editedDateAndTime: Date = Date()
+    @State var editedEndDateAndTime: Date = Date()
     @State var editedFavourite: Bool = false
     @State var editedMute: Bool = false
     
+    var timesAfterStart: ClosedRange<Date> {
+        let calendar = Calendar.current
+        
+        let startComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: editedDateAndTime)
+        let startDate = calendar.date(from: startComponents)!
+        
+        let endComponents = DateComponents(year: 10000, month: 12, day: 31, hour: 23, minute: 59, second: 59)
+        let endDate = calendar.date(from: endComponents)!
+        
+        return startDate...endDate
+        
+    }
     
     var body: some View {
         NavigationStack {
@@ -65,13 +78,29 @@ struct EditEventSheetView: View {
                     }
                     
                     Section("Date and Time") {
-                        DatePicker("Date and Time", selection: $editedDateAndTime, displayedComponents: [.date, .hourAndMinute])
+                        DatePicker("Start Time", selection: $editedDateAndTime, displayedComponents: [.hourAndMinute, .date])
+                            //.datePickerStyle(.compact)
                             .datePickerStyle(GraphicalDatePickerStyle())
+                        /*
+                        DatePicker("End Time", selection: $editedEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.compact)
+                         */
+                        
+                        
+                        //DatePicker("End Time", selection: $formEndDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute])
+                        // DEBUG - Display date information
+                        //Text("\(formatTime(inputDate: formDateAndTime))")
                         
                     }
                     .onAppear() {
                         editedDateAndTime = data[event].dateAndTime
                         
+                    }
+                    .onChange(of: editedDateAndTime) { _ in
+                        if editedDateAndTime.timeIntervalSinceNow > editedEndDateAndTime.timeIntervalSinceNow {
+                            editedEndDateAndTime = editedDateAndTime.addingTimeInterval(60 * 60)
+                            
+                        }
                     }
                     
                     Section("Importance") {

@@ -27,6 +27,8 @@ struct Event : Identifiable, Codable {
         
     }()
     
+    var endDateAndTime: Date?
+    
     var dateString: String? {
         let dateFormatter = DateFormatter()
         //dateFormatter.dateFormat = "dd MMM, yyyy 'at' h:mm a"

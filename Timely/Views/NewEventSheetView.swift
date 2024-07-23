@@ -29,6 +29,12 @@ struct NewEventSheetView: View {
         return currentDate.addingTimeInterval(oneHourInSeconds)
 
     }()
+    @State private var formEndDateAndTime: Date = {
+        let currentDate = Date()
+        let twoHoursInSeconds: TimeInterval = 2 * 60 * 60
+        
+        return currentDate.addingTimeInterval(twoHoursInSeconds)
+    }()
     @State private var formFavourited: Bool = false
     @State private var formMuted: Bool = false
     
@@ -52,10 +58,22 @@ struct NewEventSheetView: View {
         let startComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: Date())
         let endComponents = DateComponents(year: 10000, month: 12, day: 31, hour: 23, minute: 59, second: 59)
         
-        return calendar.date(from:startComponents)!
-            ...
-            calendar.date(from:endComponents)!
+        return calendar.date(from:startComponents)! ... calendar.date(from:endComponents)!
+        
     }()
+    
+    var timesAfterStart: ClosedRange<Date> {
+        let calendar = Calendar.current
+        
+        let startComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: formDateAndTime)
+        let startDate = calendar.date(from: startComponents)!
+        
+        let endComponents = DateComponents(year: 10000, month: 12, day: 31, hour: 23, minute: 59, second: 59)
+        let endDate = calendar.date(from: endComponents)!
+        
+        return startDate...endDate
+        
+    }
     
     private func createEvent() {
         if formEmoji.isEmpty {
@@ -71,6 +89,7 @@ struct NewEventSheetView: View {
             emoji: formEmoji,
             description: (formDescription != "" ? formDescription : nil),
             dateAndTime: formDateAndTime,
+            endDateAndTime: formEndDateAndTime,
             isFavourite: formFavourited,
             isMuted: formMuted
             
@@ -146,11 +165,28 @@ struct NewEventSheetView: View {
                     }
                     
                     Section("Date and Time") {
-                        DatePicker("Date and Time", selection: $formDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute, .date])
+                        DatePicker("Start Time", selection: $formDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute, .date])
+                            //.datePickerStyle(.compact)
                             .datePickerStyle(GraphicalDatePickerStyle())
+                        
+                        /*
+                        if !preferences.quickAdd {
+                            DatePicker("End Time", selection: $formEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
+                                .datePickerStyle(.compact)
+                            
+                        }
+                         */
+                        
+                        //DatePicker("End Time", selection: $formEndDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute])
                         // DEBUG - Display date information
                         //Text("\(formatTime(inputDate: formDateAndTime))")
                         
+                    }
+                    .onChange(of: formDateAndTime) { _ in
+                        if formDateAndTime.timeIntervalSinceNow > formEndDateAndTime.timeIntervalSinceNow {
+                            formEndDateAndTime = formDateAndTime.addingTimeInterval(60 * 60)
+                            
+                        }
                     }
                     
                     if !preferences.quickAdd {
