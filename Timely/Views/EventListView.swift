@@ -526,17 +526,6 @@ struct EventListView: View {
                     NoEventsView(singleDayDisplay: dateToDisplay != nil ? true : false)
                     
                 } else {
-                    /*
-                    HStack {
-                        Text("Favourite: \(countEvents(withType: .isFavourite, in: eventsToShow))")
-                        Spacer()
-                        Text("Standard: \(countEvents(withType: .isStandard, in: eventsToShow))")
-                        Spacer()
-                        Text("Muted: \(countEvents(withType: .isMuted, in: eventsToShow))")
-                        
-                    }
-                    .padding()
-                     */
                     listDisplay
                     
                 }
@@ -553,22 +542,6 @@ struct EventListView: View {
                 if !eventsToShow.isEmpty {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Menu {
-                            /*
-                            Button {
-                                showFavourite.toggle()
-                                
-                            } label: {
-                                if showFavourite == true {
-                                    Label("Hide Favourite Events", systemImage: "star")
-                                    
-                                } else {
-                                    Label("Show Favourite Events", systemImage: "star")
-                                    
-                                }
-                            }
-                            .disabled((showStandard || showMuted) == false)
-                             */
-                            
                             Button {
                                 showStandard.toggle()
                                 
