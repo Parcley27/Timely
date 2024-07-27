@@ -178,7 +178,7 @@ struct EventListView: View {
         var datesSeen: [UniqueDate] = []
         
         for event in eventsToShow {
-            //if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
+            if (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
                 var isUnique = true
                 
                 for seenDate in datesSeen {
@@ -193,7 +193,7 @@ struct EventListView: View {
                     datesSeen.append(UniqueDate(id: event.dateAndTime))
                     
                 }
-            //}
+            }
         }
         
         return datesSeen
