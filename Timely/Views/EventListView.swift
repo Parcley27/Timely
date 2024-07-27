@@ -127,24 +127,64 @@ struct EventListView: View {
     
     func formatStringForDate(date: Date, style: String?) -> String {
         let dateFormatter = DateFormatter()
+        var dateString: String = ""
         
-        if style == "short" {
-            dateFormatter.dateStyle = .short
+        let oneDayInSeconds: Double = 60 * 60 * 24
+        let oneWeekInSeconds: Double = 60 * 60 * 24 * 7
+        
+        if abs(date.timeIntervalSinceNow) < oneWeekInSeconds {
+            if Calendar.current.isDate(date, inSameDayAs: Date()) {
+                dateString = NSLocalizedString("Today", comment: "")
+                
+            } else if abs(date.timeIntervalSinceNow) < oneDayInSeconds {
+                if date.timeIntervalSinceNow > 0 {
+                    dateString = NSLocalizedString("Tomorrow", comment: "")
+                    
+                } else {
+                    dateString = NSLocalizedString("Yesterday", comment: "")
+                    
+                }
+                
+            } else {
+                dateFormatter.dateFormat = "EEEE"
+                let dayString = dateFormatter.string(from: date)
+                
+                if date.timeIntervalSinceNow > 0.0 {
+                    let stringFormat = NSLocalizedString("Next %@", comment: "")
+                    dateString = String(format: stringFormat, dayString)
+                    
+                } else {
+                    let stringFormat = NSLocalizedString("Last %@", comment: "")
+                    dateString = String(format: stringFormat, dayString)
+                    
+                }
+            }
             
-        } else if style == "long" {
-            dateFormatter.dateStyle = .long
+        } else if Calendar.current.isDate(date, equalTo: Date(), toGranularity: .year) {
+            dateFormatter.dateFormat = "MMMM d"
             
-        } else if style == "full" {
-            dateFormatter.dateStyle = .full
+            let dayString = dateFormatter.string(from: date)
+            dateString = "\(dayString)"
             
         } else {
-            dateFormatter.dateStyle = .medium
+            if style == "short" {
+                dateFormatter.dateStyle = .short
+                
+            } else if style == "long" {
+                dateFormatter.dateStyle = .long
+                
+            } else if style == "full" {
+                dateFormatter.dateStyle = .full
+                
+            } else {
+                dateFormatter.dateStyle = .medium
+                
+            }
             
+            //dateFormatter.dateFormat = "h:mm a 'on' EEEE, MMMM d, yyyy"
+            
+            dateString = dateFormatter.string(from: date)
         }
-        
-        //dateFormatter.dateFormat = "h:mm a 'on' EEEE, MMMM d, yyyy"
-        
-        let dateString = dateFormatter.string(from: date)
         
         return dateString
         
@@ -288,7 +328,7 @@ struct EventListView: View {
                             
                         }
                         .foregroundStyle(event.hasPassed ? .red : .primary)
-                        .bold(event.hasPassed)
+                        .bold(event.hasStarted)
                     
                 }
             }
