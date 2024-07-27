@@ -169,13 +169,11 @@ struct NewEventSheetView: View {
                             //.datePickerStyle(.compact)
                             .datePickerStyle(GraphicalDatePickerStyle())
                         
-                        /*
                         if !preferences.quickAdd {
                             DatePicker("End Time", selection: $formEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
                                 .datePickerStyle(.compact)
                             
                         }
-                         */
                         
                         //DatePicker("End Time", selection: $formEndDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute])
                         // DEBUG - Display date information

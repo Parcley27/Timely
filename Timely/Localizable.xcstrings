@@ -57,6 +57,50 @@
         }
       }
     },
+    "%1$@ to\n%2$@" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ à\n%2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 到\n%2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 到\n%2$@"
+          }
+        }
+      }
+    },
+    "%1$@ to %2$@" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ à %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 到 %2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 到 %2$@"
+          }
+        }
+      }
+    },
     "📅" : {
       "localizations" : {
         "fr-CA" : {
@@ -781,6 +825,28 @@
         }
       }
     },
+    "End Time" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heure de fin"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时间结束"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時間結束"
+          }
+        }
+      }
+    },
     "Favourite" : {
       "localizations" : {
         "en" : {
@@ -895,6 +961,94 @@
         }
       }
     },
+    "h:mm a" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "h:mm a"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ah:mm"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ah:mm"
+          }
+        }
+      }
+    },
+    "h:mm a 'on' EEE, MMMM d, yyyy" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "h:mm a ‘le’ EEE, MMMM d, yyyy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ah:mm '在' EEE yyyy年 MMMMd 日"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ah:mm '在' EEE yyyy年 MMMMd 日"
+          }
+        }
+      }
+    },
+    "h:mm a 'on' EEEE, MMM d, yyyy" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "h:mm a ‘le’ EEEE, MMM d, yyyy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ah:mm '在' EEEE yyyy年 MMMd 日"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ah:mm '在' EEEE yyyy年 MMMd 日"
+          }
+        }
+      }
+    },
+    "h:mm a 'on' EEEE, MMMM d" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "h:mm a ‘le’ EEEE, MMMM d"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ah:mm '在' EEEE MMMMd 日"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ah:mm '在' EEEE MMMMd 日"
+          }
+        }
+      }
+    },
     "h:mm a 'on' EEEE, MMMM d, yyyy" : {
       "localizations" : {
         "en" : {
@@ -918,7 +1072,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ah:mm '在' EEEE, yyyy年MMMMd日"
+            "value" : "ah:mm '在' EEEE yyyy年MMMMd日"
           }
         }
       }

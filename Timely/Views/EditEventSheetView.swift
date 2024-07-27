@@ -81,11 +81,9 @@ struct EditEventSheetView: View {
                         DatePicker("Start Time", selection: $editedDateAndTime, displayedComponents: [.hourAndMinute, .date])
                             //.datePickerStyle(.compact)
                             .datePickerStyle(GraphicalDatePickerStyle())
-                        /*
+                        
                         DatePicker("End Time", selection: $editedEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
                             .datePickerStyle(.compact)
-                         */
-                        
                         
                         //DatePicker("End Time", selection: $formEndDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute])
                         // DEBUG - Display date information
@@ -94,6 +92,7 @@ struct EditEventSheetView: View {
                     }
                     .onAppear() {
                         editedDateAndTime = data[event].dateAndTime
+                        editedEndDateAndTime = data[event].endDateAndTime ?? data[event].dateAndTime
                         
                     }
                     .onChange(of: editedDateAndTime) { _ in
@@ -145,6 +144,7 @@ struct EditEventSheetView: View {
                         }
                         
                         data[event].dateAndTime = editedDateAndTime
+                        data[event].endDateAndTime = editedEndDateAndTime
                         data[event].isFavourite = editedFavourite
                         data[event].isMuted = editedMute
                         

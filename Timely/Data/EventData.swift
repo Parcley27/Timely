@@ -36,9 +36,81 @@ struct Event : Identifiable, Codable {
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .short
         
-        dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d, yyyy", comment: "")
+        var formattedDate = "Event Date and Time String"
         
-        let formattedDate = dateFormatter.string(from: dateAndTime)
+        func isBeforeOrAfter12(date: Date) -> String {
+            let calendar = Calendar.current
+            let hour = calendar.component(.hour, from: date)
+            
+            if hour < 12 {
+                return "AM"
+                
+            } else {
+                return "PM"
+                
+            }
+        }
+        
+        if endDateAndTime != nil {
+            if dateAndTime == endDateAndTime! {
+                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d, yyyy", comment: "")
+                
+                formattedDate = dateFormatter.string(from: dateAndTime)
+                
+            } else if Calendar.current.isDate(dateAndTime, equalTo: endDateAndTime!, toGranularity: .day) {
+                if isBeforeOrAfter12(date: dateAndTime) == isBeforeOrAfter12(date: endDateAndTime!) {
+                    dateFormatter.dateFormat = "h:mm"
+                    let firstTime = dateFormatter.string(from: dateAndTime)
+                    
+                    dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEE, MMMM d, yyyy", comment: "")
+                    let secondTime = dateFormatter.string(from: endDateAndTime!)
+                    
+                    // "\(firstTime) to \(secondTime)"
+                    let stringFormat = NSLocalizedString("%1$@ to %2$@", comment: "")
+                    formattedDate = String(format: stringFormat, firstTime, secondTime)
+                    
+                } else {
+                    dateFormatter.dateFormat = NSLocalizedString("h:mm a", comment: "")
+                    let firstTime = dateFormatter.string(from: dateAndTime)
+                    
+                    dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEE, MMMM d, yyyy", comment: "")
+                    let secondTime = dateFormatter.string(from: endDateAndTime!)
+                    
+                    // "\(firstTime) to \(secondTime)"
+                    let stringFormat = NSLocalizedString("%1$@ to %2$@", comment: "")
+                    formattedDate = String(format: stringFormat, firstTime, secondTime)
+                    
+                }
+                
+            } else if Calendar.current.isDate(dateAndTime, equalTo: endDateAndTime!, toGranularity: .year) {
+                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d", comment: "")
+                let firstTime = dateFormatter.string(from: dateAndTime)
+                
+                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d, yyyy", comment: "")
+                let secondTime = dateFormatter.string(from: endDateAndTime!)
+                
+                // "\(firstTime) to\n\(secondTime)"
+                let stringFormat = NSLocalizedString("%1$@ to %2$@", comment: "")
+                formattedDate = String(format: stringFormat, firstTime, secondTime)
+                
+            } else {
+                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMM d, yyyy", comment: "")
+                
+                let firstTime = dateFormatter.string(from: dateAndTime)
+                let secondTime = dateFormatter.string(from: endDateAndTime!)
+                
+                // "\(firstTime) to\n\(secondTime)"
+                let stringFormat = NSLocalizedString("%1$@ to\n%2$@", comment: "")
+                formattedDate = String(format: stringFormat, firstTime, secondTime)
+                
+            }
+            
+        } else {
+            dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d, yyyy", comment: "")
+            
+            formattedDate = dateFormatter.string(from: dateAndTime)
+            
+        }
         
         return formattedDate
         
