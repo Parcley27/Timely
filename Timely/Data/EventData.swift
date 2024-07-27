@@ -117,7 +117,8 @@ struct Event : Identifiable, Codable {
     }
     
     var timeUntil: String {
-        let timeInterval = dateAndTime.timeIntervalSinceNow
+        let timeIntervalToStart = dateAndTime.timeIntervalSinceNow
+        let timeIntervalToEnd = endDateAndTime?.timeIntervalSinceNow ?? dateAndTime.timeIntervalSinceNow
         
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .full
@@ -125,10 +126,10 @@ struct Event : Identifiable, Codable {
         let oneDayInSeconds = 86000.0
         let oneHourInSeconds = 3600.0
         
-        if timeInterval > oneDayInSeconds || timeInterval < -oneDayInSeconds {
+        if timeIntervalToStart > oneDayInSeconds || timeIntervalToEnd < -oneDayInSeconds {
             formatter.allowedUnits = [.year, .month, .day, .hour]
             
-        } else if timeInterval > oneHourInSeconds || timeInterval < -oneHourInSeconds {
+        } else if timeIntervalToStart > oneHourInSeconds || timeIntervalToEnd < -oneHourInSeconds {
             formatter.allowedUnits = [.day, .hour, .minute]
             
         } else {
@@ -145,27 +146,49 @@ struct Event : Identifiable, Codable {
         }
          */
         
-        if var formattedString = formatter.string(from: timeInterval) {
-            if hasPassed {
-                formattedString.remove(at: formattedString.startIndex)
+        //if hasStarted == false {
+            //return formatter.string(from: timeIntervalToStart)!
+        
+        if hasPassed {
+            if var timePastString = formatter.string(from: timeIntervalToEnd) {
+                timePastString.remove(at: timePastString.startIndex)
                 
                 let timeAgoFormat = NSLocalizedString("%@ ago", comment: "")
-                
-                return String(format: timeAgoFormat, formattedString)
+                return String(format: timeAgoFormat, timePastString)
                 
             } else {
-                return formattedString
+                return NSLocalizedString("Time Unknown", comment: "")
                 
             }
             
+        } else if hasStarted && !hasPassed {
+            return NSLocalizedString("Right Now", comment: "")
+            
         } else {
-            return NSLocalizedString("Time Unknown", comment: "")
+            if let timeUntilString = formatter.string(from: timeIntervalToStart) {
+                return timeUntilString
+                
+            } else {
+                return NSLocalizedString("Time Unknown", comment: "")
+                
+            }
+        }
+    }
+    
+    var hasStarted: Bool {
+        let timeInterval = dateAndTime.timeIntervalSinceNow
+        
+        if timeInterval <= 0.0 {
+            return true
+            
+        } else {
+            return false
             
         }
     }
     
     var hasPassed: Bool {
-        let timeInterval = dateAndTime.timeIntervalSinceNow
+        let timeInterval = endDateAndTime?.timeIntervalSinceNow ?? dateAndTime.timeIntervalSinceNow
         
         if timeInterval <= 0.0 {
             return true
@@ -178,7 +201,7 @@ struct Event : Identifiable, Codable {
     
     // One hour in seconds
     func hasExpired(maxTime: Int = 3600) -> Bool {
-        let timeInterval = dateAndTime.timeIntervalSinceNow
+        let timeInterval = endDateAndTime?.timeIntervalSinceNow ?? dateAndTime.timeIntervalSinceNow
         
         if timeInterval < -Double(maxTime) {
             return true
