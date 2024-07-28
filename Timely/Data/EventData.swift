@@ -26,8 +26,23 @@ struct Event : Identifiable, Codable {
         return currentDate.addingTimeInterval(oneDayInSeconds)
         
     }()
-    
     var endDateAndTime: Date?
+    var isOnDates: [Date] {
+        var dates: [Date] = []
+        var currentDate = dateAndTime
+        
+        let oneDayInSeconds: Double = 24 * 60 * 60
+        
+        while currentDate <= endDateAndTime ?? dateAndTime {
+            dates.append(currentDate)
+            
+            currentDate = currentDate.addingTimeInterval(oneDayInSeconds)
+            
+        }
+        
+        return dates
+        
+    }
     
     var dateString: String? {
         let dateFormatter = DateFormatter()

@@ -144,13 +144,16 @@ struct CalendarView: View {
         let matchingDay = searchingDay.day
         
         for event in data {
-            let eventYear = Calendar.current.component(.year, from: event.dateAndTime)
-            let eventMonth = Calendar.current.component(.month, from: event.dateAndTime)
-            let eventDay = Calendar.current.component(.day, from: event.dateAndTime)
-            
-            if matchingYear == eventYear && matchingMonth == eventMonth && matchingDay == eventDay {
-                matchingEvents.append(event)
+            for occuringDate in event.isOnDates {
+                let eventYear = Calendar.current.component(.year, from: occuringDate)
+                let eventMonth = Calendar.current.component(.month, from: occuringDate)
+                let eventDay = Calendar.current.component(.day, from: occuringDate)
                 
+                if matchingYear == eventYear && matchingMonth == eventMonth && matchingDay == eventDay {
+                    matchingEvents.append(event)
+                    
+                    break
+                }
             }
         }
         
