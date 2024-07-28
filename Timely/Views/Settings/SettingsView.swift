@@ -57,6 +57,7 @@ struct SettingsView: View {
             }
         }
         .foregroundStyle(.blue)
+        
     }
     
     var body: some View {
@@ -66,6 +67,7 @@ struct SettingsView: View {
                     Section("App Behaviour") {
                         Toggle(isOn: $preferences.quickAdd) {
                             Text("Quick-Add Events")
+                            
                         }
                         
                         Toggle(isOn: $preferences.showBadge) {
@@ -89,6 +91,7 @@ struct SettingsView: View {
                             }
                         )) {
                             Text("Keep Event History")
+                            
                         }
                         .confirmationDialog(Text("Turn Off Event History?"),
                             isPresented: $showConfirmationDialog,
@@ -206,6 +209,7 @@ struct SettingsView: View {
                 }
             }
             .navigationBarTitle("Settings", displayMode: .inline)
+            
         }
     }
 }

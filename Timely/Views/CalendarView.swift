@@ -51,6 +51,7 @@ struct CalendarView: View {
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
         return formatter.string(from: NSNumber(value: number)) ?? "\(number)"
+        
     }
     
     var dayNames: [String] {
@@ -76,6 +77,7 @@ struct CalendarView: View {
         }
         
         return [""]
+        
     }
     
     func isCurrentDay(possibleDay: CalendarDay) -> Bool {
@@ -85,6 +87,7 @@ struct CalendarView: View {
         }
         
         return false
+        
     }
     
     var firstDayOfMonth: Int {
