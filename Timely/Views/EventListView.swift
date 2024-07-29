@@ -195,9 +195,13 @@ struct EventListView: View {
         
         if dateToDisplay != nil {
             for event in data {
-                if compareDates(event: event, date: dateToDisplay){
-                    agreeingEvents.append(event)
-                    
+                for occuringDate in event.isOnDates {
+                    if Calendar.current.isDate(occuringDate, equalTo: dateToDisplay!, toGranularity: .day) {
+                        agreeingEvents.append(event)
+                        
+                        break
+                        
+                    }
                 }
             }
             
@@ -290,9 +294,11 @@ struct EventListView: View {
             }
             
         } else {
-            if compareDates(event: event, date: dateToDisplay) {
-                return true
-                
+            for occuringDate in event.isOnDates {
+                if Calendar.current.isDate(occuringDate, equalTo: dateToDisplay!, toGranularity: .day) {
+                    return true
+                    
+                }
             }
         }
         
@@ -351,67 +357,15 @@ struct EventListView: View {
             let index = $data.firstIndex(where: { $0.id == event.id })
             
             if shouldDisplay(event: event, dateToDisplay: dateToDisplay) && shouldDisplay(event: event, dateToDisplay: section.id) {
-                if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
-                    
-                    NavigationLink(destination: EventDetailView(data: $data, event: index!)) {
-                        eventTile(event: event)
-                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                Button {
-                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                        data[index].isFavourite.toggle()
-                                        Task {
-                                            do {
-                                                try await EventStore().save(events: data)
-                                                
-                                            } catch {
-                                                fatalError(error.localizedDescription)
-                                                
-                                            }
-                                        }
-                                    }
-                                    
-                                    print("Toggling favourite on \(event)")
-                                    
-                                } label: {
-                                    if event.isFavourite == true {
-                                        Label("Unfavourite", systemImage: "star.slash.fill")
-                                        
-                                    } else {
-                                        Label("Favourite", systemImage: "star.fill")
-                                        
-                                    }
-                                }
-                                .tint(.yellow)
-                                
-                            }
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                        data.remove(at: index)
-                                        
-                                        Task {
-                                            do {
-                                                try await EventStore().save(events: data)
-                                                
-                                            } catch {
-                                                fatalError(error.localizedDescription)
-                                                
-                                            }
-                                        }
-                                    }
-                                    
-                                    print("Deleting \($event)")
-                                    
-                                } label: {
-                                    Label("Delete", systemImage: "trash.fill")
-                                    
-                                }
-                                .tint(.red)
-                                
-                                if editMode == .inactive {
+                if dateToDisplay != nil || Calendar.current.isDate(event.dateAndTime, inSameDayAs: section.id) {
+                    if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
+                        
+                        NavigationLink(destination: EventDetailView(data: $data, event: index!)) {
+                            eventTile(event: event)
+                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                     Button {
                                         if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                            data[index].isMuted.toggle()
+                                            data[index].isFavourite.toggle()
                                             Task {
                                                 do {
                                                     try await EventStore().save(events: data)
@@ -423,95 +377,152 @@ struct EventListView: View {
                                             }
                                         }
                                         
-                                        print("Toggling mute on \(event)")
+                                        print("Toggling favourite on \(event)")
                                         
                                     } label: {
-                                        if event.isMuted == true {
-                                            Label("Unmute", systemImage: "bell.fill")
+                                        if event.isFavourite == true {
+                                            Label("Unfavourite", systemImage: "star.slash.fill")
                                             
                                         } else {
-                                            Label("Mute", systemImage: "bell.slash.fill")
+                                            Label("Favourite", systemImage: "star.fill")
                                             
                                         }
                                     }
-                                    .tint(.indigo)
+                                    .tint(.yellow)
+                                    
+                                }
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) {
+                                        if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                            data.remove(at: index)
+                                            
+                                            Task {
+                                                do {
+                                                    try await EventStore().save(events: data)
+                                                    
+                                                } catch {
+                                                    fatalError(error.localizedDescription)
+                                                    
+                                                }
+                                            }
+                                        }
+                                        
+                                        print("Deleting \($event)")
+                                        
+                                    } label: {
+                                        Label("Delete", systemImage: "trash.fill")
+                                        
+                                    }
+                                    .tint(.red)
+                                    
+                                    if editMode == .inactive {
+                                        Button {
+                                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                                data[index].isMuted.toggle()
+                                                Task {
+                                                    do {
+                                                        try await EventStore().save(events: data)
+                                                        
+                                                    } catch {
+                                                        fatalError(error.localizedDescription)
+                                                        
+                                                    }
+                                                }
+                                            }
+                                            
+                                            print("Toggling mute on \(event)")
+                                            
+                                        } label: {
+                                            if event.isMuted == true {
+                                                Label("Unmute", systemImage: "bell.fill")
+                                                
+                                            } else {
+                                                Label("Mute", systemImage: "bell.slash.fill")
+                                                
+                                            }
+                                        }
+                                        .tint(.indigo)
+                                        
+                                    }
+                                }
+                            //.disabled(!isEditing)
+                        }
+                        .contextMenu {
+                            Button {
+                                if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                    data[index].isFavourite.toggle()
+                                    Task {
+                                        do {
+                                            try await EventStore().save(events: data)
+                                            
+                                        } catch {
+                                            fatalError(error.localizedDescription)
+                                            
+                                        }
+                                    }
+                                }
+                                
+                            } label: {
+                                if event.isFavourite {
+                                    Label("Unfavourite", systemImage: "star.slash")
+                                    
+                                } else {
+                                    Label("Favourite", systemImage: "star")
                                     
                                 }
                             }
-                        //.disabled(!isEditing)
-                    }
-                    .contextMenu {
-                        Button {
-                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                data[index].isFavourite.toggle()
-                                Task {
-                                    do {
-                                        try await EventStore().save(events: data)
-                                        
-                                    } catch {
-                                        fatalError(error.localizedDescription)
-                                        
-                                    }
-                                }
-                            }
-                        } label: {
-                            if event.isFavourite {
-                                Label("Unfavourite", systemImage: "star.slash")
-                                
-                            } else {
-                                Label("Favourite", systemImage: "star")
-                                
-                            }
-                        }
-                        
-                        Button {
-                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                data[index].isMuted.toggle()
-                                Task {
-                                    do {
-                                        try await EventStore().save(events: data)
-                                        
-                                    } catch {
-                                        fatalError(error.localizedDescription)
-                                        
-                                    }
-                                }
-                            }
-                        } label: {
-                            if event.isMuted {
-                                Label("Unmute", systemImage: "bell")
-                                
-                            } else {
-                                Label("Mute", systemImage: "bell.slash")
-                                
-                            }
-                        }
-                        
-                        NavigationLink(
-                            destination: EventDetailView(data: $data, event: 0, showEditEventSheet: true),
-                            label: {
-                                Label("Edit", systemImage: "slider.horizontal.3")
-                            })
-                        
-                        Divider()
-                        
-                        Button {
-                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                data.remove(at: index)
-                                
-                                Task {
-                                    do {
-                                        try await EventStore().save(events: data)
-                                        
-                                    } catch {
-                                        fatalError(error.localizedDescription)
-                                        
-                                    }
-                                }
-                            }
-                        } label: {
-                            Label("Delete \"\(event.name!)\"", systemImage: "trash")
                             
+                            Button {
+                                if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                    data[index].isMuted.toggle()
+                                    Task {
+                                        do {
+                                            try await EventStore().save(events: data)
+                                            
+                                        } catch {
+                                            fatalError(error.localizedDescription)
+                                            
+                                        }
+                                    }
+                                }
+                                
+                            } label: {
+                                if event.isMuted {
+                                    Label("Unmute", systemImage: "bell")
+                                    
+                                } else {
+                                    Label("Mute", systemImage: "bell.slash")
+                                    
+                                }
+                            }
+                            
+                            NavigationLink(
+                                destination: EventDetailView(data: $data, event: 0, showEditEventSheet: true),
+                                label: {
+                                    Label("Edit", systemImage: "slider.horizontal.3")
+                                })
+                            
+                            Divider()
+                            
+                            Button {
+                                if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                    data.remove(at: index)
+                                    
+                                    Task {
+                                        do {
+                                            try await EventStore().save(events: data)
+                                            
+                                        } catch {
+                                            fatalError(error.localizedDescription)
+                                            
+                                        }
+                                    }
+                                }
+                                
+                            } label: {
+                                Label("Delete \"\(event.name!)\"", systemImage: "trash")
+                                
+                            }
                         }
                     }
                 }

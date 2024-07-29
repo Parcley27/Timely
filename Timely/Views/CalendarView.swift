@@ -153,6 +153,7 @@ struct CalendarView: View {
                     matchingEvents.append(event)
                     
                     break
+                    
                 }
             }
         }
