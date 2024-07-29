@@ -10,11 +10,9 @@ import SwiftUI
 struct EditEventSheetView: View {
     @Binding var data: [Event]
     let event: Int
-        
-    @FocusState private var isTextFieldFocused: Bool
     
     @Environment(\.dismiss) var dismiss
-                
+    
     @State var editedName: String = ""
     @State var editedEmoji: String = ""
     @State var editedDescription: String = ""
@@ -42,9 +40,7 @@ struct EditEventSheetView: View {
                 Form {
                     Section("About") {
                         TextField(data[event].name ?? "Name", text: $editedName)
-                            .focused($isTextFieldFocused)
                             .onAppear() {
-                                isTextFieldFocused = true
                                 editedName = data[event].name ?? "Name"
                                 
                             }
