@@ -40,6 +40,7 @@ struct EditEventSheetView: View {
                 Form {
                     Section("About") {
                         TextField(data[event].name ?? "Name", text: $editedName)
+                            .textInputAutocapitalization(.words)
                             .onAppear() {
                                 editedName = data[event].name ?? "Name"
                                 
