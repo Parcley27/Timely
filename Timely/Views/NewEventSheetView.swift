@@ -136,6 +136,7 @@ struct NewEventSheetView: View {
                 List {
                     Section("About") {
                         TextField("Name", text: $formName)
+                            .textInputAutocapitalization(.words)
                             .focused($isTextFieldFocused)
                             .onAppear {
                                 isTextFieldFocused = true
