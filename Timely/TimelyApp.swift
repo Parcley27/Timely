@@ -28,7 +28,7 @@ struct TimelyApp: App {
             return passedEvents
             
         } else {
-            return nil
+            return []
             
         }
     }
