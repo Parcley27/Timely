@@ -35,7 +35,11 @@ class EventStore: ObservableObject {
                 }
                 
                 let loadedEvents = try JSONDecoder().decode([Event].self, from: data)
-                self.events = loadedEvents
+                
+                DispatchQueue.main.async {
+                    self.events = loadedEvents
+                    
+                }
                 
             } catch {
                 print("Failed to load events from iCloud: \(error)")
