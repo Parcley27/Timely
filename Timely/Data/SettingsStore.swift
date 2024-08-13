@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 class SettingsStore: ObservableObject {
     var showBadge: Bool {
         didSet {
-            UserDefaults.standard.set(showBadge, forKey: "showBadge")
+            saveToiCloud("showBadge", value: showBadge)
             
         }
     }
@@ -18,7 +19,7 @@ class SettingsStore: ObservableObject {
     // deletePassedEvents
     var removePassedEvents: Bool {
         didSet {
-            UserDefaults.standard.set(removePassedEvents, forKey: "removePassedEvents")
+            saveToiCloud("removePassedEvents", value: removePassedEvents)
             
         }
     }
@@ -26,14 +27,14 @@ class SettingsStore: ObservableObject {
     // archiveOldEvents
     var keepEventHistory: Bool {
         didSet {
-            UserDefaults.standard.set(keepEventHistory, forKey: "keepEventHistory")
+            saveToiCloud("keepEventHistory", value: keepEventHistory)
             
         }
     }
     
     var quickAdd: Bool {
         didSet {
-            UserDefaults.standard.set(quickAdd, forKey: "quickAdd")
+            saveToiCloud("quickAdd", value: quickAdd)
             
         }
     }
@@ -47,12 +48,31 @@ class SettingsStore: ObservableObject {
     }
      */
     
+    private var iCloudStore: NSUbiquitousKeyValueStore
+    private var cancellables = Set<AnyCancellable>()
+    
     init() {
-        self.showBadge = UserDefaults.standard.object(forKey: "showBadge") as? Bool ?? true
-        self.removePassedEvents = UserDefaults.standard.object(forKey: "removePassedEvents") as? Bool ?? true
-        self.keepEventHistory = UserDefaults.standard.object(forKey: "keepEventHistory") as? Bool ?? true
-        self.quickAdd = UserDefaults.standard.object(forKey: "quickAdd") as? Bool ?? false
-        //self.stringData = UserDefaults.standard.object(forKey: "stringData") as? String ?? ""
+        self.iCloudStore = NSUbiquitousKeyValueStore.default
+        self.showBadge = iCloudStore.object(forKey: "showBadge") as? Bool ?? true
+        self.removePassedEvents = iCloudStore.object(forKey: "removePassedEvents") as? Bool ?? true
+        self.keepEventHistory = iCloudStore.object(forKey: "keepEventHistory") as? Bool ?? true
+        self.quickAdd = iCloudStore.object(forKey: "quickAdd") as? Bool ?? false
+        
+        // Sync changes from iCloud to the local state
+        NotificationCenter.default.publisher(for: NSUbiquitousKeyValueStore.didChangeExternallyNotification)
+            .sink { _ in
+                self.showBadge = self.iCloudStore.object(forKey: "showBadge") as? Bool ?? true
+                self.removePassedEvents = self.iCloudStore.object(forKey: "removePassedEvents") as? Bool ?? true
+                self.keepEventHistory = self.iCloudStore.object(forKey: "keepEventHistory") as? Bool ?? true
+                self.quickAdd = self.iCloudStore.object(forKey: "quickAdd") as? Bool ?? false
+                
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func saveToiCloud(_ key: String, value: Any) {
+        iCloudStore.set(value, forKey: key)
+        iCloudStore.synchronize()
         
     }
 }
