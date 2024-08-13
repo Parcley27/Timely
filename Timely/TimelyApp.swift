@@ -83,11 +83,9 @@ struct TimelyApp: App {
                         }
                         .task {
                             do {
-                                try await eventList.load()
+                                //try await eventList.load()
+                                eventList.loadFromiCloud()
                                 print("Loading events: \(eventList.events)")
-                                
-                            } catch {
-                                fatalError(error.localizedDescription)
                                 
                             }
                         }
@@ -112,11 +110,9 @@ struct TimelyApp: App {
                             }
                             .task {
                                 do {
-                                    try await eventList.load()
+                                    //try await eventList.load()
+                                    eventList.loadFromiCloud()
                                     print("Loading events: \(eventList.events)")
-                                    
-                                } catch {
-                                    fatalError(error.localizedDescription)
                                     
                                 }
                             }
@@ -135,11 +131,9 @@ struct TimelyApp: App {
                             }
                             .task {
                                 do {
-                                    try await eventList.load()
+                                    //try await eventList.load()
+                                    eventList.loadFromiCloud()
                                     print("Loading events: \(eventList.events)")
-                                    
-                                } catch {
-                                    fatalError(error.localizedDescription)
                                     
                                 }
                             }
@@ -159,11 +153,9 @@ struct TimelyApp: App {
                         }
                         .task {
                             do {
-                                try await eventList.load()
+                                //try await eventList.load()
+                                eventList.loadFromiCloud()
                                 print("Loading events: \(eventList.events)")
-                                
-                            } catch {
-                                fatalError(error.localizedDescription)
                                 
                             }
                         }

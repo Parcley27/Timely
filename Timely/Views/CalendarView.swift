@@ -264,12 +264,10 @@ struct CalendarView: View {
                             }
                             .task {
                                 do {
-                                    try await eventList.load()
+                                    //try await eventList.load()
+                                    eventList.loadFromiCloud()
                                     print("Loading events: \(eventList.events)")
-                                    
-                                } catch {
-                                    fatalError(error.localizedDescription)
-                                    
+                                  
                                 }
                             }) {
                                 ZStack {
@@ -314,10 +312,9 @@ struct CalendarView: View {
                         }
                         .task {
                             do {
-                                try await eventList.load()
+                                //try await eventList.load()
+                                eventList.loadFromiCloud()
                                 print("Loading events: \(eventList.events)")
-                            } catch {
-                                fatalError(error.localizedDescription)
                             }
                         }) {
                             Text("Today")
