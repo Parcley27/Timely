@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 class SettingsStore: ObservableObject {
-    var showBadge: Bool {
+    @Published var showBadge: Bool {
         didSet {
             saveToiCloud("showBadge", value: showBadge)
             
@@ -17,7 +17,7 @@ class SettingsStore: ObservableObject {
     }
     
     // deletePassedEvents
-    var removePassedEvents: Bool {
+    @Published var removePassedEvents: Bool {
         didSet {
             saveToiCloud("removePassedEvents", value: removePassedEvents)
             
@@ -25,14 +25,14 @@ class SettingsStore: ObservableObject {
     }
     
     // archiveOldEvents
-    var keepEventHistory: Bool {
+    @Published var keepEventHistory: Bool {
         didSet {
             saveToiCloud("keepEventHistory", value: keepEventHistory)
             
         }
     }
     
-    var quickAdd: Bool {
+    @Published var quickAdd: Bool {
         didSet {
             saveToiCloud("quickAdd", value: quickAdd)
             
