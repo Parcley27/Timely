@@ -158,7 +158,10 @@ struct SettingsView: View {
                         
                     }
                     
-                    Section("App Information"){
+                    Section("App Information") {
+                        Text("Version")
+                            .badge("v\(TimelyApp().versionNumber) - Build \(TimelyApp().buildNumber)")
+                        
                         Button() {
                             openURL(URL(string: "https://github.com/Parcley27/Timely")!)
                             
@@ -166,10 +169,6 @@ struct SettingsView: View {
                             customButton(text: NSLocalizedString("Timely GitHub", comment: ""), icon: "arrow.up.forward.app")
                             
                         }
-                        
-                        Text("Version")
-                            .badge("v\(TimelyApp().versionNumber) - Build \(TimelyApp().buildNumber)")
-                        
                     }
                 }
             }
