@@ -124,7 +124,7 @@ struct EditEventSheetView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        data[event].name = editedName
+                        data[event].name = editedName.trimmingCharacters(in: .whitespaces)
                         
                         if editedEmoji == "" {
                             data[event].emoji = "📅"
@@ -136,7 +136,7 @@ struct EditEventSheetView: View {
                         }
                         
                         if editedDescription != "" {
-                            data[event].description = editedDescription
+                            data[event].description = editedDescription.trimmingCharacters(in: .whitespaces)
                             
                         }
                         

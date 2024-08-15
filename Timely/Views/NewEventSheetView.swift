@@ -85,9 +85,9 @@ struct NewEventSheetView: View {
         }
         
         let newEvent = Event (
-            name: formName,
+            name: formName.trimmingCharacters(in: .whitespaces),
             emoji: formEmoji,
-            description: (formDescription != "" ? formDescription : nil),
+            description: (formDescription != "" ? formDescription.trimmingCharacters(in: .whitespaces) : nil),
             dateAndTime: formDateAndTime,
             endDateAndTime: formEndDateAndTime,
             isFavourite: formFavourited,
