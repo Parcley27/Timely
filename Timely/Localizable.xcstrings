@@ -865,6 +865,34 @@
         }
       }
     },
+    "Ending in %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ending in %@"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se termine dans %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将在 %@ 结束"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將在 %@ 結束"
+          }
+        }
+      }
+    },
     "Event History" : {
       "localizations" : {
         "en" : {
@@ -1655,16 +1683,10 @@
     },
     "Right Now" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Right Now"
-          }
-        },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maintenant"
+            "value" : "Tout de suite"
           }
         },
         "zh-Hans" : {

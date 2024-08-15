@@ -177,7 +177,26 @@ struct Event : Identifiable, Codable {
             }
             
         } else if hasStarted && !hasPassed {
-            return NSLocalizedString("Right Now", comment: "")
+            //let rightNowString = NSLocalizedString("Right Now", comment: "")
+            
+            formatter.unitsStyle = .short
+            
+            if timeIntervalToEnd > -oneDayInSeconds {
+                formatter.allowedUnits = [.year, .month, .day, .hour]
+                
+            } else if timeIntervalToEnd > -oneHourInSeconds {
+                formatter.allowedUnits = [.day, .hour, .minute]
+                
+            } else {
+                formatter.allowedUnits = [.minute, .second]
+            }
+            
+            let timeUntilEnd = formatter.string(from: timeIntervalToEnd)!
+            let endingInFormat = NSLocalizedString("Ending in %@", comment: "")
+            let timeUntilEndString = String(format: endingInFormat, timeUntilEnd)
+            
+            //return (rightNowString + "\n") + timeUntilEndString
+            return timeUntilEndString
             
         } else {
             if let timeUntilString = formatter.string(from: timeIntervalToStart) {
