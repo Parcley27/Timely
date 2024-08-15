@@ -497,7 +497,7 @@ struct EventListView: View {
                             }
                             
                             NavigationLink(
-                                destination: EventDetailView(data: $data, event: 0, showEditEventSheet: true),
+                                destination: EventDetailView(data: $data, event: $data.firstIndex(where: { $0.id == event.id }) ?? 0, showEditEventSheet: true),
                                 label: {
                                     Label("Edit", systemImage: "slider.horizontal.3")
                                 })
