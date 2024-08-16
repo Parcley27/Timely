@@ -205,7 +205,7 @@ struct TimelyApp: App {
             }
             
             .onAppear {
-                EventStore().scheduleNotificationsForAllEvents()
+                NotificationManager().scheduleNotificationsForAllEvents()
                 
             }
         }
