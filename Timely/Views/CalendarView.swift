@@ -163,15 +163,22 @@ struct CalendarView: View {
     }
     
     func computedOpacity(day: CalendarDay) -> Double {
-        var opacity = 1.0
+        var opacity = 0.3
         
-        let multiplier = 0.15
+        let multiplier = 0.2
         
         if isCurrentDay(possibleDay: day) && month == currentMonth && year == currentYear {
             opacity = 1.0
+            /*
+            opacity = 0.35 + (Double(eventsOnDay(searchingDay: day).count) * multiplier)
+            if opacity > 0.75 {
+                opacity = 0.75
+                
+            }
+             */
             
         } else  {
-            opacity = 0.4 + (Double(eventsOnDay(searchingDay: day).count) * multiplier)
+            opacity = 0.30 + (Double(eventsOnDay(searchingDay: day).count) * multiplier)
             if opacity > 0.75 {
                 opacity = 0.75
                 
@@ -185,6 +192,7 @@ struct CalendarView: View {
     
     var body: some View {
         NavigationStack {
+            VStack {
                 HStack {
                     Button() {
                         if month == 1 {
@@ -244,12 +252,14 @@ struct CalendarView: View {
                         ForEach(dayNames, id: \.self) { name in
                             Text(name)
                                 .foregroundStyle(.primary)
+                                .bold()
                         }
                     }
                     .padding(.horizontal)
                     //.padding(.top)
                     
-                    LazyVGrid(columns: columnLayout, spacing: 5) {
+                    //LazyVGrid(columns: columnLayout, spacing: 5) {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
                         ForEach(daysInMonth, id: \.self) { tile in
                             NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date) {
                                 Task {
@@ -262,39 +272,57 @@ struct CalendarView: View {
                                     }
                                 }
                             }
-                            .task {
-                                do {
-                                    //try await eventList.load()
-                                    eventList.loadFromiCloud()
-                                    print("Loading events: \(eventList.events)")
-                                  
-                                }
-                            }) {
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .aspectRatio(0.9, contentMode: .fit)
-                                        .foregroundStyle(tile.isPlaceholder ? .clear : isCurrentDay(possibleDay: tile) ? Color.accentColor : .primary)
-                                        .opacity(computedOpacity(day: tile))
-                                    
-                                    if !tile.isPlaceholder {
-                                        VStack(spacing: 4) {
-                                            Text(localizedNumber(tile.day!))
-                                                .foregroundStyle(.background)
-                                                .font(.title2)
-                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                                                .bold()
+                                .task {
+                                    do {
+                                        //try await eventList.load()
+                                        eventList.loadFromiCloud()
+                                        print("Loading events: ")
+                                        
+                                        for event in eventList.events {
+                                            print(event.name!, terminator: " ")
                                             
-                                            Image(systemName: "circle.fill")
-                                                .resizable()
-                                                .opacity(eventsOnDay(searchingDay: tile).count > 0 ? 1.0 : 0.0)
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 8, height: 12, alignment: .top)
-                                                .foregroundStyle(.background)
+                                        }
+                                        
+                                        print("")
+                                        
+                                    }
+                                }) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .aspectRatio(0.7, contentMode: .fit)
+                                            .foregroundStyle(tile.isPlaceholder ? .clear : isCurrentDay(possibleDay: tile) ? Color.accentColor : .blue)
+                                            .opacity(computedOpacity(day: tile))
+                                            .shadow(radius: isCurrentDay(possibleDay: tile) ? 8 : 0)
+                                        
+                                        if !tile.isPlaceholder {
+                                            VStack(spacing: 4) {
+                                                Text(localizedNumber(tile.day!))
+                                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                                                    .font(.title3)
+                                                    .bold()
+                                                    .foregroundStyle(.white)
+                                                    .cornerRadius(8)
+                                                
+                                                let eventsOnThisDay = eventsOnDay(searchingDay: tile).count
+                                                
+                                                let capsuleHeight = 6.0
+                                                let capsuleWidth = capsuleHeight/2 + (capsuleHeight * Double(eventsOnThisDay))
+                                                
+                                                Capsule()
+                                                    .fill(.white)
+                                                    .opacity(eventsOnThisDay > 0 ? 1.0 : 0.0)
+                                                    .frame(width: capsuleWidth > 30 ? 30 : capsuleWidth, height: capsuleHeight)
+                                                
+                                                Spacer()
+                                                
+                                            }
+                                            .shadow(radius: 8)
+                                            
                                         }
                                     }
                                 }
-                            }
                         }
+                        .padding(.vertical, 2)
                     }
                     .padding(.horizontal)
                     Spacer()
@@ -342,7 +370,7 @@ struct CalendarView: View {
                 }
                 .navigationBarTitle("Calendar")
                 //.navigationBarTitle("\(monthNames[month - 1]) \(String(year))")
-            
+            }
         }
     }
 }
