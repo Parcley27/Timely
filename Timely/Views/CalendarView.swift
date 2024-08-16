@@ -310,15 +310,23 @@ struct CalendarView: View {
                                 }
                             }
                         }
-                        .task {
-                            do {
-                                //try await eventList.load()
-                                eventList.loadFromiCloud()
-                                print("Loading events: \(eventList.events)")
+                            .task {
+                                do {
+                                    //try await eventList.load()
+                                    eventList.loadFromiCloud()
+                                    print("Loading events: ")
+                                    
+                                    for event in eventList.events {
+                                        print(event.name!, terminator: " ")
+                                        
+                                    }
+                                    
+                                    print("")
+                                    
+                                }
+                            }) {
+                                Text("Today")
                             }
-                        }) {
-                            Text("Today")
-                        }
                     }
                     
                     ToolbarItem(placement: .navigationBarTrailing) {

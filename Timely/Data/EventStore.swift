@@ -31,10 +31,14 @@ class EventStore: ObservableObject {
         
         if let data = store.data(forKey: "events") {
             do {
+                /*
                 if let jsonString = String(data: data, encoding: .utf8) {
-                    print("Loaded JSON from iCloud: \(jsonString)")
+                    //print("Loaded JSON from iCloud: \(jsonString)")
                     
                 }
+                */
+                
+                print("Loaded JSON from iCloud")
                 
                 let loadedEvents = try JSONDecoder().decode([Event].self, from: data)
                 
@@ -66,7 +70,7 @@ class EventStore: ObservableObject {
     // Save to iCloud
     func saveToiCloud(events: [Event]) {
         print("Saving to iCloud")
-        print(events)
+        //print(events)
         
         let store = NSUbiquitousKeyValueStore.default
         
@@ -114,7 +118,7 @@ class EventStore: ObservableObject {
         print("Saving to local storage")
         
         let task = Task {
-            print(events)
+            //print(events)
             let data = try JSONEncoder().encode(events)
             let outfile = try Self.fileURL()
             try data.write(to: outfile)

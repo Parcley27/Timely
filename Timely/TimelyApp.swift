@@ -85,7 +85,15 @@ struct TimelyApp: App {
                             do {
                                 //try await eventList.load()
                                 eventList.loadFromiCloud()
-                                print("Loading events: \(eventList.events)")
+                                
+                                print("Loading events: ")
+                                
+                                for event in eventList.events {
+                                    print(event.name!, terminator: " ")
+                                    
+                                }
+                                
+                                print("")
                                 
                             }
                         }
@@ -112,7 +120,15 @@ struct TimelyApp: App {
                                 do {
                                     //try await eventList.load()
                                     eventList.loadFromiCloud()
-                                    print("Loading events: \(eventList.events)")
+                                    
+                                    print("Loading events: ")
+                                    
+                                    for event in eventList.events {
+                                        print(event.name!, terminator: " ")
+                                        
+                                    }
+                                    
+                                    print("")
                                     
                                 }
                             }
@@ -133,7 +149,15 @@ struct TimelyApp: App {
                                 do {
                                     //try await eventList.load()
                                     eventList.loadFromiCloud()
-                                    print("Loading events: \(eventList.events)")
+                                    
+                                    print("Loading events: ")
+                                    
+                                    for event in eventList.events {
+                                        print(event.name!, terminator: " ")
+                                        
+                                    }
+                                    
+                                    print("")
                                     
                                 }
                             }
@@ -155,7 +179,15 @@ struct TimelyApp: App {
                             do {
                                 //try await eventList.load()
                                 eventList.loadFromiCloud()
-                                print("Loading events: \(eventList.events)")
+                                
+                                print("Loading events: ")
+                                
+                                for event in eventList.events {
+                                    print(event.name!, terminator: " ")
+                                    
+                                }
+                                
+                                print("")
                                 
                             }
                         }
@@ -168,14 +200,14 @@ struct TimelyApp: App {
                     .onChange(of: selectedTab) { newTab in
                         if newTab == 0 || newTab == 2 {
                             lastTab = selectedTab
-                            print(selectedTab)
+                            print("\n\n\n\(selectedTab)\n")
                             
                         }
                         
                         if newTab == 1 {
                             print(lastTab)
                             selectedTab = lastTab
-                            print("Switching tab")
+                            print("\n\n\nSwitching tab\n")
                             print(selectedTab)
                             
                         }
