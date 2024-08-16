@@ -74,6 +74,11 @@ struct SettingsView: View {
                             Text("In-App Notifications")
                             
                         }
+                        
+                        Toggle(isOn: $preferences.listTinting) {
+                            Text("List Tinting")
+                            
+                        }
                     }
                     
                     Section("Event History") {

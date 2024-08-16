@@ -1371,6 +1371,34 @@
         }
       }
     },
+    "List Tinting" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "List Tinting"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teinte de la liste"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "列表着色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "列表著色"
+          }
+        }
+      }
+    },
     "Mute" : {
       "localizations" : {
         "en" : {
@@ -1683,6 +1711,12 @@
     },
     "Right Now" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Right Now"
+          }
+        },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",

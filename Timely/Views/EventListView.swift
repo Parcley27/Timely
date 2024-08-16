@@ -34,6 +34,8 @@ struct NoEventsView: View {
 }
 
 struct EventListView: View {
+    @StateObject var preferences = SettingsStore()
+    
     @Binding var data: [Event]
     var dateToDisplay: Date?
     let saveAction: () -> Void
@@ -307,47 +309,67 @@ struct EventListView: View {
     }
     
     func eventTile(event: Event) -> some View {
-        HStack {
-            ZStack {
-                Text("📅")
-                    .font(.title)
-                    .opacity(0)
-                
-                Text(event.emoji ?? "📅")
-                    .font(.title)
+        ZStack {
+            if preferences.listTinting {
+                Text(String(repeating: "  \(event.emoji ?? "📅")", count: 6))
+                    .font(.largeTitle)
+                    .fontWidth(.compressed)
+                    .frame(width: .infinity)
+                    .blur(radius: 60)
                 
             }
             
-            VStack(alignment: .leading) {
-                Text(event.name ?? "Event Name")
-                    .font(.title3)
-                    .bold()
+            if preferences.listTinting {
+                Text(String(repeating: "  \(event.emoji ?? "📅")", count: 6))
+                    .font(.largeTitle)
+                    .fontWidth(.compressed)
+                    .frame(width: .infinity)
+                    .blur(radius: 60)
                 
-                HStack {
-                    Text(event.timeUntil)
-                        .font(.caption)
-                        .onReceive(timer) { _ in
-                            // Reset timeUpdater every second
-                            // This tricks the text object into getting a new timeUntil
-                            timeUpdater = " "
-                            timeUpdater = ""
-                            
-                        }
-                        .foregroundStyle(event.hasPassed ? .red : .primary)
-                        .bold(event.hasStarted)
-                    
-                }
             }
-            
-            Spacer()
             
             HStack {
-                favouriteStatusIcon(event: event)
-                mutedStatusIcon(event: event)
+                ZStack {
+                    Text("📅")
+                        .font(.title)
+                        .opacity(0)
+                    
+                    Text(event.emoji ?? "📅")
+                        .font(.title)
+                    
+                }
+                
+                VStack(alignment: .leading) {
+                    Text(event.name ?? "Event Name")
+                        .font(.title3)
+                        .bold()
+                    
+                    HStack {
+                        Text(event.timeUntil)
+                            .font(.caption)
+                            .onReceive(timer) { _ in
+                                // Reset timeUpdater every second
+                                // This tricks the text object into getting a new timeUntil
+                                timeUpdater = " "
+                                timeUpdater = ""
+                                
+                            }
+                            .foregroundStyle(event.hasPassed ? .red : .primary)
+                            .bold(event.hasStarted)
+                        
+                    }
+                }
+                
+                Spacer()
+                
+                HStack {
+                    favouriteStatusIcon(event: event)
+                    mutedStatusIcon(event: event)
+                    
+                }
+                .padding(.horizontal, 10)
                 
             }
-            .padding(.horizontal, 10)
-            
         }
     }
     
