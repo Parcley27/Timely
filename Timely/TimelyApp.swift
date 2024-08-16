@@ -53,9 +53,14 @@ struct TimelyApp: App {
     var plusButton: some View {
         ZStack {
             Circle()
-                .stroke(.gray, lineWidth: 5.0)
+                .stroke(.blue, lineWidth: 7.5)
                 .frame(width: 100)
                 .background(.bar, in: Circle())
+            
+            Circle()
+                .stroke(.background, lineWidth: 7.5)
+                .frame(width: 100)
+                .opacity(0.5)
             
             Image(systemName: "plus")
                 .resizable()
