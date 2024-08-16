@@ -310,20 +310,15 @@ struct EventListView: View {
     
     func eventTile(event: Event) -> some View {
         ZStack {
-            if preferences.listTinting {
+            if SettingsStore().listTinting {
                 Text(String(repeating: "  \(event.emoji ?? "📅")", count: 6))
                     .font(.largeTitle)
                     .fontWidth(.compressed)
-                    .frame(width: .infinity)
                     .blur(radius: 60)
                 
-            }
-            
-            if preferences.listTinting {
                 Text(String(repeating: "  \(event.emoji ?? "📅")", count: 6))
                     .font(.largeTitle)
                     .fontWidth(.compressed)
-                    .frame(width: .infinity)
                     .blur(radius: 60)
                 
             }

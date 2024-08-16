@@ -64,7 +64,8 @@ class SettingsStore: ObservableObject {
         self.removePassedEvents = iCloudStore.object(forKey: "removePassedEvents") as? Bool ?? true
         self.keepEventHistory = iCloudStore.object(forKey: "keepEventHistory") as? Bool ?? true
         self.quickAdd = iCloudStore.object(forKey: "quickAdd") as? Bool ?? false
-        self.listTinting = iCloudStore.object(forKey: "listTinting") as? Bool ?? true
+        // Change to true with update v3.0
+        self.listTinting = iCloudStore.object(forKey: "listTinting") as? Bool ?? false
         
         // Sync changes from iCloud to the local state
         NotificationCenter.default.publisher(for: NSUbiquitousKeyValueStore.didChangeExternallyNotification)
@@ -73,7 +74,8 @@ class SettingsStore: ObservableObject {
                 self.removePassedEvents = self.iCloudStore.object(forKey: "removePassedEvents") as? Bool ?? true
                 self.keepEventHistory = self.iCloudStore.object(forKey: "keepEventHistory") as? Bool ?? true
                 self.quickAdd = self.iCloudStore.object(forKey: "quickAdd") as? Bool ?? false
-                self.listTinting = self.iCloudStore.object(forKey: "listTinting") as? Bool ?? true
+                // Change to true with update v3.0
+                self.listTinting = self.iCloudStore.object(forKey: "listTinting") as? Bool ?? false
                 
             }
             .store(in: &cancellables)
