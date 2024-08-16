@@ -179,16 +179,14 @@ struct Event : Identifiable, Codable {
         } else if hasStarted && !hasPassed {
             //let rightNowString = NSLocalizedString("Right Now", comment: "")
             
-            formatter.unitsStyle = .short
-            
-            if timeIntervalToEnd > -oneDayInSeconds {
-                formatter.allowedUnits = [.year, .month, .day, .hour]
+            if timeIntervalToEnd < oneHourInSeconds {
+                formatter.allowedUnits = [.minute, .second]
                 
-            } else if timeIntervalToEnd > -oneHourInSeconds {
-                formatter.allowedUnits = [.day, .hour, .minute]
+            } else if timeIntervalToEnd < oneDayInSeconds {
+                formatter.allowedUnits = [.hour, .minute]
                 
             } else {
-                formatter.allowedUnits = [.minute, .second]
+                formatter.allowedUnits = [.year, .month, .day, .hour]
             }
             
             let timeUntilEnd = formatter.string(from: timeIntervalToEnd)!
