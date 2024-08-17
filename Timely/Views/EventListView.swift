@@ -308,21 +308,89 @@ struct EventListView: View {
         
     }
     
-    func eventTile(event: Event) -> some View {
-        ZStack {
-            if SettingsStore().listTinting {
-                Text(String(repeating: "  \(event.emoji ?? "📅")", count: 6))
-                    .font(.largeTitle)
-                    .fontWidth(.compressed)
-                    .blur(radius: 60)
+    func averageColor(for emoji: String, saturation: Double = 1.0, brightness: Double = 1.0, opacity: Double = 1.0) -> Color? {
+        // Render Emoji as an Image
+        let size = CGSize(width: 100, height: 100) // Size of the image to render
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        UIColor.clear.set()
+        let rect = CGRect(origin: .zero, size: size)
+        UIRectFill(rect)
+        
+        // Draw emoji
+        let font = UIFont.systemFont(ofSize: 80) // Adjust font size as needed
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        emoji.draw(in: rect, withAttributes: attributes)
+        
+        // Get image from emoji drawing
+        guard let image = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
+        UIGraphicsEndImageContext()
+        
+        // Extract Pixel Data
+        guard let cgImage = image.cgImage else { return nil }
+        let width = cgImage.width
+        let height = cgImage.height
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let rawData = calloc(height * width * 4, MemoryLayout<CUnsignedChar>.size)
+        let bytesPerPixel = 4
+        let bytesPerRow = bytesPerPixel * width
+        let bitsPerComponent = 8
+        let context = CGContext(data: rawData,
+                                width: width,
+                                height: height,
+                                bitsPerComponent: bitsPerComponent,
+                                bytesPerRow: bytesPerRow,
+                                space: colorSpace,
+                                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        
+        context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+        
+        // Calculate Average Color
+        let data = UnsafePointer<CUnsignedChar>(context!.data!.assumingMemoryBound(to: CUnsignedChar.self))
+        var redTotal = 0
+        var greenTotal = 0
+        var blueTotal = 0
+        
+        for x in 0..<width {
+            for y in 0..<height {
+                let pixelIndex = (width * y + x) * bytesPerPixel
+                let red = data[pixelIndex]
+                let green = data[pixelIndex + 1]
+                let blue = data[pixelIndex + 2]
                 
-                Text(String(repeating: "  \(event.emoji ?? "📅")", count: 6))
-                    .font(.largeTitle)
-                    .fontWidth(.compressed)
-                    .blur(radius: 60)
+                redTotal += Int(red)
+                greenTotal += Int(green)
+                blueTotal += Int(blue)
                 
             }
-            
+        }
+        
+        let pixelCount = width * height
+        let avgRed = Double(redTotal) / Double(pixelCount) / 255.0
+        let avgGreen = Double(greenTotal) / Double(pixelCount) / 255.0
+        let avgBlue = Double(blueTotal) / Double(pixelCount) / 255.0
+        
+        // Adjust Saturation and Brightness
+        let avgColor = UIColor(red: CGFloat(avgRed), green: CGFloat(avgGreen), blue: CGFloat(avgBlue), alpha: 1.0)
+        
+        var hue: CGFloat = 0
+        var saturationValue: CGFloat = 0
+        var brightnessValue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        avgColor.getHue(&hue, saturation: &saturationValue, brightness: &brightnessValue, alpha: &alpha)
+        
+        saturationValue = max(0, min(CGFloat(saturation), 1))
+        brightnessValue = max(0, min(CGFloat(brightness), 1))
+        
+        let adjustedColor = UIColor(hue: hue, saturation: saturationValue, brightness: brightnessValue, alpha: CGFloat(opacity))
+        
+        // Convert to SwiftUI Color
+        return Color(adjustedColor)
+        
+    }
+    
+    func eventTile(event: Event) -> some View {
+        ZStack {
             HStack {
                 ZStack {
                     Text("📅")
@@ -464,6 +532,7 @@ struct EventListView: View {
                                 }
                             //.disabled(!isEditing)
                         }
+                        .listRowBackground(SettingsStore().listTinting ? averageColor(for: event.emoji!, saturation: 0.6, brightness: 1.2, opacity: 0.25)! : Color(UIColor.systemGray6))
                         .contextMenu {
                             Button {
                                 if let index = $data.firstIndex(where: { $0.id == event.id }) {
@@ -578,6 +647,9 @@ struct EventListView: View {
                 }
             }
         }
+        .background(.background)
+        //.background(.green)
+        .scrollContentBackground(.hidden)
         .listRowSpacing(5)
         
     }
