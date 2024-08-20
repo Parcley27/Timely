@@ -9,6 +9,13 @@ import SwiftUI
 import Foundation
 
 struct NewEventSheetView: View {
+    init(data: Binding<[Event]>) {
+        self._data = data
+        
+        UIDatePicker.appearance().minuteInterval = 5
+        
+    }
+    
     @Binding var data: [Event]
     @StateObject private var store = EventStore()
     @StateObject private var notificationManager = NotificationManager()
@@ -167,12 +174,13 @@ struct NewEventSheetView: View {
                     
                     Section("Date and Time") {
                         DatePicker("Start Time", selection: $formDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute, .date])
-                            //.datePickerStyle(.compact)
                             .datePickerStyle(GraphicalDatePickerStyle())
                         
                         if !preferences.quickAdd {
                             DatePicker("End Time", selection: $formEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
                                 .datePickerStyle(.compact)
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 4)
                             
                         }
                         
@@ -189,6 +197,22 @@ struct NewEventSheetView: View {
                     }
                     
                     if !preferences.quickAdd {
+                        Section("Details") {
+                            ZStack {
+                                HStack {
+                                    Text("Description")
+                                        .foregroundStyle(.quaternary)
+                                        .opacity(formDescription == "" ? 100 : 0)
+                                        .padding(.leading, 4)
+                                    Spacer()
+                                    
+                                }
+                                
+                                TextEditor(text: $formDescription)
+                                    
+                            }
+                        }
+                        
                         Section("Importance") {
                             Toggle("Favourite", isOn: $formFavourited)
                             Toggle("Muted", isOn: $formMuted)
