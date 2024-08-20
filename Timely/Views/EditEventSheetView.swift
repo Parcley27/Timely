@@ -46,31 +46,21 @@ struct EditEventSheetView: View {
                                 
                             }
                         
+                        EmojiTextField(text: $editedEmoji, placeholder: data[event].emoji ?? "📅")
+                            .onAppear() {
+                                editedEmoji = data[event].emoji ?? "📅"
+                                
+                            }
+                            .opacity(editedEmoji == "" ? 0.5: 1.0)
+                        
+                        /*
                         TextField(data[event].emoji ?? "📅", text: $editedEmoji)
                             .onAppear() {
                                 editedEmoji = data[event].emoji ?? "📅"
                                 
                             }
                             .opacity(editedEmoji == "" ? 0.5: 1.0)
-                    }
-                    
-                    Section("Details") {
-                        ZStack {
-                            HStack {
-                                Text("Description")
-                                    .foregroundStyle(.quaternary)
-                                    .opacity(editedDescription == "" ? 100 : 0)
-                                    .padding(.leading, 4)
-                                Spacer()
-                                
-                            }
-                            
-                            TextEditor(text: $editedDescription)
-                            
-                        }
-                    }
-                    .onAppear() {
-                        editedDescription = data[event].description ?? ""
+                        */
                         
                     }
                     
@@ -149,7 +139,31 @@ struct EditEventSheetView: View {
                         data[event].name = editedName.trimmingCharacters(in: .whitespaces)
                         
                         if editedEmoji == "" {
-                            data[event].emoji = "📅"
+                            var hasFoundEmoji = false
+                            
+                            for character in editedName {
+                                let unicodeScalars = character.unicodeScalars
+                                
+                                for scalar in unicodeScalars {
+                                    if (scalar.value >= 0x1F600 && scalar.value <= 0x1F64F) {
+                                        data[event].emoji = String(character)
+                                        hasFoundEmoji = true
+                                        
+                                        if let characterIndex = editedName.firstIndex(of: character) {
+                                            editedName.remove(at: characterIndex)
+                                            
+                                        }
+                                        
+                                        break
+                                        
+                                    }
+                                }
+                                
+                                if hasFoundEmoji {
+                                    break
+                                    
+                                }
+                            }
                             
                         } else {
                             editedEmoji = String(editedEmoji.prefix(1))

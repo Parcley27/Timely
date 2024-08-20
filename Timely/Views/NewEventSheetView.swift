@@ -87,6 +87,32 @@ struct NewEventSheetView: View {
         if formEmoji.isEmpty {
             formEmoji = "📅"
             
+            var hasFoundEmoji = false
+            
+            for character in formName {
+                let unicodeScalars = character.unicodeScalars
+                
+                for scalar in unicodeScalars {
+                    if (scalar.value >= 0x1F600 && scalar.value <= 0x1F64F) {
+                        formEmoji = String(character)
+                        hasFoundEmoji = true
+                        
+                        if let characterIndex = formName.firstIndex(of: character) {
+                            formName.remove(at: characterIndex)
+                            
+                        }
+                        
+                        break
+                        
+                    }
+                }
+                
+                if hasFoundEmoji {
+                    break
+                    
+                }
+            }
+            
         } else {
             formEmoji = String(formEmoji.prefix(1))
             
@@ -150,26 +176,10 @@ struct NewEventSheetView: View {
                                 
                             }
                         
-                        TextField("Emoji", text: $formEmoji)
+                        //TextField("Emoji", text: $formEmoji)
                         
-                    }
-                    
-                    if !preferences.quickAdd {
-                        Section("Details") {
-                            ZStack {
-                                HStack {
-                                    Text("Description")
-                                        .foregroundStyle(.quaternary)
-                                        .opacity(formDescription == "" ? 100 : 0)
-                                        .padding(.leading, 4)
-                                    Spacer()
-                                    
-                                }
-                                
-                                TextEditor(text: $formDescription)
-                                    
-                            }
-                        }
+                        EmojiTextField(text: $formEmoji, placeholder: NSLocalizedString("Emoji", comment: ""))
+                        
                     }
                     
                     Section("Date and Time") {
