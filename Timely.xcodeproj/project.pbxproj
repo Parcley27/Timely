@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -70,6 +70,20 @@
 		6EE9B5172B64E8C4005895DC /* EditEventSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEventSheetView.swift; sourceTree = "<group>"; };
 		6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6EF777192C745F7A007D65BF /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				EmojiKeyboard.swift,
+			);
+			target = 6EAE9FEB2B018D7B0029A8D4 /* Timely */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		6EF777162C745F55007D65BF /* Subviews */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6EF777192C745F7A007D65BF /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Subviews; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		6EAE9FE92B018D7B0029A8D4 /* Frameworks */ = {
@@ -179,6 +193,7 @@
 		6EFDF1DF2BD25E3000D6904F /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6EF777162C745F55007D65BF /* Subviews */,
 				6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */,
 				6EE9B5172B64E8C4005895DC /* EditEventSheetView.swift */,
 				6EAEA0232B0196C30029A8D4 /* EventDetailView.swift */,
@@ -500,7 +515,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Timely/Timely.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"Timely/Preview Content\"";
 				DEVELOPMENT_TEAM = 7WCH78FX92;
 				ENABLE_PREVIEWS = YES;
@@ -518,7 +533,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2;
+				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.PierceOxley.Timely;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -534,7 +549,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Timely/Timely.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"Timely/Preview Content\"";
 				DEVELOPMENT_TEAM = 7WCH78FX92;
 				ENABLE_PREVIEWS = YES;
@@ -552,7 +567,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2;
+				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.PierceOxley.Timely;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
