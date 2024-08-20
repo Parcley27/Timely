@@ -89,6 +89,8 @@ struct NewEventSheetView: View {
             
             var hasFoundEmoji = false
             
+            formName = formName.trimmingCharacters(in: .whitespaces)
+            
             for character in formName {
                 let unicodeScalars = character.unicodeScalars
                 
