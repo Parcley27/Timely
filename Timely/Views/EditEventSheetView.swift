@@ -81,6 +81,8 @@ struct EditEventSheetView: View {
                         
                         DatePicker("End Time", selection: $editedEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
                             .datePickerStyle(.compact)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 4)
                         
                         //DatePicker("End Time", selection: $formEndDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute])
                         // DEBUG - Display date information
@@ -97,6 +99,26 @@ struct EditEventSheetView: View {
                             editedEndDateAndTime = editedDateAndTime.addingTimeInterval(60 * 60)
                             
                         }
+                    }
+                    
+                    Section("Details") {
+                        ZStack {
+                            HStack {
+                                Text("Description")
+                                    .foregroundStyle(.quaternary)
+                                    .opacity(editedDescription == "" ? 100 : 0)
+                                    .padding(.leading, 4)
+                                Spacer()
+                                
+                            }
+                            
+                            TextEditor(text: $editedDescription)
+                            
+                        }
+                    }
+                    .onAppear() {
+                        editedDescription = data[event].description ?? ""
+                        
                     }
                     
                     Section("Importance") {
