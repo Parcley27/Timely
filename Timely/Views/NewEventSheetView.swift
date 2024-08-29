@@ -9,13 +9,6 @@ import SwiftUI
 import Foundation
 
 struct NewEventSheetView: View {
-    init(data: Binding<[Event]>) {
-        self._data = data
-        
-        UIDatePicker.appearance().minuteInterval = 5
-        
-    }
-    
     @Binding var data: [Event]
     @StateObject private var store = EventStore()
     @StateObject private var notificationManager = NotificationManager()
@@ -159,7 +152,8 @@ struct NewEventSheetView: View {
         print("Saving event: \(newEvent)")
         
         for event in data {
-            print(event)
+            print(event.name!, terminator: ", ")
+            print("")
             
         }
     }

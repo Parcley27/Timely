@@ -75,7 +75,7 @@
 		6EF777192C745F7A007D65BF /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				EmojiKeyboard.swift,
+				EmojiTextField.swift,
 			);
 			target = 6EAE9FEB2B018D7B0029A8D4 /* Timely */;
 		};

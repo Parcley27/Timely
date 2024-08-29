@@ -205,14 +205,14 @@ struct TimelyApp: App {
                     .onChange(of: selectedTab) { newTab in
                         if newTab == 0 || newTab == 2 {
                             lastTab = selectedTab
-                            print("\n\n\n\(selectedTab)\n")
+                            print("\n\(selectedTab)\n")
                             
                         }
                         
                         if newTab == 1 {
                             print(lastTab)
                             selectedTab = lastTab
-                            print("\n\n\nSwitching tab\n")
+                            print("\nSwitching Tab\n")
                             print(selectedTab)
                             
                         }

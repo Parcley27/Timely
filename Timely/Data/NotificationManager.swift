@@ -31,7 +31,7 @@ class NotificationManager: ObservableObject {
         }
     }
     
-    func scheduleNotifications(for event: Event) {        
+    func scheduleNotifications(for event: Event) {
         let standardTimes: [Int] = [0, 15]
         let favouriteTimes: [Int] = [0, 15, 60]
         
@@ -104,6 +104,8 @@ class NotificationManager: ObservableObject {
     
     func removeAllNotifications() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        
+        print("Removing notifications")
         
     }
 }

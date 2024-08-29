@@ -222,6 +222,7 @@ struct Event : Identifiable, Codable {
         
         let oneDayInSeconds = 86000.0
         let oneHourInSeconds = 3600.0
+        let oneMinuteInSeconds = 60.0
         
         if timeIntervalToStart > oneDayInSeconds || timeIntervalToEnd < -oneDayInSeconds {
             formatter.allowedUnits = [.year, .month, .day, .hour]
@@ -229,8 +230,12 @@ struct Event : Identifiable, Codable {
         } else if timeIntervalToStart > oneHourInSeconds || timeIntervalToEnd < -oneHourInSeconds {
             formatter.allowedUnits = [.day, .hour, .minute]
             
-        } else {
+        } else if timeIntervalToStart > oneMinuteInSeconds || timeIntervalToEnd < -oneMinuteInSeconds {
             formatter.allowedUnits = [.minute, .second]
+            
+        } else {
+            formatter.allowedUnits = [.second]
+            
         }
            
         /*
