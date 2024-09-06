@@ -29,24 +29,30 @@
         }
       }
     },
-    "'All day on' EEEE, MMMM d yyyy" : {
+    "'All day on' EEEE, d MMMM yyyy" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'All day on' EEEE, d MMMM yyyy"
+          }
+        },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "'Tout la journee' EEEE, MMMM d yyyy"
+            "value" : "'Tout la journee' EEEE, d MMMM yyyy"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "'全天为' EEEE, MMMM d yyyy"
+            "value" : "'全天为' EEEE, d MMMM yyyy"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "'全天為' EEEE, MMMM d yyyy"
+            "value" : "'全天為' EEEE, d MMMM yyyy"
           }
         }
       }
@@ -271,6 +277,12 @@
     },
     "All Day" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Day"
+          }
+        },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
@@ -967,6 +979,12 @@
     },
     "Ending" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ending"
+          }
+        },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1185,18 +1203,18 @@
         }
       }
     },
-    "h:mm a 'on' EEE, MMMM d yyyy" : {
+    "h:mm a 'on' EEE, d MMMM yyyy" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "h:mm a 'on' EEE, MMMM d yyyy"
+            "value" : "h:mm a 'on' EEE, d MMMM yyyy"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "h:mm a ‘le’ EEE, MMMM d, yyyy"
+            "value" : "h:mm a ‘le’ EEE, d MMMM, yyyy"
           }
         },
         "zh-Hans" : {
@@ -1213,18 +1231,18 @@
         }
       }
     },
-    "h:mm a 'on' EEEE, MMM d yyyy" : {
+    "h:mm a 'on' EEEE, d MMM yyyy" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "h:mm a 'on' EEEE, MMM d yyyy"
+            "value" : "h:mm a 'on' EEEE, d MMM yyyy"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "h:mm a ‘le’ EEEE, MMM d, yyyy"
+            "value" : "h:mm a ‘le’ EEEE, d MMM, yyyy"
           }
         },
         "zh-Hans" : {
@@ -1241,18 +1259,18 @@
         }
       }
     },
-    "h:mm a 'on' EEEE, MMMM d" : {
+    "h:mm a 'on' EEEE, d MMMM" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "h:mm a 'on' EEEE, MMMM d"
+            "value" : "h:mm a 'on' EEEE, d MMMM"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "h:mm a ‘le’ EEEE, MMMM d"
+            "value" : "h:mm a ‘le’ EEEE, d MMMM"
           }
         },
         "zh-Hans" : {
@@ -1269,12 +1287,12 @@
         }
       }
     },
-    "h:mm a 'on' EEEE, MMMM d yyyy" : {
+    "h:mm a 'on' EEEE, d MMMM yyyy" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "h:mm a 'on' EEEE, MMMM d yyyy"
+            "value" : "h:mm a 'on' EEEE, d MMMM yyyy"
           }
         },
         "fr-CA" : {
@@ -2001,6 +2019,12 @@
     },
     "Start Date" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Date"
+          }
+        },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
