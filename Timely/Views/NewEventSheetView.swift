@@ -207,10 +207,8 @@ struct NewEventSheetView: View {
                         
                     }
                     .onChange(of: formDateAndTime) { _ in
-                        if formDateAndTime.timeIntervalSinceNow > formEndDateAndTime.timeIntervalSinceNow {
-                            formEndDateAndTime = formDateAndTime.addingTimeInterval(60 * 60)
-                            
-                        }
+                        formEndDateAndTime = formDateAndTime.addingTimeInterval(60 * 60)
+                        
                     }
                     
                     if !preferences.quickAdd {
