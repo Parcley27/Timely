@@ -78,7 +78,8 @@ struct EventDetailView: View {
                 HStack {
                     Text(data[event].dateString ?? "Event date and time")
                         .foregroundStyle(data[event].hasPassed ? .red : .primary)
-                        .bold(data[event].hasPassed)
+                        .bold(data[event].hasStarted)
+                    
                 }
             }
             
