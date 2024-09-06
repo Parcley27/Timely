@@ -1,6 +1,84 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    " " : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        }
+      }
+    },
+    "'All day on' EEEE, MMMM d yyyy" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'Tout la journee' EEEE, MMMM d yyyy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'全天为' EEEE, MMMM d yyyy"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'全天為' EEEE, MMMM d yyyy"
+          }
+        }
+      }
+    },
+    "%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
+    },
     "%@ %@" : {
       "localizations" : {
         "en" : {
@@ -187,6 +265,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "所有存檔活動將會永久刪除"
+          }
+        }
+      }
+    },
+    "All Day" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toute la journée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全天"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一整天"
           }
         }
       }
@@ -865,6 +965,28 @@
         }
       }
     },
+    "Ending" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fin"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "结束"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結束"
+          }
+        }
+      }
+    },
     "Ending in %@" : {
       "localizations" : {
         "en" : {
@@ -1063,12 +1185,12 @@
         }
       }
     },
-    "h:mm a 'on' EEE, MMMM d, yyyy" : {
+    "h:mm a 'on' EEE, MMMM d yyyy" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "h:mm a 'on' EEE, MMMM d, yyyy"
+            "value" : "h:mm a 'on' EEE, MMMM d yyyy"
           }
         },
         "fr-CA" : {
@@ -1091,12 +1213,12 @@
         }
       }
     },
-    "h:mm a 'on' EEEE, MMM d, yyyy" : {
+    "h:mm a 'on' EEEE, MMM d yyyy" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "h:mm a 'on' EEEE, MMM d, yyyy"
+            "value" : "h:mm a 'on' EEEE, MMM d yyyy"
           }
         },
         "fr-CA" : {
@@ -1147,12 +1269,12 @@
         }
       }
     },
-    "h:mm a 'on' EEEE, MMMM d, yyyy" : {
+    "h:mm a 'on' EEEE, MMMM d yyyy" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "h:mm a 'on' EEEE, MMMM d, yyyy"
+            "value" : "h:mm a 'on' EEEE, MMMM d yyyy"
           }
         },
         "fr-CA" : {
@@ -1873,6 +1995,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "特別感謝我的家人、Dale Dai 以及一路走來的所有人。"
+          }
+        }
+      }
+    },
+    "Start Date" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date de début"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始日期"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開始日期"
           }
         }
       }

@@ -18,6 +18,7 @@ struct EditEventSheetView: View {
     @State var editedDescription: String = ""
     @State var editedDateAndTime: Date = Date()
     @State var editedEndDateAndTime: Date = Date()
+    @State var editedIsAllDay: Bool = false
     @State var editedFavourite: Bool = false
     @State var editedMute: Bool = false
     
@@ -31,6 +32,18 @@ struct EditEventSheetView: View {
         let endDate = calendar.date(from: endComponents)!
         
         return startDate...endDate
+        
+    }
+    
+    func setTime(for date: Date, hour: Int, minute: Int, second: Int) -> Date? {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.year, .month, .day], from: date)
+        
+        components.hour = hour
+        components.minute = minute
+        components.second = second
+        
+        return calendar.date(from: components)
         
     }
     
@@ -65,30 +78,45 @@ struct EditEventSheetView: View {
                     }
                     
                     Section("Date and Time") {
-                        DatePicker("Start Time", selection: $editedDateAndTime, displayedComponents: [.hourAndMinute, .date])
-                            //.datePickerStyle(.compact)
+                        DatePicker("Start Date", selection: $editedDateAndTime, displayedComponents: [.date])
                             .datePickerStyle(GraphicalDatePickerStyle())
+                        
+                        HStack {
+                            Text("Start Time")
+                            
+                            DatePicker(" ", selection: $editedDateAndTime, displayedComponents: [.hourAndMinute])
+                                .datePickerStyle(GraphicalDatePickerStyle())
+                            
+                        }
+                        .disabled(editedIsAllDay)
+                        .opacity(!editedIsAllDay ? 1.0 : 0.5)
+                        
+                        Toggle("All Day", isOn: $editedIsAllDay)
+                            .onChange(of: editedIsAllDay) { _ in
+                                if editedIsAllDay {
+                                    editedDateAndTime = setTime(for: editedDateAndTime, hour: 0, minute: 0, second: 0) ?? editedDateAndTime
+                                    editedEndDateAndTime = setTime(for: editedDateAndTime, hour: 23, minute: 59, second: 59) ?? editedEndDateAndTime
+                                    
+                                }
+                            }
+                            .padding(.vertical, 8)                        
                         
                         DatePicker("End Time", selection: $editedEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
                             .datePickerStyle(.compact)
                             .padding(.vertical, 8)
-                            .padding(.horizontal, 4)
-                        
-                        //DatePicker("End Time", selection: $formEndDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute])
-                        // DEBUG - Display date information
-                        //Text("\(formatTime(inputDate: formDateAndTime))")
+                            .opacity(!editedIsAllDay ? 1.0 : 0.5)
+                            .disabled(editedIsAllDay)
                         
                     }
                     .onAppear() {
                         editedDateAndTime = data[event].dateAndTime
                         editedEndDateAndTime = data[event].endDateAndTime ?? data[event].dateAndTime
+                        editedIsAllDay = data[event].isAllDay ?? false
                         
                     }
                     .onChange(of: editedDateAndTime) { _ in
-                        if editedDateAndTime.timeIntervalSinceNow > editedEndDateAndTime.timeIntervalSinceNow {
-                            editedEndDateAndTime = editedDateAndTime.addingTimeInterval(60 * 60)
-                            
-                        }
+                        editedEndDateAndTime = editedDateAndTime.addingTimeInterval(60 * 60)
+                        
                     }
                     
                     Section("Details") {
@@ -178,6 +206,7 @@ struct EditEventSheetView: View {
                         
                         data[event].dateAndTime = editedDateAndTime
                         data[event].endDateAndTime = editedEndDateAndTime
+                        data[event].isAllDay = editedIsAllDay
                         data[event].isFavourite = editedFavourite
                         data[event].isMuted = editedMute
                         

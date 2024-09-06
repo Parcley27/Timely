@@ -9,6 +9,16 @@ import SwiftUI
 import Foundation
 
 struct NewEventSheetView: View {
+    
+    init(data: Binding<[Event]>) {
+        self._data = data
+        
+        if SettingsStore().quickAdd {
+            UIDatePicker.appearance().minuteInterval = 5
+            
+        }
+    }
+    
     @Binding var data: [Event]
     @StateObject private var store = EventStore()
     @StateObject private var notificationManager = NotificationManager()
@@ -17,10 +27,16 @@ struct NewEventSheetView: View {
     @Environment(\.dismiss) var dismiss
     
     @FocusState private var isTextFieldFocused: Bool
-        
+    
+    @State private var isEditing = false
+    
+    let recurringTimeOptions: [String] = ["never", "daily", "weekly", "monthly", "annualy"]
+    
     @State private var formName: String = ""
     @State private var formEmoji: String = ""
+    
     @State private var formDescription: String = ""
+    
     @State private var formDateAndTime: Date = {
         let currentDate = Date()
         let oneDayInSeconds: TimeInterval = 24 * 60 * 60
@@ -35,7 +51,15 @@ struct NewEventSheetView: View {
         let twoHoursInSeconds: TimeInterval = 2 * 60 * 60
         
         return currentDate.addingTimeInterval(twoHoursInSeconds)
+        
     }()
+    
+    @State private var formIsAllDay: Bool = false
+    
+    @State private var formIsRecurring: Bool = false
+    @State private var formRecurringRate: String = "never"
+    @State private var formRecurringTimes: Double = 2.0
+    
     @State private var formFavourited: Bool = false
     @State private var formMuted: Bool = false
     
@@ -73,6 +97,18 @@ struct NewEventSheetView: View {
         let endDate = calendar.date(from: endComponents)!
         
         return startDate...endDate
+        
+    }
+    
+    func setTime(for date: Date, hour: Int, minute: Int, second: Int) -> Date? {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.year, .month, .day], from: date)
+        
+        components.hour = hour
+        components.minute = minute
+        components.second = second
+        
+        return calendar.date(from: components)
         
     }
     
@@ -130,6 +166,7 @@ struct NewEventSheetView: View {
             description: (formDescription != "" ? formDescription.trimmingCharacters(in: .whitespaces) : nil),
             dateAndTime: formDateAndTime,
             endDateAndTime: formEndDateAndTime,
+            isAllDay: formIsAllDay,
             isFavourite: formFavourited,
             isMuted: formMuted
             
@@ -190,28 +227,86 @@ struct NewEventSheetView: View {
                     }
                     
                     Section("Date and Time") {
-                        DatePicker("Start Time", selection: $formDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute, .date])
+                        DatePicker("Start Date", selection: $formDateAndTime, in: dateRange, displayedComponents: [.date])
                             .datePickerStyle(GraphicalDatePickerStyle())
                         
-                        if !preferences.quickAdd {
-                            DatePicker("End Time", selection: $formEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
-                                .datePickerStyle(.compact)
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 4)
+                        HStack {
+                            Text("Start Time")
+                            
+                            DatePicker(" ", selection: $formDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute])
+                                .datePickerStyle(GraphicalDatePickerStyle())
                             
                         }
+                        .disabled(formIsAllDay)
+                        .opacity(!formIsAllDay ? 1.0 : 0.5)
                         
-                        //DatePicker("End Time", selection: $formEndDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute])
-                        // DEBUG - Display date information
-                        //Text("\(formatTime(inputDate: formDateAndTime))")
                         
+                        Toggle("All Day", isOn: $formIsAllDay)
+                            .onChange(of: formIsAllDay) { _ in
+                                if formIsAllDay {
+                                    formDateAndTime = setTime(for: formDateAndTime, hour: 0, minute: 0, second: 0) ?? formDateAndTime
+                                    formEndDateAndTime = setTime(for: formDateAndTime, hour: 23, minute: 59, second: 59) ?? formEndDateAndTime
+                                    
+                                }
+                            }
+                            .padding(.vertical, 8)
+                            .disabled(Calendar.current.isDateInToday(formDateAndTime))
+                        
+                        if !preferences.quickAdd {
+                            DatePicker("Ending", selection: $formEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
+                                .datePickerStyle(.compact)
+                                .padding(.vertical, 8)
+                                .opacity(!formIsAllDay ? 1.0 : 0.5)
+                                .disabled(formIsAllDay)
+                            
+                        }
                     }
                     .onChange(of: formDateAndTime) { _ in
-                        formEndDateAndTime = formDateAndTime.addingTimeInterval(60 * 60)
-                        
+                        if !formIsAllDay {
+                            formEndDateAndTime = formDateAndTime.addingTimeInterval(60 * 60)
+                            
+                        }
                     }
                     
                     if !preferences.quickAdd {
+                        Section("Repeating") {
+
+                            
+                            Picker(formRecurringRate != "never" ? (formRecurringTimes < 10.5 ? String(format: "Repeating %.0f times", formRecurringTimes) : "Forever") : "Repeating" , selection: $formRecurringRate) {
+                                ForEach(recurringTimeOptions, id: \.self) { timeOption in
+                                    Text(timeOption.capitalized)
+                                        .id(timeOption)
+                                    
+                                }
+                            }
+                            .onChange(of: formRecurringRate) { _ in
+                                if formRecurringRate == "never" {
+                                    formIsRecurring = false
+                                    
+                                } else {
+                                    formIsRecurring = true
+                                    
+                                }
+                            }
+                            .pickerStyle(.menu )
+                            
+                            if formIsRecurring {
+                                Slider(
+                                    value: $formRecurringTimes,
+                                            in: 2 ... 11,
+                                            onEditingChanged: { editing in
+                                                isEditing = editing
+                                                if !isEditing {
+                                                    formRecurringTimes = formRecurringTimes.rounded()
+                                                    
+                                                }
+                                            }
+                                        )
+                                
+                                
+                            }
+                        }
+                        
                         Section("Details") {
                             ZStack {
                                 HStack {

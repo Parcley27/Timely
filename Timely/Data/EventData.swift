@@ -15,7 +15,10 @@ class EventData : ObservableObject {
     ]
 }
 
-struct Event : Identifiable, Codable {
+// Seasonally every 3 months
+// recurringTimeOptions: [String] = ["never", "daily", "weekly", "monthly", "annualy"]
+
+struct Event: Identifiable, Codable {
     var name: String? = "Event Name"
     var emoji: String? = "📅"
     
@@ -109,6 +112,7 @@ struct Event : Identifiable, Codable {
         
     }()
     var endDateAndTime: Date?
+    var isAllDay: Bool? = false
     var isOnDates: [Date] {
         var dates: [Date] = []
         var currentDate = dateAndTime
@@ -150,7 +154,7 @@ struct Event : Identifiable, Codable {
         
         if endDateAndTime != nil {
             if dateAndTime == endDateAndTime! {
-                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d, yyyy", comment: "")
+                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d yyyy", comment: "")
                 
                 formattedDate = dateFormatter.string(from: dateAndTime)
                 
@@ -159,7 +163,7 @@ struct Event : Identifiable, Codable {
                     dateFormatter.dateFormat = "h:mm"
                     let firstTime = dateFormatter.string(from: dateAndTime)
                     
-                    dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEE, MMMM d, yyyy", comment: "")
+                    dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEE, MMMM d yyyy", comment: "")
                     let secondTime = dateFormatter.string(from: endDateAndTime!)
                     
                     // "\(firstTime) to \(secondTime)"
@@ -170,7 +174,7 @@ struct Event : Identifiable, Codable {
                     dateFormatter.dateFormat = NSLocalizedString("h:mm a", comment: "")
                     let firstTime = dateFormatter.string(from: dateAndTime)
                     
-                    dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEE, MMMM d, yyyy", comment: "")
+                    dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEE, MMMM d yyyy", comment: "")
                     let secondTime = dateFormatter.string(from: endDateAndTime!)
                     
                     // "\(firstTime) to \(secondTime)"
@@ -183,7 +187,7 @@ struct Event : Identifiable, Codable {
                 dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d", comment: "")
                 let firstTime = dateFormatter.string(from: dateAndTime)
                 
-                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d, yyyy", comment: "")
+                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d yyyy", comment: "")
                 let secondTime = dateFormatter.string(from: endDateAndTime!)
                 
                 // "\(firstTime) to\n\(secondTime)"
@@ -191,7 +195,7 @@ struct Event : Identifiable, Codable {
                 formattedDate = String(format: stringFormat, firstTime, secondTime)
                 
             } else {
-                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMM d, yyyy", comment: "")
+                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMM d yyyy", comment: "")
                 
                 let firstTime = dateFormatter.string(from: dateAndTime)
                 let secondTime = dateFormatter.string(from: endDateAndTime!)
@@ -203,7 +207,14 @@ struct Event : Identifiable, Codable {
             }
             
         } else {
-            dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d, yyyy", comment: "")
+            dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d yyyy", comment: "")
+            
+            formattedDate = dateFormatter.string(from: dateAndTime)
+            
+        }
+        
+        if isAllDay ?? false {
+            dateFormatter.dateFormat = NSLocalizedString("'All day on' EEEE, MMMM d yyyy", comment: "")
             
             formattedDate = dateFormatter.string(from: dateAndTime)
             
@@ -212,7 +223,6 @@ struct Event : Identifiable, Codable {
         return formattedDate
         
     }
-    
     var timeUntil: String {
         let timeIntervalToStart = dateAndTime.timeIntervalSinceNow
         let timeIntervalToEnd = endDateAndTime?.timeIntervalSinceNow ?? dateAndTime.timeIntervalSinceNow
@@ -305,7 +315,6 @@ struct Event : Identifiable, Codable {
             
         }
     }
-    
     var hasPassed: Bool {
         let timeInterval = endDateAndTime?.timeIntervalSinceNow ?? dateAndTime.timeIntervalSinceNow
         
@@ -318,7 +327,6 @@ struct Event : Identifiable, Codable {
         }
     }
     
-    // One hour in seconds
     func hasExpired(maxTime: Int = 3600) -> Bool {
         let timeInterval = endDateAndTime?.timeIntervalSinceNow ?? dateAndTime.timeIntervalSinceNow
         
@@ -331,8 +339,14 @@ struct Event : Identifiable, Codable {
         }
     }
     
-    var isFavourite: Bool = false
+    var isRecurring: Bool? = false
+    var recurranceRate: String? = "never"
+    var recurringTimes: Int? = 0
     
+    var isCopy: Bool? = false
+    var copyOfEventWithID: UUID?
+    
+    var isFavourite: Bool = false
     var isStandard: Bool {
         if !isFavourite && !isMuted {
             return true
@@ -342,10 +356,10 @@ struct Event : Identifiable, Codable {
             
         }
     }
-    
     var isMuted: Bool = false
     
-    var id = UUID()
+    var id: UUID = UUID()
+    
 }
 
 extension EventData {
