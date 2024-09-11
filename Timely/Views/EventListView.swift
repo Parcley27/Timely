@@ -54,6 +54,8 @@ struct EventListView: View {
     
     @State private var newTimeUntilEvent: String = ""
     
+    let maxDisplayedEvents = 50
+    
     func titleBarText(displayDate: Date?) -> String {
         var titleText: String = ""
         
@@ -195,8 +197,50 @@ struct EventListView: View {
     var eventsToShow: [Event] {
         var agreeingEvents: [Event] = []
         
+        var futureEvents: [Event] = []
+        
+        futureEvents = data.filter { $0.hasStarted && !$0.hasPassed }
+        
+        // Add current events
+        if futureEvents.count > maxDisplayedEvents {
+            futureEvents = Array(futureEvents.prefix(maxDisplayedEvents))
+        }
+        
+        // Add future events
+        if futureEvents.count < maxDisplayedEvents {
+            let remainingSlots = maxDisplayedEvents - futureEvents.count
+            let futureOnlyEvents = data.filter { !$0.hasStarted }
+            
+            let futureToAdd = futureOnlyEvents.filter { event in
+                !futureEvents.contains(where: { $0.id == event.id })
+                
+            }
+            
+            futureEvents.append(contentsOf: futureToAdd.prefix(remainingSlots))
+            
+        }
+        
+        // Add passed events
+        if futureEvents.count < maxDisplayedEvents {
+            let remainingSlots = maxDisplayedEvents - futureEvents.count
+            let pastEvents = data.filter { $0.hasPassed }
+            
+            let pastToAdd = pastEvents
+                .sorted(by: { ($0.endDateAndTime ?? $0.dateAndTime) > ($1.endDateAndTime ?? $1.dateAndTime) })
+                .filter { event in
+                    !futureEvents.contains(where: { $0.id == event.id })
+                    
+                }
+            
+            futureEvents.append(contentsOf: pastToAdd.prefix(remainingSlots))
+            
+        }
+
+        // Final step: Sort futureEvents in chronological order by dateAndTime
+        futureEvents.sort { $0.dateAndTime < $1.dateAndTime }
+        
         if dateToDisplay != nil {
-            for event in data {
+            for event in data.prefix(maxDisplayedEvents) {
                 for occuringDate in event.isOnDates {
                     if Calendar.current.isDate(occuringDate, equalTo: dateToDisplay!, toGranularity: .day) {
                         agreeingEvents.append(event)
@@ -208,7 +252,7 @@ struct EventListView: View {
             }
             
         } else {
-            for event in data {
+            for event in futureEvents {
                 if shouldDisplay(event: event, dateToDisplay: dateToDisplay) {
                     agreeingEvents.append(event)
                     
@@ -223,7 +267,7 @@ struct EventListView: View {
     var uniqueDates: [UniqueDate] {
         var datesSeen: [UniqueDate] = []
         
-        for event in eventsToShow {
+        for event in eventsToShow.prefix(maxDisplayedEvents) {
             if (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
                 var isUnique = true
                 
@@ -357,72 +401,19 @@ struct EventListView: View {
     
     func listSection(for section: UniqueDate) -> some View {
         ForEach($data) { $event in
-            
-            let index = $data.firstIndex(where: { $0.id == event.id })
-            
-            if shouldDisplay(event: event, dateToDisplay: dateToDisplay) && shouldDisplay(event: event, dateToDisplay: section.id) {
-                if dateToDisplay != nil || Calendar.current.isDate(event.dateAndTime, inSameDayAs: section.id) {
-                    if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
-                        
-                        NavigationLink(destination: EventDetailView(data: $data, event: index!)) {
-                            eventTile(event: event)
-                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                    Button {
-                                        if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                            data[index].isFavourite.toggle()
-                                            Task {
-                                                do {
-                                                    try await EventStore().save(events: data)
-                                                    
-                                                } catch {
-                                                    fatalError(error.localizedDescription)
-                                                    
-                                                }
-                                            }
-                                        }
-                                        
-                                        print("Toggling favourite on \(event)")
-                                        
-                                    } label: {
-                                        if event.isFavourite == true {
-                                            Label("Unfavourite", systemImage: "star.slash.fill")
-                                            
-                                        } else {
-                                            Label("Favourite", systemImage: "star.fill")
-                                            
-                                        }
-                                    }
-                                    .tint(.yellow)
-                                    
-                                }
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) {
-                                        if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                            data.remove(at: index)
-                                            
-                                            Task {
-                                                do {
-                                                    try await EventStore().save(events: data)
-                                                    
-                                                } catch {
-                                                    fatalError(error.localizedDescription)
-                                                    
-                                                }
-                                            }
-                                        }
-                                        
-                                        print("Deleting \($event)")
-                                        
-                                    } label: {
-                                        Label("Delete", systemImage: "trash.fill")
-                                        
-                                    }
-                                    .tint(.red)
-                                    
-                                    if editMode == .inactive {
+            if let _ = eventsToShow.firstIndex(where: { $0.id == event.id }) {
+                let dataIndex = data.firstIndex(where: { $0.id == event.id})
+                
+                if shouldDisplay(event: event, dateToDisplay: dateToDisplay) && shouldDisplay(event: event, dateToDisplay: section.id) {
+                    if dateToDisplay != nil || Calendar.current.isDate(event.dateAndTime, inSameDayAs: section.id) {
+                        if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
+                            
+                            NavigationLink(destination: EventDetailView(data: $data, event: dataIndex!)) {
+                                eventTile(event: event)
+                                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                         Button {
                                             if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                                data[index].isMuted.toggle()
+                                                data[index].isFavourite.toggle()
                                                 Task {
                                                     do {
                                                         try await EventStore().save(events: data)
@@ -434,101 +425,155 @@ struct EventListView: View {
                                                 }
                                             }
                                             
-                                            print("Toggling mute on \(event)")
+                                            print("Toggling favourite on \(event)")
                                             
                                         } label: {
-                                            if event.isMuted == true {
-                                                Label("Unmute", systemImage: "bell.fill")
+                                            if event.isFavourite == true {
+                                                Label("Unfavourite", systemImage: "star.slash.fill")
                                                 
                                             } else {
-                                                Label("Mute", systemImage: "bell.slash.fill")
+                                                Label("Favourite", systemImage: "star.fill")
                                                 
                                             }
                                         }
-                                        .tint(.indigo)
+                                        .tint(.yellow)
+                                        
+                                    }
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button(role: .destructive) {
+                                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                                data.remove(at: index)
+                                                
+                                                Task {
+                                                    do {
+                                                        try await EventStore().save(events: data)
+                                                        
+                                                    } catch {
+                                                        fatalError(error.localizedDescription)
+                                                        
+                                                    }
+                                                }
+                                            }
+                                            
+                                            print("Deleting \($event)")
+                                            
+                                        } label: {
+                                            Label("Delete", systemImage: "trash.fill")
+                                            
+                                        }
+                                        .tint(.red)
+                                        
+                                        if editMode == .inactive {
+                                            Button {
+                                                if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                                    data[index].isMuted.toggle()
+                                                    Task {
+                                                        do {
+                                                            try await EventStore().save(events: data)
+                                                            
+                                                        } catch {
+                                                            fatalError(error.localizedDescription)
+                                                            
+                                                        }
+                                                    }
+                                                }
+                                                
+                                                print("Toggling mute on \(event)")
+                                                
+                                            } label: {
+                                                if event.isMuted == true {
+                                                    Label("Unmute", systemImage: "bell.fill")
+                                                    
+                                                } else {
+                                                    Label("Mute", systemImage: "bell.slash.fill")
+                                                    
+                                                }
+                                            }
+                                            .tint(.indigo)
+                                            
+                                        }
+                                    }
+                                //.disabled(!isEditing)
+                            }
+                            .listRowBackground(SettingsStore().listTinting ? event.averageColor(saturation: 0.6, brightness: 1.2, opacity: 0.25) : Color(UIColor.systemGray6))
+                            .contextMenu {
+                                Button {
+                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                        data[index].isFavourite.toggle()
+                                        Task {
+                                            do {
+                                                try await EventStore().save(events: data)
+                                                
+                                            } catch {
+                                                fatalError(error.localizedDescription)
+                                                
+                                            }
+                                        }
+                                    }
+                                    
+                                } label: {
+                                    if event.isFavourite {
+                                        Label("Unfavourite", systemImage: "star.slash")
+                                        
+                                    } else {
+                                        Label("Favourite", systemImage: "star")
                                         
                                     }
                                 }
-                            //.disabled(!isEditing)
-                        }
-                        .listRowBackground(SettingsStore().listTinting ? event.averageColor(saturation: 0.6, brightness: 1.2, opacity: 0.25) : Color(UIColor.systemGray6))
-                        .contextMenu {
-                            Button {
-                                if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                    data[index].isFavourite.toggle()
-                                    Task {
-                                        do {
-                                            try await EventStore().save(events: data)
-                                            
-                                        } catch {
-                                            fatalError(error.localizedDescription)
-                                            
+                                
+                                Button {
+                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                        data[index].isMuted.toggle()
+                                        Task {
+                                            do {
+                                                try await EventStore().save(events: data)
+                                                
+                                            } catch {
+                                                fatalError(error.localizedDescription)
+                                                
+                                            }
                                         }
+                                    }
+                                    
+                                } label: {
+                                    if event.isMuted {
+                                        Label("Unmute", systemImage: "bell")
+                                        
+                                    } else {
+                                        Label("Mute", systemImage: "bell.slash")
+                                        
                                     }
                                 }
                                 
-                            } label: {
-                                if event.isFavourite {
-                                    Label("Unfavourite", systemImage: "star.slash")
-                                    
-                                } else {
-                                    Label("Favourite", systemImage: "star")
-                                    
-                                }
-                            }
-                            
-                            Button {
-                                if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                    data[index].isMuted.toggle()
-                                    Task {
-                                        do {
-                                            try await EventStore().save(events: data)
-                                            
-                                        } catch {
-                                            fatalError(error.localizedDescription)
-                                            
+                                Divider()
+                                
+                                NavigationLink(
+                                    destination: EventDetailView(data: $data, event: $data.firstIndex(where: { $0.id == event.id }) ?? 0, showEditEventSheet: true),
+                                    label: {
+                                        Label("Edit", systemImage: "slider.horizontal.3")
+                                    })
+                                
+                                Divider()
+                                
+                                Button {
+                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
+                                        data.remove(at: index)
+                                        
+                                        Task {
+                                            do {
+                                                try await EventStore().save(events: data)
+                                                
+                                            } catch {
+                                                fatalError(error.localizedDescription)
+                                                
+                                            }
                                         }
                                     }
-                                }
-                                
-                            } label: {
-                                if event.isMuted {
-                                    Label("Unmute", systemImage: "bell")
                                     
-                                } else {
-                                    Label("Mute", systemImage: "bell.slash")
+                                } label: {
+                                    Label("Delete \"\(event.name!)\"", systemImage: "trash")
                                     
                                 }
-                            }
-                            
-                            Divider()
-                            
-                            NavigationLink(
-                                destination: EventDetailView(data: $data, event: $data.firstIndex(where: { $0.id == event.id }) ?? 0, showEditEventSheet: true),
-                                label: {
-                                    Label("Edit", systemImage: "slider.horizontal.3")
-                                })
-                            
-                            Divider()
-                            
-                            Button {
-                                if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                    data.remove(at: index)
-                                    
-                                    Task {
-                                        do {
-                                            try await EventStore().save(events: data)
-                                            
-                                        } catch {
-                                            fatalError(error.localizedDescription)
-                                            
-                                        }
-                                    }
-                                }
-                                
-                            } label: {
-                                Label("Delete \"\(event.name!)\"", systemImage: "trash")
-                                
                             }
                         }
                     }
@@ -550,6 +595,7 @@ struct EventListView: View {
                     
                 }
             }
+            
         }
     }
     
@@ -596,6 +642,28 @@ struct EventListView: View {
              */
             .toolbar {
                 if !eventsToShow.isEmpty {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("Test perf") {
+                            for index in 1 ... 100 {
+                                let newTestEvent = Event(name: "Test Event \(index)")
+                                print("here")
+                                
+                                data.append(newTestEvent)
+                                data.sort(by: { $0.dateAndTime < $1.dateAndTime })
+                                
+                            }
+                            
+                            Task {
+                                do {
+                                    try await EventStore().save(events: data)
+                                    
+                                } catch {
+                                    fatalError(error.localizedDescription)
+                                    
+                                }
+                            }
+                        }
+                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Menu {
                             Button {
