@@ -8,6 +8,14 @@
 import SwiftUI
 
 struct EditEventSheetView: View {
+    init(data: Binding<[Event]>, event: Int) {
+        self._data = data
+        self.event = event
+        
+        UIDatePicker.appearance().minuteInterval = 1
+        
+    }
+    
     @Binding var data: [Event]
     let event: Int
     
