@@ -267,7 +267,7 @@ struct EventListView: View {
     var uniqueDates: [UniqueDate] {
         var datesSeen: [UniqueDate] = []
         
-        for event in eventsToShow.prefix(maxDisplayedEvents) {
+        for event in eventsToShow {
             if (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
                 var isUnique = true
                 
@@ -642,11 +642,11 @@ struct EventListView: View {
              */
             .toolbar {
                 if !eventsToShow.isEmpty {
+                    /*
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Test perf") {
+                        Button("Test Performance") {
                             for index in 1 ... 100 {
                                 let newTestEvent = Event(name: "Test Event \(index)")
-                                print("here")
                                 
                                 data.append(newTestEvent)
                                 data.sort(by: { $0.dateAndTime < $1.dateAndTime })
@@ -664,6 +664,7 @@ struct EventListView: View {
                             }
                         }
                     }
+                     */
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Menu {
                             Button {
