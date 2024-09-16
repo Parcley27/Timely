@@ -238,12 +238,13 @@ struct NewEventSheetView: View {
                     endDateAndTime: moveDate(formEndDateAndTime, by: formRecurringRate, amount: recurringSpace),
                     isAllDay: formIsAllDay,
                     
-                    isRecurring: formIsRecurring,
+                    //isRecurring: formIsRecurring,
                     recurranceRate: formRecurringRate,
-                    recurringTimes: Int(formRecurringTimes),
+                    //recurringTimes: Int(formRecurringTimes),
                     
                     isCopy: true,
                     copyOfEventWithID: newEvent.id,
+                    copyNumber: recurringSpace,
                     
                     isFavourite: formFavourited,
                     isMuted: formMuted
@@ -373,7 +374,7 @@ struct NewEventSheetView: View {
                             if formIsRecurring {
                                 Slider(
                                     value: $formRecurringTimes,
-                                        in: 1 ... 10,
+                                        in: 2 ... 10,
                                         onEditingChanged: { editing in
                                             isEditing = editing
                                             if !isEditing {

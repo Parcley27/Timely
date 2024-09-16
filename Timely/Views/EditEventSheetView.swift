@@ -21,12 +21,26 @@ struct EditEventSheetView: View {
     
     @Environment(\.dismiss) var dismiss
     
+    @State var showConfirmationDialog = false
+    
+    let recurringTimeOptions: [String] = ["never", "daily", "weekly", "monthly", "annually"]
+    
+    @State private var isEditing = false
+    
     @State var editedName: String = ""
     @State var editedEmoji: String = ""
+    
     @State var editedDescription: String = ""
+    
     @State var editedDateAndTime: Date = Date()
     @State var editedEndDateAndTime: Date = Date()
+    
     @State var editedIsAllDay: Bool = false
+    
+    @State var editedIsRecurring: Bool = false
+    @State var editedRecurringRate: String = "never"
+    @State var editedRecurringTimes: Double = 2.0
+    
     @State var editedFavourite: Bool = false
     @State var editedMute: Bool = false
     
@@ -55,9 +69,122 @@ struct EditEventSheetView: View {
         
     }
     
+    func saveEvent() {
+        data[event].name = editedName.trimmingCharacters(in: .whitespaces)
+        
+        if editedEmoji == "" {
+            var hasFoundEmoji = false
+            
+            for character in editedName {
+                let unicodeScalars = character.unicodeScalars
+                
+                for scalar in unicodeScalars {
+                    if (scalar.value >= 0x1F600 && scalar.value <= 0x1F64F) {
+                        data[event].emoji = String(character)
+                        hasFoundEmoji = true
+                        
+                        if let characterIndex = editedName.firstIndex(of: character) {
+                            editedName.remove(at: characterIndex)
+                            
+                        }
+                        
+                        break
+                        
+                    }
+                }
+                
+                if hasFoundEmoji {
+                    break
+                    
+                }
+            }
+            
+        } else {
+            editedEmoji = String(editedEmoji.prefix(1))
+            data[event].emoji = editedEmoji
+            
+        }
+        
+        if editedDescription != "" {
+            data[event].description = editedDescription.trimmingCharacters(in: .whitespaces)
+            
+        }
+        
+        data[event].dateAndTime = editedDateAndTime
+        data[event].endDateAndTime = editedEndDateAndTime
+        data[event].isAllDay = editedIsAllDay
+        
+        data[event].isRecurring = editedIsRecurring
+        data[event].recurranceRate = editedRecurringRate
+        data[event].recurringTimes = Int(editedRecurringTimes)
+        
+        data[event].isFavourite = editedFavourite
+        data[event].isMuted = editedMute
+        
+        data.sort(by: { $0.dateAndTime < $1.dateAndTime })
+        
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [data[event].id.uuidString])
+        
+        Task {
+            do {
+                try await EventStore().save(events: data)
+                
+                NotificationManager().scheduleNotifications(for: data[event])
+                
+            } catch {
+                fatalError(error.localizedDescription)
+                
+            }
+        }
+        
+        print(event)
+        
+    }
+    
+    func moveDate(_ inputDate: Date, by recurrence: String, amount: Int = 1) -> Date {
+        var dateComponent = DateComponents()
+        
+        let calendar = Calendar.current
+        
+        switch recurrence {
+            
+        case "daily":
+            dateComponent.day = amount
+            
+        case "weekly":
+            dateComponent.day = amount * 7
+            
+        case "monthly":
+            dateComponent.month = amount
+            
+        case "annually":
+            dateComponent.year = amount
+            
+        default:
+            return inputDate
+            
+        }
+        
+        if let newDate = calendar.date(byAdding: dateComponent, to: inputDate) {
+            return newDate
+        }
+        
+        return inputDate
+            
+    }
+    
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
+                if data[event].isCopy ?? false {
+                    Text("Note: Changes made apply only to this event")
+                        .foregroundStyle(.red)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color(.systemGray6))
+                    
+                }
+                
                 Form {
                     Section("About") {
                         TextField(data[event].name ?? "Name", text: $editedName)
@@ -127,6 +254,48 @@ struct EditEventSheetView: View {
                         
                     }
                     
+                    Section("Repeating") {
+                        Picker(editedRecurringRate != "never" ? (editedRecurringTimes < 10.5 ? String(format: "Repeating %.0f times", editedRecurringTimes) : "Repeating forever") : "Repeating" , selection: $editedRecurringRate) {
+                            ForEach(recurringTimeOptions, id: \.self) { timeOption in
+                                Text(timeOption.capitalized)
+                                    .id(timeOption)
+                                
+                            }
+                        }
+                        .onChange(of: editedRecurringRate) { _ in
+                            if editedRecurringRate == "never" {
+                                editedIsRecurring = false
+                                
+                            } else {
+                                editedIsRecurring = true
+                                
+                            }
+                        }
+                        .pickerStyle(.menu )
+                        
+                        if editedIsRecurring {
+                            Slider(
+                                value: $editedRecurringTimes,
+                                        in: 2 ... 10,
+                                        onEditingChanged: { editing in
+                                            isEditing = editing
+                                            if !isEditing {
+                                                editedRecurringTimes = editedRecurringTimes.rounded()
+                                                
+                                            }
+                                        }
+                                    )
+                            
+                        }
+                    }
+                    .disabled(data[event].isCopy ?? false)
+                    .onAppear() {
+                        editedIsRecurring = data[event].isRecurring ?? false
+                        editedRecurringRate = data[event].recurranceRate ?? "never"
+                        editedRecurringTimes = Double(data[event].recurringTimes ?? 0)
+                        
+                    }
+                    
                     Section("Details") {
                         ZStack {
                             HStack {
@@ -172,76 +341,92 @@ struct EditEventSheetView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        data[event].name = editedName.trimmingCharacters(in: .whitespaces)
-                        
-                        if editedEmoji == "" {
-                            var hasFoundEmoji = false
+                        if (data.filter{ $0.copyOfEventWithID == data[event].id }).count > 0 {
+                            showConfirmationDialog = true
                             
-                            for character in editedName {
-                                let unicodeScalars = character.unicodeScalars
+                        } else {
+                            saveEvent()
+                            dismiss()
+                            
+                        }
+                    }
+                    .confirmationDialog(Text("This event has recurring copies!"),
+                        isPresented: $showConfirmationDialog,
+                        titleVisibility: .visible,
+                        actions: {
+                            Button("Edit All Copies") {
+                                saveEvent()
                                 
-                                for scalar in unicodeScalars {
-                                    if (scalar.value >= 0x1F600 && scalar.value <= 0x1F64F) {
-                                        data[event].emoji = String(character)
-                                        hasFoundEmoji = true
+                                for event in (data.filter{ $0.copyOfEventWithID == data[event].id }) {
+                                    if let eventIndex = data.firstIndex(where: {$0.id == event.id}) {
+                                        data.remove(at: eventIndex)
                                         
-                                        if let characterIndex = editedName.firstIndex(of: character) {
-                                            editedName.remove(at: characterIndex)
+                                    }
+                                    
+                                    Task {
+                                        do {
+                                            try await EventStore().save(events: data)
+                                            
+                                        } catch {
+                                            fatalError(error.localizedDescription)
                                             
                                         }
-                                        
-                                        break
-                                        
                                     }
                                 }
                                 
-                                if hasFoundEmoji {
-                                    break
+                                for recurringSpace in 1 ... (Int(data[event].recurringTimes!) - 1) {
+                                    let newRecurringEvent = Event (
+                                        name: editedName.trimmingCharacters(in: .whitespaces),
+                                        emoji: editedEmoji,
+                                        
+                                        description: (editedDescription != "" ? editedDescription.trimmingCharacters(in: .whitespaces) : nil),
+                                        
+                                        dateAndTime: moveDate(editedDateAndTime, by: editedRecurringRate, amount: recurringSpace),
+                                        endDateAndTime: moveDate(editedEndDateAndTime, by: editedRecurringRate, amount: recurringSpace),
+                                        isAllDay: editedIsAllDay,
+                                        
+                                        //isRecurring: formIsRecurring,
+                                        recurranceRate: editedRecurringRate,
+                                        //recurringTimes: Int(formRecurringTimes),
+                                        
+                                        isCopy: true,
+                                        copyOfEventWithID: data[event].id,
+                                        copyNumber: recurringSpace,
+                                        
+                                        isFavourite: editedFavourite,
+                                        isMuted: editedMute
+                                        
+                                    )
                                     
+                                    data.append(newRecurringEvent)
+                                    
+                                    Task {
+                                        do {
+                                            try await EventStore().save(events: data)
+                                            NotificationManager().scheduleNotifications(for: newRecurringEvent)
+                                            
+                                        } catch {
+                                            fatalError(error.localizedDescription)
+                                            
+                                        }
+                                    }
                                 }
-                            }
-                            
-                        } else {
-                            editedEmoji = String(editedEmoji.prefix(1))
-                            data[event].emoji = editedEmoji
-                            
-                        }
-                        
-                        if editedDescription != "" {
-                            data[event].description = editedDescription.trimmingCharacters(in: .whitespaces)
-                            
-                        }
-                        
-                        data[event].dateAndTime = editedDateAndTime
-                        data[event].endDateAndTime = editedEndDateAndTime
-                        data[event].isAllDay = editedIsAllDay
-                        data[event].isFavourite = editedFavourite
-                        data[event].isMuted = editedMute
-                        
-                        data.sort(by: { $0.dateAndTime < $1.dateAndTime })
-                        
-                        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [data[event].id.uuidString])
-                        
-                        Task {
-                            do {
-                                try await EventStore().save(events: data)
                                 
-                                NotificationManager().scheduleNotifications(for: data[event])
-                                
-                            } catch {
-                                fatalError(error.localizedDescription)
+                                dismiss()
                                 
                             }
+                        },
+                        message: {
+                            Text("This action will edit all copies of this event")
+                        
                         }
-                        
-                        print(event)
-                        
-                        dismiss()
-                    }
+                    )
                     .disabled(editedName == "")
+                    
                 }
             }
             .navigationBarTitle("Edit Event", displayMode: .inline)
+            
         }
     }
 }

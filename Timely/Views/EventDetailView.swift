@@ -90,6 +90,29 @@ struct EventDetailView: View {
                 }
             }
             
+            if data[event].isCopy ?? false {
+                if let sourceEvent = data.firstIndex(where: { $0.id == data[event].copyOfEventWithID }) {
+                    Section {
+                        NavigationLink(destination: EventDetailView(data: $data, event: sourceEvent)) {
+                            Text("View Original Event")
+                            
+                        }
+                        .bold()
+                        .foregroundStyle(.selection)
+                        
+                    }
+                }
+            }
+            
+            if data[event].isCopy ?? false {
+                let totalCopies = data.filter { $0.copyOfEventWithID == data[event].copyOfEventWithID }
+                
+                Section {
+                    Text("Copy \(data[event].copyNumber ?? 0) of \(totalCopies.count), repeating \(data[event].recurranceRate ?? "N/A")")
+                    
+                }
+            }
+            
             Section {
                 Toggle("Favourite", isOn: $data[event].isFavourite)
                     .onChange(of: data[event].isFavourite) { newValue in
@@ -173,6 +196,7 @@ struct EventDetailView: View {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.updateTimeUntilEvent()
+            
         }
     }
 }

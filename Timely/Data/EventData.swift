@@ -345,6 +345,7 @@ struct Event: Identifiable, Codable {
     
     var isCopy: Bool? = false
     var copyOfEventWithID: UUID?
+    var copyNumber: Int?
     
     var isFavourite: Bool = false
     var isStandard: Bool {
