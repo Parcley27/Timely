@@ -30,7 +30,7 @@ struct NewEventSheetView: View {
     
     @State private var isEditing = false
     
-    let recurringTimeOptions: [String] = ["never", "daily", "weekly", "monthly", "annualy"]
+    let recurringTimeOptions: [String] = ["never", "daily", "weekly", "monthly", "annually"]
     
     @State private var formName: String = ""
     @State private var formEmoji: String = ""
@@ -75,6 +75,38 @@ struct NewEventSheetView: View {
             return inputDate
             
         }
+    }
+    
+    func moveDate(_ inputDate: Date, by recurrence: String, amount: Int = 1) -> Date {
+        var dateComponent = DateComponents()
+        
+        let calendar = Calendar.current
+        
+        switch recurrence {
+            
+        case "daily":
+            dateComponent.day = amount
+            
+        case "weekly":
+            dateComponent.day = amount * 7
+            
+        case "monthly":
+            dateComponent.month = amount
+            
+        case "annually":
+            dateComponent.year = amount
+            
+        default:
+            return inputDate
+            
+        }
+        
+        if let newDate = calendar.date(byAdding: dateComponent, to: inputDate) {
+            return newDate
+        }
+        
+        return inputDate
+            
     }
     
     let dateRange: ClosedRange<Date> = {
@@ -163,10 +195,17 @@ struct NewEventSheetView: View {
         let newEvent = Event (
             name: formName.trimmingCharacters(in: .whitespaces),
             emoji: formEmoji,
+            
             description: (formDescription != "" ? formDescription.trimmingCharacters(in: .whitespaces) : nil),
+            
             dateAndTime: formDateAndTime,
             endDateAndTime: formEndDateAndTime,
             isAllDay: formIsAllDay,
+            
+            isRecurring: formIsRecurring,
+            recurranceRate: formRecurringRate,
+            recurringTimes: Int(formRecurringTimes),
+            
             isFavourite: formFavourited,
             isMuted: formMuted
             
@@ -174,6 +213,47 @@ struct NewEventSheetView: View {
                 
         data.append(newEvent)
         data.sort(by: { $0.dateAndTime < $1.dateAndTime })
+        
+        if formIsRecurring {
+            /*
+            for event in data {
+                if event.copyOfEventWithID  == newEvent.id {
+                    data.remove(at: data.firstIndex(where: {$0.copyOfEventWithID == newEvent.id})!)
+                    
+                }
+            }
+             */
+            
+            for recurringSpace in 1 ... (Int(formRecurringTimes) - 1) {
+                //let newDateAndTime: Date = moveDate(formDateAndTime, by: formRecurringRate, amount: recurringSpace)
+                //let newEndDateAndTime: Date = moveDate(formEndDateAndTime, by: formRecurringRate, amount: recurringSpace)
+                
+                let newRecurringEvent = Event (
+                    name: formName.trimmingCharacters(in: .whitespaces),
+                    emoji: formEmoji,
+                    
+                    description: (formDescription != "" ? formDescription.trimmingCharacters(in: .whitespaces) : nil),
+                    
+                    dateAndTime: moveDate(formDateAndTime, by: formRecurringRate, amount: recurringSpace),
+                    endDateAndTime: moveDate(formEndDateAndTime, by: formRecurringRate, amount: recurringSpace),
+                    isAllDay: formIsAllDay,
+                    
+                    isRecurring: formIsRecurring,
+                    recurranceRate: formRecurringRate,
+                    recurringTimes: Int(formRecurringTimes),
+                    
+                    isCopy: true,
+                    copyOfEventWithID: newEvent.id,
+                    
+                    isFavourite: formFavourited,
+                    isMuted: formMuted
+                    
+                )
+                
+                data.append(newRecurringEvent)
+                
+            }
+        }
         
         Task {
             do {
@@ -270,9 +350,9 @@ struct NewEventSheetView: View {
                     
                     if !preferences.quickAdd {
                         Section("Repeating") {
-
                             
-                            Picker(formRecurringRate != "never" ? (formRecurringTimes < 10.5 ? String(format: "Repeating %.0f times", formRecurringTimes) : "Forever") : "Repeating" , selection: $formRecurringRate) {
+                            
+                            Picker(formRecurringRate != "never" ? (formRecurringTimes < 10.5 ? String(format: "Repeating %.0f times", formRecurringTimes) : "Repeating forever") : "Repeating" , selection: $formRecurringRate) {
                                 ForEach(recurringTimeOptions, id: \.self) { timeOption in
                                     Text(timeOption.capitalized)
                                         .id(timeOption)
@@ -293,17 +373,20 @@ struct NewEventSheetView: View {
                             if formIsRecurring {
                                 Slider(
                                     value: $formRecurringTimes,
-                                            in: 2 ... 11,
-                                            onEditingChanged: { editing in
-                                                isEditing = editing
-                                                if !isEditing {
-                                                    formRecurringTimes = formRecurringTimes.rounded()
+                                        in: 1 ... 10,
+                                        onEditingChanged: { editing in
+                                            isEditing = editing
+                                            if !isEditing {
+                                                formRecurringTimes = formRecurringTimes.rounded()
+                                                
+                                                if formRecurringTimes == 1 {
+                                                    formIsRecurring = false
+                                                    formRecurringRate = "never"
                                                     
                                                 }
                                             }
-                                        )
-                                
-                                
+                                        }
+                                    )
                             }
                         }
                         
@@ -349,9 +432,11 @@ struct NewEventSheetView: View {
                         
                     }
                     .disabled(formName.isEmpty)
+                    
                 }
             }
             .navigationBarTitle("New Event", displayMode: .inline)
+            
         }
     }
 }
