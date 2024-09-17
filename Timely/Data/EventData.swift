@@ -154,7 +154,7 @@ struct Event: Identifiable, Codable {
         
         if endDateAndTime != nil {
             if dateAndTime == endDateAndTime! {
-                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d yyyy", comment: "")
+                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, d MMMM yyyy", comment: "")
                 
                 formattedDate = dateFormatter.string(from: dateAndTime)
                 
@@ -163,7 +163,7 @@ struct Event: Identifiable, Codable {
                     dateFormatter.dateFormat = "h:mm"
                     let firstTime = dateFormatter.string(from: dateAndTime)
                     
-                    dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEE, MMMM d yyyy", comment: "")
+                    dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEE, d MMMM yyyy", comment: "")
                     let secondTime = dateFormatter.string(from: endDateAndTime!)
                     
                     // "\(firstTime) to \(secondTime)"
@@ -174,7 +174,7 @@ struct Event: Identifiable, Codable {
                     dateFormatter.dateFormat = NSLocalizedString("h:mm a", comment: "")
                     let firstTime = dateFormatter.string(from: dateAndTime)
                     
-                    dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEE, MMMM d yyyy", comment: "")
+                    dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEE, d MMMM yyyy", comment: "")
                     let secondTime = dateFormatter.string(from: endDateAndTime!)
                     
                     // "\(firstTime) to \(secondTime)"
@@ -184,10 +184,10 @@ struct Event: Identifiable, Codable {
                 }
                 
             } else if Calendar.current.isDate(dateAndTime, equalTo: endDateAndTime!, toGranularity: .year) {
-                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d", comment: "")
+                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, d MMMM", comment: "")
                 let firstTime = dateFormatter.string(from: dateAndTime)
                 
-                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d yyyy", comment: "")
+                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, d MMMM yyyy", comment: "")
                 let secondTime = dateFormatter.string(from: endDateAndTime!)
                 
                 // "\(firstTime) to\n\(secondTime)"
@@ -195,7 +195,7 @@ struct Event: Identifiable, Codable {
                 formattedDate = String(format: stringFormat, firstTime, secondTime)
                 
             } else {
-                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMM d yyyy", comment: "")
+                dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, d MMM yyyy", comment: "")
                 
                 let firstTime = dateFormatter.string(from: dateAndTime)
                 let secondTime = dateFormatter.string(from: endDateAndTime!)
@@ -207,14 +207,14 @@ struct Event: Identifiable, Codable {
             }
             
         } else {
-            dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, MMMM d yyyy", comment: "")
+            dateFormatter.dateFormat = NSLocalizedString("h:mm a 'on' EEEE, d MMMM yyyy", comment: "")
             
             formattedDate = dateFormatter.string(from: dateAndTime)
             
         }
         
         if isAllDay ?? false {
-            dateFormatter.dateFormat = NSLocalizedString("'All day on' EEEE, MMMM d yyyy", comment: "")
+            dateFormatter.dateFormat = NSLocalizedString("'All day on' EEEE, d MMMM yyyy", comment: "")
             
             formattedDate = dateFormatter.string(from: dateAndTime)
             
@@ -234,6 +234,8 @@ struct Event: Identifiable, Codable {
         let oneHourInSeconds = 3600.0
         let oneMinuteInSeconds = 60.0
         
+        var isWithin60Sec = false
+        
         if timeIntervalToStart > oneDayInSeconds || timeIntervalToEnd < -oneDayInSeconds {
             formatter.allowedUnits = [.year, .month, .day, .hour]
             
@@ -241,10 +243,10 @@ struct Event: Identifiable, Codable {
             formatter.allowedUnits = [.day, .hour, .minute]
             
         } else if timeIntervalToStart > oneMinuteInSeconds || timeIntervalToEnd < -oneMinuteInSeconds {
-            formatter.allowedUnits = [.minute, .second]
+            formatter.allowedUnits = [.minute]
             
         } else {
-            formatter.allowedUnits = [.second]
+            isWithin60Sec = true
             
         }
            
@@ -262,7 +264,10 @@ struct Event: Identifiable, Codable {
             //return formatter.string(from: timeIntervalToStart)!
         
         if hasPassed {
-            if var timePastString = formatter.string(from: timeIntervalToEnd) {
+            if isWithin60Sec {
+                return NSLocalizedString("Less than a minute ago", comment: "")
+                
+            } else if var timePastString = formatter.string(from: timeIntervalToEnd) {
                 timePastString.remove(at: timePastString.startIndex)
                 
                 let timeAgoFormat = NSLocalizedString("%@ ago", comment: "")
@@ -276,8 +281,11 @@ struct Event: Identifiable, Codable {
         } else if hasStarted && !hasPassed {
             //let rightNowString = NSLocalizedString("Right Now", comment: "")
             
-            if timeIntervalToEnd < oneHourInSeconds {
-                formatter.allowedUnits = [.minute, .second]
+            if timeIntervalToEnd < oneMinuteInSeconds {
+                return NSLocalizedString("Ends in less than a minute", comment: "")
+            
+            } else if timeIntervalToEnd < oneHourInSeconds {
+                formatter.allowedUnits = [.minute]
                 
             } else if timeIntervalToEnd < oneDayInSeconds {
                 formatter.allowedUnits = [.hour, .minute]
@@ -294,7 +302,10 @@ struct Event: Identifiable, Codable {
             return timeUntilEndString
             
         } else {
-            if let timeUntilString = formatter.string(from: timeIntervalToStart) {
+            if isWithin60Sec {
+                return NSLocalizedString("Less than a minute ago", comment: "")
+                
+            } else if let timeUntilString = formatter.string(from: timeIntervalToStart) {
                 return timeUntilString
                 
             } else {

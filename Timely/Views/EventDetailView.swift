@@ -108,7 +108,7 @@ struct EventDetailView: View {
                 let totalCopies = data.filter { $0.copyOfEventWithID == data[event].copyOfEventWithID }
                 
                 Section {
-                    Text("Copy \(data[event].copyNumber ?? 0) of \(totalCopies.count), repeating \(data[event].recurranceRate ?? "N/A")")
+                    Text("Copy \(data[event].copyNumber ?? 0) of \(totalCopies.count), repeating \(NSLocalizedString(data[event].recurranceRate!, comment: ""))")
                     
                 }
             }
