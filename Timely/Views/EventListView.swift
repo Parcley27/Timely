@@ -55,7 +55,7 @@ struct EventListView: View {
     @State private var newTimeUntilEvent: String = ""
     
     let maxDisplayedEvents = 50
-    
+        
     func titleBarText(displayDate: Date?) -> String {
         var titleText: String = ""
         
@@ -76,7 +76,7 @@ struct EventListView: View {
     }
     
     @State private var timeUpdater: String = ""
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
             
     func showNewEventSheetView() {
         showingSheet = true
@@ -201,12 +201,10 @@ struct EventListView: View {
         
         futureEvents = data.filter { $0.hasStarted && !$0.hasPassed }
         
-        // Add current events
         if futureEvents.count > maxDisplayedEvents {
             futureEvents = Array(futureEvents.prefix(maxDisplayedEvents))
         }
         
-        // Add future events
         if futureEvents.count < maxDisplayedEvents {
             let remainingSlots = maxDisplayedEvents - futureEvents.count
             let futureOnlyEvents = data.filter { !$0.hasStarted }
@@ -220,7 +218,6 @@ struct EventListView: View {
             
         }
         
-        // Add passed events
         if futureEvents.count < maxDisplayedEvents {
             let remainingSlots = maxDisplayedEvents - futureEvents.count
             let pastEvents = data.filter { $0.hasPassed }
@@ -235,9 +232,6 @@ struct EventListView: View {
             futureEvents.append(contentsOf: pastToAdd.prefix(remainingSlots))
             
         }
-
-        // Final step: Sort futureEvents in chronological order by dateAndTime
-        futureEvents.sort { $0.dateAndTime < $1.dateAndTime }
         
         if dateToDisplay != nil {
             for event in data.prefix(maxDisplayedEvents) {
@@ -259,8 +253,11 @@ struct EventListView: View {
                 }
             }
         }
+         //*/
         
-        return agreeingEvents
+        //agreeingEvents = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
+        
+        return agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
         
     }
     
@@ -615,9 +612,11 @@ struct EventListView: View {
             }
         }
         .background(.background)
-        //.background(.green)
         .scrollContentBackground(.hidden)
         .listRowSpacing(5)
+        .simultaneousGesture(DragGesture().onChanged({ _ in
+            // if keyboard is opened then hide it
+        }))
         
     }
     
@@ -632,14 +631,6 @@ struct EventListView: View {
                     
                 }
             }
-            /*
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton()
-                    
-                }
-            }
-             */
             .toolbar {
                 if !eventsToShow.isEmpty {
                     /*
@@ -710,9 +701,11 @@ struct EventListView: View {
                 }
             }
             .navigationBarTitle(titleBarText(displayDate: dateToDisplay))
+            .navigationBarTitleDisplayMode(.large)
             .environment(\.editMode, $editMode)
             .sheet(isPresented: $showingSheet) {
                 NewEventSheetView(data: $data)
+                
             }
             .onChange(of: scenePhase) { phase in
                 if phase == .inactive {
