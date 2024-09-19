@@ -1567,6 +1567,28 @@
         }
       }
     },
+    "Less than a minute" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moins d'une minute"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不到一分钟"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不到一分鐘"
+          }
+        }
+      }
+    },
     "Less than a minute ago" : {
       "localizations" : {
         "en" : {

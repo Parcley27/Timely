@@ -303,7 +303,7 @@ struct Event: Identifiable, Codable {
             
         } else {
             if isWithin60Sec {
-                return NSLocalizedString("Less than a minute ago", comment: "")
+                return NSLocalizedString("Less than a minute", comment: "")
                 
             } else if let timeUntilString = formatter.string(from: timeIntervalToStart) {
                 return timeUntilString
