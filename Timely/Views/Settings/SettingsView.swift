@@ -82,6 +82,16 @@ struct SettingsView: View {
                     }
                     
                     Section("Event History") {
+                        Toggle(isOn: $preferences.removePassedEvents) {
+                            if preferences.keepEventHistory {
+                                Text("Archive Passed Events")
+                                
+                            } else {
+                                Text("Delete Passed Events")
+                                
+                            }
+                        }
+                        
                         Toggle(isOn: Binding(
                             get: { preferences.keepEventHistory },
                             set: { newValue in
@@ -112,16 +122,6 @@ struct SettingsView: View {
                             
                             }
                         )
-                        
-                        Toggle(isOn: $preferences.removePassedEvents) {
-                            if preferences.keepEventHistory {
-                                Text("Archive Passed Events")
-                                
-                            } else {
-                                Text("Delete Passed Events")
-                                
-                            }
-                        }
                     }
                     
                     Section("Contact") {
