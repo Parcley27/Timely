@@ -16,6 +16,8 @@ struct NewEventSheetView: View {
         if SettingsStore().quickAdd {
             UIDatePicker.appearance().minuteInterval = 5
             
+        } else {
+            UIDatePicker.appearance().minuteInterval = 1
         }
     }
     
@@ -203,7 +205,7 @@ struct NewEventSheetView: View {
             
             isRecurring: formIsRecurring,
             recurranceRate: formRecurringRate,
-            recurringTimes: Int(formRecurringTimes),
+            recurringTimes: formIsRecurring ? Int(formRecurringTimes) : 1,
             
             isFavourite: formFavourited,
             isMuted: formMuted
@@ -372,15 +374,16 @@ struct NewEventSheetView: View {
                             if formIsRecurring {
                                 Slider(
                                     value: $formRecurringTimes,
-                                        in: 2 ... 10,
+                                        in: 1 ... 10,
                                         onEditingChanged: { editing in
-                                            isEditing = editing
-                                            if !isEditing {
+                                            if !editing {
                                                 formRecurringTimes = formRecurringTimes.rounded()
                                                 
                                                 if formRecurringTimes == 1 {
                                                     formIsRecurring = false
                                                     formRecurringRate = "never"
+                                                    
+                                                    formRecurringTimes = 2
                                                     
                                                 }
                                             }

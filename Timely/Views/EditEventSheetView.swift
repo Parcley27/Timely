@@ -116,7 +116,7 @@ struct EditEventSheetView: View {
         
         data[event].isRecurring = editedIsRecurring
         data[event].recurranceRate = editedRecurringRate
-        data[event].recurringTimes = Int(editedRecurringTimes)
+        data[event].recurringTimes = editedIsRecurring ? Int(editedRecurringTimes) : 1
         
         data[event].isFavourite = editedFavourite
         data[event].isMuted = editedMute
@@ -199,15 +199,6 @@ struct EditEventSheetView: View {
                             }
                             .opacity(editedEmoji == "" ? 0.5: 1.0)
                         
-                        /*
-                        TextField(data[event].emoji ?? "📅", text: $editedEmoji)
-                            .onAppear() {
-                                editedEmoji = data[event].emoji ?? "📅"
-                                
-                            }
-                            .opacity(editedEmoji == "" ? 0.5: 1.0)
-                        */
-                        
                     }
                     
                     Section("Date and Time") {
@@ -248,7 +239,7 @@ struct EditEventSheetView: View {
                         
                     }
                     .onChange(of: editedDateAndTime) { _ in
-                        if editedDateAndTime != data[event].dateAndTime {
+                        if editedDateAndTime != data[event].dateAndTime && !editedIsAllDay{
                             editedEndDateAndTime = editedDateAndTime.addingTimeInterval(60 * 60)
                             
                         }
@@ -276,15 +267,31 @@ struct EditEventSheetView: View {
                         if editedIsRecurring {
                             Slider(
                                 value: $editedRecurringTimes,
-                                        in: 2 ... 10,
+                                        in: 1 ... 10,
                                         onEditingChanged: { editing in
-                                            isEditing = editing
-                                            if !isEditing {
+                                            if !editing {
                                                 editedRecurringTimes = editedRecurringTimes.rounded()
+                                                
+                                                if editedRecurringTimes == 1 {
+                                                    editedIsRecurring = false
+                                                    editedRecurringRate = "never"
+                                                    
+                                                    editedRecurringTimes = 2
+                                                    
+                                                }
                                                 
                                             }
                                         }
                                     )
+                            
+                        }
+                    }
+                    .onChange(of: editedRecurringRate) { _ in
+                        if editedRecurringRate == "never" {
+                            editedIsRecurring = false
+                            
+                        } else {
+                            editedIsRecurring = true
                             
                         }
                     }
@@ -341,7 +348,7 @@ struct EditEventSheetView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        if (data.filter{ $0.copyOfEventWithID == data[event].id }).count > 0 {
+                        if (data.filter{ $0.copyOfEventWithID == data[event].id }).count > 0 || editedIsRecurring {
                             showConfirmationDialog = true
                             
                         } else {
@@ -374,39 +381,41 @@ struct EditEventSheetView: View {
                                     }
                                 }
                                 
-                                for recurringSpace in 1 ... (Int(data[event].recurringTimes!) - 1) {
-                                    let newRecurringEvent = Event (
-                                        name: editedName.trimmingCharacters(in: .whitespaces),
-                                        emoji: editedEmoji,
-                                        
-                                        description: (editedDescription != "" ? editedDescription.trimmingCharacters(in: .whitespaces) : nil),
-                                        
-                                        dateAndTime: moveDate(editedDateAndTime, by: editedRecurringRate, amount: recurringSpace),
-                                        endDateAndTime: moveDate(editedEndDateAndTime, by: editedRecurringRate, amount: recurringSpace),
-                                        isAllDay: editedIsAllDay,
-                                        
-                                        //isRecurring: formIsRecurring,
-                                        recurranceRate: editedRecurringRate,
-                                        //recurringTimes: Int(formRecurringTimes),
-                                        
-                                        isCopy: true,
-                                        copyOfEventWithID: data[event].id,
-                                        copyNumber: recurringSpace,
-                                        
-                                        isFavourite: editedFavourite,
-                                        isMuted: editedMute
-                                        
-                                    )
-                                    
-                                    data.append(newRecurringEvent)
-                                    
-                                    Task {
-                                        do {
-                                            try await EventStore().save(events: data)
+                                if editedIsRecurring {
+                                    for recurringSpace in 1 ... (Int(editedRecurringTimes) - 1) {
+                                        let newRecurringEvent = Event (
+                                            name: editedName.trimmingCharacters(in: .whitespaces),
+                                            emoji: editedEmoji,
                                             
-                                        } catch {
-                                            fatalError(error.localizedDescription)
+                                            description: (editedDescription != "" ? editedDescription.trimmingCharacters(in: .whitespaces) : nil),
                                             
+                                            dateAndTime: moveDate(editedDateAndTime, by: editedRecurringRate, amount: recurringSpace),
+                                            endDateAndTime: moveDate(editedEndDateAndTime, by: editedRecurringRate, amount: recurringSpace),
+                                            isAllDay: editedIsAllDay,
+                                            
+                                            //isRecurring: formIsRecurring,
+                                            recurranceRate: editedRecurringRate,
+                                            //recurringTimes: Int(formRecurringTimes),
+                                            
+                                            isCopy: true,
+                                            copyOfEventWithID: data[event].id,
+                                            copyNumber: recurringSpace,
+                                            
+                                            isFavourite: editedFavourite,
+                                            isMuted: editedMute
+                                            
+                                        )
+                                        
+                                        data.append(newRecurringEvent)
+                                        
+                                        Task {
+                                            do {
+                                                try await EventStore().save(events: data)
+                                                
+                                            } catch {
+                                                fatalError(error.localizedDescription)
+                                                
+                                            }
                                         }
                                     }
                                 }

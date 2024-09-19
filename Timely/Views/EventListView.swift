@@ -610,9 +610,6 @@ struct EventListView: View {
         .background(.background)
         .scrollContentBackground(.hidden)
         .listRowSpacing(5)
-        .simultaneousGesture(DragGesture().onChanged({ _ in
-            // if keyboard is opened then hide it
-        }))
         
     }
     
