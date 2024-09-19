@@ -420,7 +420,7 @@ struct EventListView: View {
                                                 }
                                             }
                                             
-                                            print("Toggling favourite on \(event)")
+                                            print("Toggling favourite on \(event.name!)")
                                             
                                         } label: {
                                             if event.isFavourite == true {
@@ -473,7 +473,7 @@ struct EventListView: View {
                                                     }
                                                 }
                                                 
-                                                print("Toggling mute on \(event)")
+                                                print("Toggling mute on \(event.name!)")
                                                 
                                             } label: {
                                                 if event.isMuted == true {
@@ -575,9 +575,7 @@ struct EventListView: View {
                 }
             }
         }
-        .onDelete { indexSet in
-            NotificationManager().removeAllNotifications()
-            
+        .onDelete { indexSet in            
             data.remove(atOffsets: indexSet)
             data.sort(by: { $0.dateAndTime < $1.dateAndTime })
             
