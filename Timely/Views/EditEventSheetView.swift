@@ -248,8 +248,10 @@ struct EditEventSheetView: View {
                         
                     }
                     .onChange(of: editedDateAndTime) { _ in
-                        editedEndDateAndTime = editedDateAndTime.addingTimeInterval(60 * 60)
-                        
+                        if editedDateAndTime != data[event].dateAndTime {
+                            editedEndDateAndTime = editedDateAndTime.addingTimeInterval(60 * 60)
+                            
+                        }
                     }
                     
                     Section("Repeating") {
