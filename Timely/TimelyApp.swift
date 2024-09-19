@@ -10,7 +10,7 @@ import SwiftUI
 
 @main
 struct TimelyApp: App {
-    @StateObject private var eventList = EventStore()
+    @StateObject var eventStore = EventStore()
     
     let versionNumber = "2.4"
     let buildNumber = "12"
@@ -75,10 +75,10 @@ struct TimelyApp: App {
             VStack {
                 ZStack {
                     TabView(selection: $selectedTab) {
-                        EventListView(data: $eventList.events) {
+                        EventListView(data: $eventStore.events) {
                             Task {
                                 do {
-                                    try await eventList.save(events: eventList.events)
+                                    try await eventStore.save(events: eventStore.events)
                                     
                                 } catch {
                                     fatalError(error.localizedDescription)
@@ -89,11 +89,11 @@ struct TimelyApp: App {
                         .task {
                             do {
                                 //try await eventList.load()
-                                eventList.loadFromiCloud()
+                                eventStore.loadFromiCloud()
                                 
                                 print("Loading events: ")
                                 
-                                for event in eventList.events {
+                                for event in eventStore.events {
                                     print(event.name!, terminator: " ")
                                     
                                 }
@@ -102,7 +102,7 @@ struct TimelyApp: App {
                                 
                             }
                         }
-                        .badge(localizedNumber(filterPassedEvents(events: eventList.events)!.count))
+                        .badge(localizedNumber(filterPassedEvents(events: eventStore.events)!.count))
                         .tabItem {
                             Label("My Events", systemImage: "list.bullet")
                             
@@ -110,10 +110,10 @@ struct TimelyApp: App {
                         .tag(0)
                         
                         if lastTab == 0 {
-                            EventListView(data: $eventList.events) {
+                            EventListView(data: $eventStore.events) {
                                 Task {
                                     do {
-                                        try await eventList.save(events: eventList.events)
+                                        try await eventStore.save(events: eventStore.events)
                                         
                                     } catch {
                                         fatalError(error.localizedDescription)
@@ -124,11 +124,11 @@ struct TimelyApp: App {
                             .task {
                                 do {
                                     //try await eventList.load()
-                                    eventList.loadFromiCloud()
+                                    eventStore.loadFromiCloud()
                                     
                                     print("Loading events: ")
                                     
-                                    for event in eventList.events {
+                                    for event in eventStore.events {
                                         print(event.name!, terminator: " ")
                                         
                                     }
@@ -139,10 +139,10 @@ struct TimelyApp: App {
                             }
                             .tag(1)
                         } else if lastTab == 2 {
-                            CalendarView(data: $eventList.events, month: currentMonth, year: currentYear) {
+                            CalendarView(data: $eventStore.events, month: currentMonth, year: currentYear) {
                                 Task {
                                     do {
-                                        try await eventList.save(events: eventList.events)
+                                        try await eventStore.save(events: eventStore.events)
                                         
                                     } catch {
                                         fatalError(error.localizedDescription)
@@ -153,11 +153,11 @@ struct TimelyApp: App {
                             .task {
                                 do {
                                     //try await eventList.load()
-                                    eventList.loadFromiCloud()
+                                    eventStore.loadFromiCloud()
                                     
                                     print("Loading events: ")
                                     
-                                    for event in eventList.events {
+                                    for event in eventStore.events {
                                         print(event.name!, terminator: " ")
                                         
                                     }
@@ -169,10 +169,10 @@ struct TimelyApp: App {
                             .tag(1)
                         }
                             
-                        CalendarView(data: $eventList.events, month: currentMonth, year: currentYear) {
+                        CalendarView(data: $eventStore.events, month: currentMonth, year: currentYear) {
                             Task {
                                 do {
-                                    try await eventList.save(events: eventList.events)
+                                    try await eventStore.save(events: eventStore.events)
                                     
                                 } catch {
                                     fatalError(error.localizedDescription)
@@ -183,11 +183,11 @@ struct TimelyApp: App {
                         .task {
                             do {
                                 //try await eventList.load()
-                                eventList.loadFromiCloud()
+                                eventStore.loadFromiCloud()
                                 
                                 print("Loading events: ")
                                 
-                                for event in eventList.events {
+                                for event in eventStore.events {
                                     print(event.name!, terminator: " ")
                                     
                                 }
@@ -229,14 +229,14 @@ struct TimelyApp: App {
                             .position(x: metrics.size.width * 0.5, y: metrics.size.height - 48)
                     }
                     .sheet(isPresented: $showNewSheet) {
-                        NewEventSheetView(data: $eventList.events)
+                        NewEventSheetView(data: $eventStore.events)
                         
                     }
                 }
             }
             .onReceive(timer) { _ in
                 if SettingsStore().removePassedEvents && SettingsStore().keepEventHistory == false {
-                    eventList.deleteExpiredEvents()
+                    eventStore.deleteExpiredEvents()
                     
                 }
             }
