@@ -11,11 +11,6 @@ import SwiftUI
 class EventStore: ObservableObject {
     @Published var events: [Event] = []
     
-    func getAllEvents() -> [Event] {
-        return events
-        
-    }
-        
     private static func fileURL() throws -> URL {
         try FileManager.default.url(for: .documentDirectory,
                                     in: .userDomainMask,
@@ -79,8 +74,9 @@ class EventStore: ObservableObject {
             let data = try JSONEncoder().encode(events)
             
             // Print JSON string before saving
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print("JSON to be saved to iCloud: \(jsonString)")
+            if let _ = String(data: data, encoding: .utf8) {
+                //print("JSON to be saved to iCloud: \(jsonString.truncatingToLength(100))")
+                print("JSON string valid")
                 
             }
             
@@ -129,10 +125,13 @@ class EventStore: ObservableObject {
         
         saveToiCloud(events: events)
         
+        scheduleNotificationsForAllEvents()
+        
     }
     
     func deleteExpiredEvents() {
         //let oneHourInSeconds = 60 * 60
+        
         events.removeAll { event in
             event.hasExpired()
             
@@ -147,6 +146,105 @@ class EventStore: ObservableObject {
                 
             }
         }
+    }
+    
+    func formatTimeForNotification(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        
+        return formatter.string(from: date)
+        
+    }
+    
+    func scheduleNotificationsForAllEvents() {
+        removeAllNotifications()
+        
+        for event in events.filter({ !$0.hasPassed }) {
+            print("Writing notification for \(event.name!)")
+            
+            scheduleNotifications(for: event)
+            
+        }
+    }
+    
+    func scheduleNotifications(for event: Event) {
+        let standardTimes: [Int] = [0, 15]
+        let favouriteTimes: [Int] = [0, 15, 60]
+        
+        if !event.isMuted && !event.hasExpired() {
+            if event.isFavourite {
+                for time in favouriteTimes {
+                    addNotification(for: event, time: time)
+                    
+                }
+                
+            } else {
+                for time in standardTimes {
+                    addNotification(for: event, time: time)
+                    
+                }
+            }
+        }
+    }
+    
+    func addNotification(for event: Event, time: Int) {
+        let notificationIdentifier = "\(event.id.uuidString) \(time) minutes"
+        
+        let content = UNMutableNotificationContent()
+        content.title = "\(event.name!) • \(event.emoji!)"
+        content.sound = .default
+        
+        let eventTime = formatTimeForNotification(from: event.dateAndTime)
+        
+        if time == 0 {
+            // Starting Now!
+            content.body = NSLocalizedString("Starting Now!", comment: "")
+            
+        } else if time < 60 {
+            // Starting in \(time) minutes, at \(eventTime).
+            content.body = String(format: NSLocalizedString("Starting in %1$@ minutes, at %2$@.", comment: ""), String(time), eventTime)
+            
+        } else if time == 60 {
+            // Starting in 1 hour, at \(eventTime).
+            content.body = String(format: NSLocalizedString("Starting in 1 hour, at %@.", comment: ""), eventTime)
+            
+        } else if time > 60 {
+            // Starting in \(time/60) hours, at \(eventTime).
+            content.body = String(format: NSLocalizedString("Starting in %1$@ hours, at %2$@.", comment: ""), String(format: "%.1f", Double(time) / 60.0), eventTime)
+            
+        }
+        
+        if event.isFavourite && time <= 15 {
+            content.interruptionLevel = .timeSensitive
+            
+        }
+        
+        content.threadIdentifier = event.id.uuidString
+        
+        let triggerDate = Calendar.current.date(byAdding: .minute, value: -time, to: event.dateAndTime)
+        guard let triggerDate = triggerDate else { return }
+        
+        let triggerComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: false)
+        
+        let request = UNNotificationRequest(identifier: notificationIdentifier, content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling notification: \(error)")
+                
+            }
+        }
+    }
+    
+    func removeAllNotifications() {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        
+        print("Removing notifications")
+        
     }
     
     init() {

@@ -129,8 +129,6 @@ struct EditEventSheetView: View {
             do {
                 try await EventStore().save(events: data)
                 
-                NotificationManager().scheduleNotifications(for: data[event])
-                
             } catch {
                 fatalError(error.localizedDescription)
                 
@@ -403,7 +401,6 @@ struct EditEventSheetView: View {
                                     Task {
                                         do {
                                             try await EventStore().save(events: data)
-                                            NotificationManager().scheduleNotifications(for: newRecurringEvent)
                                             
                                         } catch {
                                             fatalError(error.localizedDescription)

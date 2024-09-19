@@ -21,7 +21,6 @@ struct NewEventSheetView: View {
     
     @Binding var data: [Event]
     @StateObject private var store = EventStore()
-    @StateObject private var notificationManager = NotificationManager()
     @StateObject private var preferences = SettingsStore()
     
     @Environment(\.dismiss) var dismiss
@@ -259,7 +258,6 @@ struct NewEventSheetView: View {
         Task {
             do {
                 try await store.save(events: data)
-                notificationManager.scheduleNotifications(for: newEvent)
                 
             } catch {
                 fatalError(error.localizedDescription)

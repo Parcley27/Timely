@@ -155,9 +155,7 @@ struct EventDetailView: View {
                     actions: {
                         Button("Delete", role: .destructive) {
                             print("Delete Event")
-                            
-                            NotificationManager().removeAllNotifications()
-                            
+                                                        
                             presentationMode.wrappedValue.dismiss()
                             dismiss()
                             

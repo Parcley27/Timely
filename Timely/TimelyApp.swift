@@ -240,11 +240,6 @@ struct TimelyApp: App {
                     
                 }
             }
-            
-            .onAppear {
-                NotificationManager().scheduleNotificationsForAllEvents()
-                
-            }
         }
     }
 }
