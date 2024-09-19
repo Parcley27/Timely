@@ -133,29 +133,27 @@ struct EventListView: View {
         let dateFormatter = DateFormatter()
         var dateString: String = ""
         
-        let oneDayInSeconds: Double = 60 * 60 * 24
+        //let oneDayInSeconds: Double = 60 * 60 * 24
         let oneWeekInSeconds: Double = 60 * 60 * 24 * 7
         
         if abs(date.timeIntervalSinceNow) < oneWeekInSeconds {
             if Calendar.current.isDate(date, inSameDayAs: Date()) {
                 dateString = NSLocalizedString("Today", comment: "")
                 
-            } else if abs(date.timeIntervalSinceNow) < oneDayInSeconds {
-                if date.timeIntervalSinceNow > 0 {
-                    dateString = NSLocalizedString("Tomorrow", comment: "")
-                    
-                } else {
-                    dateString = NSLocalizedString("Yesterday", comment: "")
-                    
-                }
+            } else if Calendar.current.isDateInYesterday(date) {
+                dateString = NSLocalizedString("Yesterday", comment: "")
+                
+            } else if Calendar.current.isDateInTomorrow(date) {
+                dateString = NSLocalizedString("Tomorrow", comment: "")
                 
             } else {
                 dateFormatter.dateFormat = "EEEE"
                 let dayString = dateFormatter.string(from: date)
                 
                 if date.timeIntervalSinceNow > 0.0 {
-                    let stringFormat = NSLocalizedString("Next %@", comment: "")
-                    dateString = String(format: stringFormat, dayString)
+                    //let stringFormat = NSLocalizedString("Next %@", comment: "")
+                    //dateString = String(format: stringFormat, dayString)
+                    dateString = dayString
                     
                 } else {
                     let stringFormat = NSLocalizedString("Last %@", comment: "")
@@ -656,6 +654,7 @@ struct EventListView: View {
                         }
                     }
                      */
+                    
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Menu {
                             Button {
