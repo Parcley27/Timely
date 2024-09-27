@@ -160,7 +160,7 @@ class EventStore: ObservableObject {
     func scheduleNotificationsForAllEvents() {
         removeAllNotifications()
         
-        for event in events.filter({ !$0.hasPassed }) {
+        for event in events.filter({ !$0.hasStarted }) {
             print("Writing notification for \(event.name!)")
             
             scheduleNotifications(for: event)
@@ -172,7 +172,7 @@ class EventStore: ObservableObject {
         let standardTimes: [Int] = [0, 15]
         let favouriteTimes: [Int] = [0, 15, 60]
         
-        if !event.isMuted && !event.hasExpired() {
+        if !event.isMuted {
             if event.isFavourite {
                 for time in favouriteTimes {
                     addNotification(for: event, time: time)
