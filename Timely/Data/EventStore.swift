@@ -241,7 +241,6 @@ class EventStore: ObservableObject {
     
     func removeAllNotifications() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
         
         print("Removing notifications")
         
