@@ -275,6 +275,28 @@
         }
       }
     },
+    "All Day Tomorrow" : {
+      "localizations" : {
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toute la journée de demain"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明天全天"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明天一整天"
+          }
+        }
+      }
+    },
     "App Behaviour" : {
       "localizations" : {
         "en" : {
@@ -1569,6 +1591,12 @@
     },
     "Less than a minute" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Less than a minute"
+          }
+        },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",

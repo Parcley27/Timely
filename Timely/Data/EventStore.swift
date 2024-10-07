@@ -171,18 +171,24 @@ class EventStore: ObservableObject {
     func scheduleNotifications(for event: Event) {
         let standardTimes: [Int] = [0, 15]
         let favouriteTimes: [Int] = [0, 15, 60]
+        let allDayTime: Int = 360
         
         if !event.isMuted {
-            if event.isFavourite {
-                for time in favouriteTimes {
-                    addNotification(for: event, time: time)
-                    
-                }
+            if event.isAllDay ?? false {
+                addNotification(for: event, time: allDayTime)
                 
             } else {
-                for time in standardTimes {
-                    addNotification(for: event, time: time)
+                if event.isFavourite {
+                    for time in favouriteTimes {
+                        addNotification(for: event, time: time)
+                        
+                    }
                     
+                } else {
+                    for time in standardTimes {
+                        addNotification(for: event, time: time)
+                        
+                    }
                 }
             }
         }
@@ -209,9 +215,12 @@ class EventStore: ObservableObject {
             // Starting in 1 hour, at \(eventTime).
             content.body = String(format: NSLocalizedString("Starting in 1 hour, at %@.", comment: ""), eventTime)
             
-        } else if time > 60 {
+        } else if time < 360 {
             // Starting in \(time/60) hours, at \(eventTime).
             content.body = String(format: NSLocalizedString("Starting in %1$@ hours, at %2$@.", comment: ""), String(format: "%.1f", Double(time) / 60.0), eventTime)
+            
+        } else {
+            content.body = String(format: NSLocalizedString("All Day Tomorrow", comment: ""))
             
         }
         
