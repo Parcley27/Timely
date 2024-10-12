@@ -12,8 +12,8 @@ import SwiftUI
 struct TimelyApp: App {
     @StateObject var eventStore = EventStore()
     
-    let versionNumber = "2.4.1"
-    let buildNumber = "14"
+    let versionNumber = "2.4.2"
+    let buildNumber = "15"
     
     func filterPassedEvents(events: [Event]) -> [Event]? {
         var passedEvents = events.filter { $0.hasPassed == true }
