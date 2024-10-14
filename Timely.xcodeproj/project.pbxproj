@@ -290,6 +290,7 @@
 				"fr-CA",
 				"zh-Hant",
 				"zh-Hans",
+				fr,
 			);
 			mainGroup = 6EAE9FE32B018D7B0029A8D4;
 			productRefGroup = 6EAE9FED2B018D7B0029A8D4 /* Products */;
