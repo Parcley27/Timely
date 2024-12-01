@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Foundation
+import Combine
 
 enum EventType {
     case isFavourite
@@ -23,13 +24,33 @@ struct UniqueDate: Identifiable {
 struct NoEventsView: View {
     var singleDayDisplay: Bool
     
-    var body: some View {
-        VStack {
-            Text(singleDayDisplay ? "No Events" : "No Upcoming Events")
-                .font(.title2)
-                .bold()
+    @State private var displayText = NSLocalizedString("Loading...", comment: "")
+    
+    private func startOneTimeTimer() {
+        Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { _ in
+            displayText = NSLocalizedString("No Saved Events", comment: "")
             
         }
+    }
+    
+    var body: some View {
+        VStack {
+            if singleDayDisplay {
+                Text("No Events")
+                    .font(.title2)
+                    .bold()
+                
+            } else {
+                Text(displayText)
+                    .font(.title2)
+                    .bold()
+                
+            }
+        }
+            .onAppear {
+                startOneTimeTimer()
+                
+            }
     }
 }
 
@@ -76,7 +97,10 @@ struct EventListView: View {
     }
     
     @State private var timeUpdater: String = ""
-    @State private var timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    //@State private var timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
+    
+    @State private var timer: Timer?
+    @State private var timerValue: Int = 0
             
     func showNewEventSheetView() {
         showingSheet = true
@@ -106,6 +130,7 @@ struct EventListView: View {
     }
     
     func compareDates(event: Event, date: Date?) -> Bool {
+        print("compareDates")
         if date != nil {
             let eventDay = Calendar.current.component(.day, from: event.dateAndTime)
             let eventMonth = Calendar.current.component(.month, from: event.dateAndTime)
@@ -192,74 +217,154 @@ struct EventListView: View {
         
     }
     
-    var eventsToShow: [Event] {
-        var agreeingEvents: [Event] = []
+    @State private var hasCachedEvents: Bool = false
+    @State private var cachedEventsToShow: [Event] = []
+    
+    //@State private var isLoading: Bool = false  // Optional, for handling loading state
+    
+    private func cacheEvents() {
+        print("Caching eventss")
+        //guard cachedEventsToShow.count == 0 else { return } // Exit if already cached
         
-        var futureEvents: [Event] = []
+//        if !cachedEventsToShow.isEmpty {
+//            print("Cached events already exist. Not caching again.")
+//            
+//            return
+//
+//        }
         
-        futureEvents = data.filter { $0.hasStarted && !$0.hasPassed }
+        print("recaching events")
         
-        if futureEvents.count > maxDisplayedEvents {
-            futureEvents = Array(futureEvents.prefix(maxDisplayedEvents))
+        //isLoading = true // Optional, show loading state
+        
+        // Collect future events that have started but not passed
+        var displayableEvents = data.filter { $0.hasStarted && !$0.hasPassed }
+        
+        // Limit future events to max displayed events
+        if displayableEvents.count > maxDisplayedEvents {
+            displayableEvents = Array(displayableEvents.prefix(maxDisplayedEvents))
+            
         }
         
-        if futureEvents.count < maxDisplayedEvents {
-            let remainingSlots = maxDisplayedEvents - futureEvents.count
-            let futureOnlyEvents = data.filter { !$0.hasStarted }
-            
-            let futureToAdd = futureOnlyEvents.filter { event in
-                !futureEvents.contains(where: { $0.id == event.id })
-                
-            }
-            
-            futureEvents.append(contentsOf: futureToAdd.prefix(remainingSlots))
+        // If space remains, add upcoming events that haven't started
+        if displayableEvents.count < maxDisplayedEvents {
+            let remainingSlots = maxDisplayedEvents - displayableEvents.count
+            let futureOnlyEvents = data.filter { !$0.hasStarted && !displayableEvents.contains(where: { $0.id == $0.id }) }
+            displayableEvents.append(contentsOf: futureOnlyEvents.prefix(remainingSlots))
             
         }
         
-        if futureEvents.count < maxDisplayedEvents {
-            let remainingSlots = maxDisplayedEvents - futureEvents.count
-            let pastEvents = data.filter { $0.hasPassed }
-            
-            let pastToAdd = pastEvents
+        // If space still remains, add past events, sorted by descending end date
+        if displayableEvents.count < maxDisplayedEvents {
+            let remainingSlots = maxDisplayedEvents - displayableEvents.count
+            let pastEvents = data
+                .filter { $0.hasPassed && !displayableEvents.contains(where: { $0.id == $0.id }) }
                 .sorted(by: { ($0.endDateAndTime ?? $0.dateAndTime) > ($1.endDateAndTime ?? $1.dateAndTime) })
-                .filter { event in
-                    !futureEvents.contains(where: { $0.id == event.id })
+            displayableEvents.append(contentsOf: pastEvents.prefix(remainingSlots))
+            
+        }
+        
+        // If a specific date is set, filter events occurring on that date
+        var agreeingEvents: [Event] = []
+        if let targetDate = dateToDisplay {
+           print("wer here")
+            
+            for possibleEvent in displayableEvents {
+                if Calendar.current.isDate(possibleEvent.dateAndTime, inSameDayAs: targetDate) {
+                    displayableEvents.append(possibleEvent)
                     
                 }
-            
-            futureEvents.append(contentsOf: pastToAdd.prefix(remainingSlots))
-            
-        }
-        
-        if dateToDisplay != nil {
-            for event in data.prefix(maxDisplayedEvents) {
-                for occuringDate in event.isOnDates {
-                    if Calendar.current.isDate(occuringDate, equalTo: dateToDisplay!, toGranularity: .day) {
-                        agreeingEvents.append(event)
-                        
-                        break
-                        
-                    }
-                }
             }
+            
+            agreeingEvents = displayableEvents.filter { shouldDisplay(event: $0, dateToDisplay: dateToDisplay) }
             
         } else {
-            for event in futureEvents {
-                if shouldDisplay(event: event, dateToDisplay: dateToDisplay) {
-                    agreeingEvents.append(event)
-                    
-                }
-            }
+            // Otherwise, filter based on `shouldDisplay` logic
+            print("should display from cache:")
+            agreeingEvents = displayableEvents.filter { shouldDisplay(event: $0, dateToDisplay: dateToDisplay) }
         }
-         //*/
         
-        //agreeingEvents = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
-        
-        return agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
-        
+        DispatchQueue.main.async {
+            self.cachedEventsToShow = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
+            self.hasCachedEvents = true
+            //self.isLoading = false // Hide loading state
+            
+        }
+    
     }
     
+    var eventsToShow: [Event] {
+        if cachedEventsToShow.isEmpty {
+            cacheEvents()
+            
+        }
+        
+        return cachedEventsToShow
+        
+    }
+    /*
+    var eventsToShow: [Event] {
+        var agreeingEvents: [Event] = []
+
+        if hasCachedEvents == false {
+            print("eventsToShow")
+            
+            // Collect future events that have started but not passed
+            var futureEvents = data.filter { $0.hasStarted && !$0.hasPassed }
+            
+            // Limit future events to max displayed events
+            if futureEvents.count > maxDisplayedEvents {
+                futureEvents = Array(futureEvents.prefix(maxDisplayedEvents))
+            }
+            
+            // If space remains, add upcoming events that haven't started
+            if futureEvents.count < maxDisplayedEvents {
+                let remainingSlots = maxDisplayedEvents - futureEvents.count
+                let futureOnlyEvents = data.filter { !$0.hasStarted && !futureEvents.contains(where: { $0.id == $0.id }) }
+                futureEvents.append(contentsOf: futureOnlyEvents.prefix(remainingSlots))
+            }
+            
+            // If space still remains, add past events, sorted by descending end date
+            if futureEvents.count < maxDisplayedEvents {
+                let remainingSlots = maxDisplayedEvents - futureEvents.count
+                let pastEvents = data
+                    .filter { $0.hasPassed && !futureEvents.contains(where: { $0.id == $0.id }) }
+                    .sorted(by: { ($0.endDateAndTime ?? $0.dateAndTime) > ($1.endDateAndTime ?? $1.dateAndTime) })
+                futureEvents.append(contentsOf: pastEvents.prefix(remainingSlots))
+            }
+            
+            // If a specific date is set, filter events occurring on that date
+            if let targetDate = dateToDisplay {
+                agreeingEvents = data.prefix(maxDisplayedEvents).filter { event in
+                    event.isOnDates.contains { Calendar.current.isDate($0, equalTo: targetDate, toGranularity: .day) }
+                }
+            } else {
+                // Otherwise, filter based on `shouldDisplay` logic
+                agreeingEvents = futureEvents.filter { shouldDisplay(event: $0, dateToDisplay: dateToDisplay) }
+            }
+            
+            // Return events sorted by `dateAndTime`
+            
+        }
+        
+        cachedEventsToShow = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
+        
+        hasCachedEvents = true
+        
+        return cachedEventsToShow
+        
+    }
+     */
+    
     var uniqueDates: [UniqueDate] {
+        print("using uniqueDates precache")
+        if cachedEventsToShow.isEmpty {
+            cacheEvents()
+            print("caching events")
+            
+        }
+        
+        //print(cachedEventsToShow)
         var datesSeen: [UniqueDate] = []
         
         for event in eventsToShow {
@@ -284,8 +389,9 @@ struct EventListView: View {
         return datesSeen
         
     }
-    
+    /*
     func countEvents(withType type: EventType, in events: [Event]) -> Int {
+        print("countEvents")
         switch type {
         case .isFavourite:
             return events.filter { $0.isFavourite }.count
@@ -300,31 +406,28 @@ struct EventListView: View {
     }
     
     var canHideStandard: Bool {
-        if ((countEvents(withType: .isFavourite, in: eventsToShow) == 0 && (!showMuted || countEvents(withType: .isMuted, in: eventsToShow) == 0)) || countEvents(withType: .isStandard, in: eventsToShow) == 0) {
-            return false
-            
-        } else {
-            return true
-            
-        }
+        let noMutedOrStandard = countEvents(withType: .isMuted, in: eventsToShow) == 0 && (!showFavourite || countEvents(withType: .isStandard, in: eventsToShow) == 0)
+        let noFavouriteEvents = countEvents(withType: .isFavourite, in: eventsToShow) == 0
+        
+        return !(noMutedOrStandard || noFavouriteEvents)
     }
     
     var canHideMuted: Bool {
-        if ((countEvents(withType: .isFavourite, in: eventsToShow) == 0 && (!showMuted || countEvents(withType: .isStandard, in: eventsToShow) == 0 )) || countEvents(withType: .isMuted, in: eventsToShow) == 0 ) {
-            return false
-            
-        } else {
-            return true
-            
-        }
+        let noFavouritesOrStandard = countEvents(withType: .isFavourite, in: eventsToShow) == 0 && (!showMuted || countEvents(withType: .isStandard, in: eventsToShow) == 0)
+        let noMutedEvents = countEvents(withType: .isMuted, in: eventsToShow) == 0
+        
+        return !(noFavouritesOrStandard || noMutedEvents)
+        
     }
+     */
     
     func shouldDisplay(event: Event, dateToDisplay: Date?) -> Bool {
+        print("shouldDisplay")
         if dateToDisplay == nil {
-            if SettingsStore().removePassedEvents == false {
+            if preferences.removePassedEvents == false {
                 return true
                 
-            } else if SettingsStore().removePassedEvents == true {
+            } else if preferences.removePassedEvents == true {
                 if event.hasExpired() == false {
                     return true
                     
@@ -368,7 +471,7 @@ struct EventListView: View {
                     HStack {
                         Text(event.timeUntil)
                             .font(.caption)
-                            .onReceive(timer) { _ in
+                            .onChange(of: timer) { _ in
                                 // Reset timeUpdater every second
                                 // This tricks the text object into getting a new timeUntil
                                 timeUpdater = " "
@@ -396,14 +499,20 @@ struct EventListView: View {
     
     func listSection(for section: UniqueDate) -> some View {
         ForEach($data) { $event in
-            if let _ = eventsToShow.firstIndex(where: { $0.id == event.id }) {
-                let dataIndex = data.firstIndex(where: { $0.id == event.id})
-                
-                if shouldDisplay(event: event, dateToDisplay: dateToDisplay) && shouldDisplay(event: event, dateToDisplay: section.id) {
-                    if dateToDisplay != nil || Calendar.current.isDate(event.dateAndTime, inSameDayAs: section.id) {
-                        if (showFavourite || !event.isFavourite) && (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
-                            
-                            NavigationLink(destination: EventDetailView(data: $data, event: dataIndex!)) {
+            // Check if the event should be displayed based on its conditions
+            let isInEventsToShow = eventsToShow.contains { $0.id == event.id }
+            let dataIndex = data.firstIndex(where: { $0.id == event.id })
+
+            // Ensure the event is valid and conditions are met
+            if isInEventsToShow,
+               let index = dataIndex,
+               Calendar.current.isDate(event.dateAndTime, equalTo: dateToDisplay ?? section.id, toGranularity: .day),
+               (dateToDisplay != nil || Calendar.current.isDate(event.dateAndTime, inSameDayAs: section.id)),
+               (showFavourite || !event.isFavourite),
+               (showMuted || !event.isMuted),
+               (showStandard || !event.isStandard) {
+
+                NavigationLink(destination: EventDetailView(data: $data, event: index)) {
                                 eventTile(event: event)
                                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                         Button {
@@ -450,7 +559,7 @@ struct EventListView: View {
                                                 }
                                             }
                                             
-                                            print("Deleting \($event)")
+                                            print("Deleting \($event.name)")
                                             
                                         } label: {
                                             Label("Delete", systemImage: "trash.fill")
@@ -571,9 +680,6 @@ struct EventListView: View {
                                 }
                             }
                         }
-                    }
-                }
-            }
         }
         .onDelete { indexSet in            
             data.remove(atOffsets: indexSet)
@@ -611,111 +717,149 @@ struct EventListView: View {
         .scrollContentBackground(.hidden)
         .listRowSpacing(5)
         
+        .onAppear {
+            cacheEvents()
+            startTimer()
+            print("HERE START")
+            
+        }
+        
+        .onDisappear {
+            stopTimer()
+            print("HERE STOP")
+            
+        }
+        .onChange(of: data.count) { _ in
+            print("updated length")
+            cacheEvents()
+            
+        }
+        
     }
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                if eventsToShow.isEmpty {
-                    NoEventsView(singleDayDisplay: dateToDisplay != nil ? true : false)
-                    
-                } else {
-                    listDisplay
-                    
-                }
-            }
-            .toolbar {
-                if !eventsToShow.isEmpty {
-                    /*
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Test Performance") {
-                            for index in 1 ... 100 {
-                                let newTestEvent = Event(name: "Test Event \(index)")
-                                
-                                data.append(newTestEvent)
-                                data.sort(by: { $0.dateAndTime < $1.dateAndTime })
-                                
-                            }
-                            
-                            Task {
-                                do {
-                                    try await EventStore().save(events: data)
-                                    
-                                } catch {
-                                    fatalError(error.localizedDescription)
-                                    
-                                }
-                            }
-                        }
-                    }
-                     */
-                    
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Menu {
-                            Button {
-                                showStandard.toggle()
-                                
-                            } label: {
-                                if showStandard == true {
-                                    Label("Hide Standard Events", systemImage: "diamond")
-                                    
-                                } else {
-                                    Label("Show Standard Events", systemImage: "diamond.fill")
-                                    
-                                }
-                            }
-                            .disabled(!canHideStandard)
-                            
-                            Button {
-                                showMuted.toggle()
-                                
-                            } label: {
-                                if showMuted == true {
-                                    Label("Hide Muted Events", systemImage: "bell.slash")
-                                    
-                                } else {
-                                    Label("Show Muted Events", systemImage: "bell.slash.fill")
-                                    
-                                }
-                            }
-                            .disabled(!canHideMuted)
-                            
-                        } label: {
-                            if !showStandard || !showMuted {
-                                Label("Filter", systemImage: "line.3.horizontal.decrease.circle.fill")
-                                
-                            } else {
-                                Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
-                                
-                            }
-                        }
-                        .disabled(editMode .isEditing ? true : false)
+        VStack {
+            NavigationStack {
+                VStack {
+                    if eventsToShow.isEmpty {
+                        NoEventsView(singleDayDisplay: dateToDisplay != nil ? true : false)
+                        //listDisplay
+                        
+                    } else {
+                        listDisplay
                         
                     }
                 }
-            }
-            .navigationBarTitle(titleBarText(displayDate: dateToDisplay))
-            .navigationBarTitleDisplayMode(.large)
-            .environment(\.editMode, $editMode)
-            .sheet(isPresented: $showingSheet) {
-                NewEventSheetView(data: $data)
-                
-            }
-            .onChange(of: scenePhase) { phase in
-                if phase == .inactive {
-                    Task {
-                        do {
-                            try await EventStore().save(events: data)
+                .toolbar {
+                    if !eventsToShow.isEmpty {
+                        /*
+                         ToolbarItem(placement: .navigationBarLeading) {
+                         Button("Test Performance") {
+                         for index in 1 ... 100 {
+                         let newTestEvent = Event(name: "Test Event \(index)")
+                         
+                         data.append(newTestEvent)
+                         data.sort(by: { $0.dateAndTime < $1.dateAndTime })
+                         
+                         }
+                         
+                         Task {
+                         do {
+                         try await EventStore().save(events: data)
+                         
+                         } catch {
+                         fatalError(error.localizedDescription)
+                         
+                         }
+                         }
+                         }
+                         }
+                         */
+                        
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Menu {
+                                Button {
+                                    showStandard.toggle()
+                                    
+                                } label: {
+                                    if showStandard == true {
+                                        Label("Hide Standard Events", systemImage: "diamond")
+                                        
+                                    } else {
+                                        Label("Show Standard Events", systemImage: "diamond.fill")
+                                        
+                                    }
+                                }
+                                //.disabled(!canHideStandard)
+                                
+                                Button {
+                                    showMuted.toggle()
+                                    
+                                } label: {
+                                    if showMuted == true {
+                                        Label("Hide Muted Events", systemImage: "bell.slash")
+                                        
+                                    } else {
+                                        Label("Show Muted Events", systemImage: "bell.slash.fill")
+                                        
+                                    }
+                                }
+                                //.disabled(!canHideMuted)
+                                
+                            } label: {
+                                if !showStandard || !showMuted {
+                                    Label("Filter", systemImage: "line.3.horizontal.decrease.circle.fill")
+                                    
+                                } else {
+                                    Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
+                                    
+                                }
+                            }
+                            .disabled(editMode .isEditing ? true : false)
                             
-                        } catch {
-                            fatalError(error.localizedDescription)
-                            
+                        }
+                    }
+                }
+                .navigationBarTitle(titleBarText(displayDate: dateToDisplay))
+                .navigationBarTitleDisplayMode(.large)
+                .environment(\.editMode, $editMode)
+                .sheet(isPresented: $showingSheet) {
+                    NewEventSheetView(data: $data)
+                    
+                }
+                .onChange(of: scenePhase) { phase in
+                    if phase == .inactive {
+                        Task {
+                            do {
+                                try await EventStore().save(events: data)
+                                
+                            } catch {
+                                fatalError(error.localizedDescription)
+                                
+                            }
                         }
                     }
                 }
             }
         }
     }
+    
+    private func startTimer() {
+            timer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { _ in
+                timerValue += 1
+                
+            }
+        }
+
+        private func stopTimer() {
+            timer?.invalidate()
+            timer = nil
+            
+        }
+        
+        private func resetTimer() {
+            timerValue = 0
+        }
 }
 
 struct EventListView_Previews: PreviewProvider {
