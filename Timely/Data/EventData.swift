@@ -18,7 +18,7 @@ class EventData : ObservableObject {
 // Seasonally every 3 months
 // recurringTimeOptions: [String] = ["never", "daily", "weekly", "monthly", "annualy"]
 
-struct Event: Identifiable, Codable {
+struct Event: Identifiable, Codable, Hashable {
     var name: String? = "Event Name"
     var emoji: String? = "📅"
     
