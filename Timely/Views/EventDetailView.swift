@@ -73,6 +73,8 @@ struct EventDetailView: View {
                         .font(.system(size: 42))
                 }
             }
+            .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.13) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+            
             
             Section {
                 HStack {
@@ -82,12 +84,16 @@ struct EventDetailView: View {
                     
                 }
             }
+            .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.11) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+
             
             if data[event].description != nil {
                 Section {
                     Text(data[event].description ?? "")
                     
                 }
+                .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+                
             }
             
             if data[event].isCopy ?? false {
@@ -101,6 +107,8 @@ struct EventDetailView: View {
                         .foregroundStyle(.selection)
                         
                     }
+                    .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+                    
                 }
             }
             
@@ -111,7 +119,10 @@ struct EventDetailView: View {
                     Text("Copy \(data[event].copyNumber ?? 0) of \(totalCopies.count), repeating \(NSLocalizedString(data[event].recurranceRate!, comment: ""))")
                     
                 }
+                .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color.white : Color.secondary)
+                
             }
+            
             
             Section {
                 Toggle("Favourite", isOn: $data[event].isFavourite)
@@ -140,6 +151,8 @@ struct EventDetailView: View {
                         }
                     }
             }
+            .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+            
             
             Section {
                 Button {
@@ -169,7 +182,11 @@ struct EventDetailView: View {
                     }
                 )
             }
+            .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.08) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+
+            
         }
+        
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
