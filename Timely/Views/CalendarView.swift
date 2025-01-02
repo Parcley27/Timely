@@ -163,7 +163,7 @@ struct CalendarView: View {
     }
     
     func computedOpacity(day: CalendarDay) -> Double {
-        var opacity = 0.3
+        var opacity = 0.4
         
         let multiplier = 0.2
         
@@ -178,7 +178,8 @@ struct CalendarView: View {
              */
             
         } else  {
-            opacity = 0.30 + (Double(eventsOnDay(searchingDay: day).count) * multiplier)
+            opacity += (Double(eventsOnDay(searchingDay: day).count) * multiplier)
+            
             if opacity > 0.75 {
                 opacity = 0.75
                 
@@ -238,7 +239,7 @@ struct CalendarView: View {
                             .font(.title)
                         
                     }
-                    .padding(.vertical, 4)
+                    .padding(.vertical, 8)
                     .padding(.horizontal)
                     //.padding(.leading, 20)
                     //.padding(.trailing, 8)
@@ -246,6 +247,7 @@ struct CalendarView: View {
                     
                 }
                 .background(.bar, in: RoundedRectangle(cornerRadius: 25.0))
+                .padding(.vertical, 8)
                 
                 VStack {
                     LazyVGrid(columns: columnLayout) {
@@ -256,6 +258,7 @@ struct CalendarView: View {
                         }
                     }
                     .padding(.horizontal)
+                    .padding(.bottom, 4)
                     //.padding(.top)
                     
                     //LazyVGrid(columns: columnLayout, spacing: 5) {
@@ -353,7 +356,7 @@ struct CalendarView: View {
                                     
                                 }
                             }) {
-                                Text("Today")
+                                //Text("Today")
                             }
                     }
                     
