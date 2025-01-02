@@ -45,6 +45,13 @@ class SettingsStore: ObservableObject {
         }
     }
     
+    var doiCloudSync: Bool {
+        didSet {
+            UserDefaults.standard.set(doiCloudSync, forKey: "doiCloudSync")
+            
+        }
+    }
+    
     /*
     @Published var stringData: String {
         didSet {
@@ -60,6 +67,7 @@ class SettingsStore: ObservableObject {
         self.keepEventHistory = UserDefaults.standard.object(forKey: "keepEventHistory") as? Bool ?? true
         self.quickAdd = UserDefaults.standard.object(forKey: "quickAdd") as? Bool ?? false
         self.listTinting = UserDefaults.standard.object(forKey: "listTinting") as? Bool ?? true
+        self.doiCloudSync = UserDefaults.standard.object(forKey: "doiCloudSync") as? Bool ?? false
         //self.stringData = UserDefaults.standard.object(forKey: "stringData") as? String ?? ""
         
     }
