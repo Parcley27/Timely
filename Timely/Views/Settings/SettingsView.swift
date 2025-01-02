@@ -64,7 +64,7 @@ struct SettingsView: View {
         NavigationStack {
             VStack {
                 List {
-                    Section("App Behaviour") {
+                    Section("Preferences") {
                         Toggle(isOn: $preferences.quickAdd) {
                             Text("Quick-Add Events")
                             
@@ -81,7 +81,14 @@ struct SettingsView: View {
                         }
                     }
                     
-                    Section("Event History") {
+                    Section("Event Storage") {
+                        /*
+                        Toggle(isOn: $preferences.doiCloudSync) {
+                            Text("Sync to iCloud")
+                            
+                        }
+                         */
+                        
                         Toggle(isOn: $preferences.removePassedEvents) {
                             if preferences.keepEventHistory {
                                 Text("Archive Passed Events")
@@ -155,7 +162,7 @@ struct SettingsView: View {
                             openURL(URL(string: "https://github.com/Parcley27")!)
                             
                         } label: {
-                            customButton(text: NSLocalizedString("Created by Pierce Oxley", comment: ""), icon: "person.circle")
+                            customButton(text: NSLocalizedString("Created by Pierce Nestibo-Oxley", comment: ""), icon: "person.circle")
                             
                         }
                         
@@ -166,6 +173,13 @@ struct SettingsView: View {
                     Section("App Information") {
                         Text("Version")
                             .badge("v\(TimelyApp().versionNumber) - Build \(TimelyApp().buildNumber)")
+                        
+                        Button() {
+                            openURL(URL(string: "https://apps.apple.com/ca/app/timely-event-tracker/id6503667182")!)
+                            
+                        } label: {
+                            customButton(text: NSLocalizedString("App Store Page", comment: ""), icon: "arrow.up.forward.app")
+                        }
                         
                         Button() {
                             openURL(URL(string: "https://github.com/Parcley27/Timely")!)
