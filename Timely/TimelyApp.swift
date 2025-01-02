@@ -12,8 +12,8 @@ import SwiftUI
 struct TimelyApp: App {
     @StateObject var eventStore = EventStore()
     
-    let versionNumber = "2.4.3"
-    let buildNumber = "16"
+    let versionNumber = "3.0.0"
+    let buildNumber = "17"
     
     func filterPassedEvents(events: [Event]) -> [Event]? {
         var passedEvents = events.filter { $0.hasPassed == true }
@@ -109,65 +109,34 @@ struct TimelyApp: App {
                         }
                         .tag(0)
                         
-                        if lastTab == 0 {
-                            EventListView(data: $eventStore.events) {
-                                Task {
-                                    do {
-                                        try await eventStore.save(events: eventStore.events)
-                                        
-                                    } catch {
-                                        fatalError(error.localizedDescription)
-                                        
-                                    }
-                                }
-                            }
-                            .task {
+                        EventListView(data: $eventStore.events) {
+                            Task {
                                 do {
-                                    //try await eventList.load()
-                                    eventStore.loadFromiCloud()
+                                    try await eventStore.save(events: eventStore.events)
                                     
-                                    print("Loading events: ")
-                                    
-                                    for event in eventStore.events {
-                                        print(event.name!, terminator: " ")
-                                        
-                                    }
-                                    
-                                    print("")
+                                } catch {
+                                    fatalError(error.localizedDescription)
                                     
                                 }
                             }
-                            .tag(1)
-                        } else if lastTab == 2 {
-                            CalendarView(data: $eventStore.events, month: currentMonth, year: currentYear) {
-                                Task {
-                                    do {
-                                        try await eventStore.save(events: eventStore.events)
-                                        
-                                    } catch {
-                                        fatalError(error.localizedDescription)
-                                        
-                                    }
-                                }
-                            }
-                            .task {
-                                do {
-                                    //try await eventList.load()
-                                    eventStore.loadFromiCloud()
-                                    
-                                    print("Loading events: ")
-                                    
-                                    for event in eventStore.events {
-                                        print(event.name!, terminator: " ")
-                                        
-                                    }
-                                    
-                                    print("")
-                                    
-                                }
-                            }
-                            .tag(1)
                         }
+                        .task {
+                            do {
+                                //try await eventList.load()
+                                eventStore.loadFromiCloud()
+                                
+                                print("Loading events: ")
+                                
+                                for event in eventStore.events {
+                                    print(event.name!, terminator: " ")
+                                    
+                                }
+                                
+                                print("")
+                                
+                            }
+                        }
+                        .tag(1)
                             
                         CalendarView(data: $eventStore.events, month: currentMonth, year: currentYear) {
                             Task {
