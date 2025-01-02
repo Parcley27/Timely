@@ -76,7 +76,7 @@ struct EventListView: View {
     @State private var newTimeUntilEvent: String = ""
     
     let maxDisplayedEvents = 50
-        
+    
     func titleBarText(displayDate: Date?) -> String {
         var titleText: String = ""
         
@@ -101,7 +101,7 @@ struct EventListView: View {
     
     @State private var timer: Timer?
     @State private var timerValue: Int = 0
-            
+    
     func showNewEventSheetView() {
         showingSheet = true
         
@@ -131,6 +131,12 @@ struct EventListView: View {
     
     func compareDates(event: Event, date: Date?) -> Bool {
         print("compareDates")
+        
+        for event in cachedEventsToShow {
+            print(event.name!)
+            
+        }
+        
         if date != nil {
             let eventDay = Calendar.current.component(.day, from: event.dateAndTime)
             let eventMonth = Calendar.current.component(.month, from: event.dateAndTime)
@@ -226,69 +232,104 @@ struct EventListView: View {
         print("Caching eventss")
         //guard cachedEventsToShow.count == 0 else { return } // Exit if already cached
         
-//        if !cachedEventsToShow.isEmpty {
-//            print("Cached events already exist. Not caching again.")
-//            
-//            return
-//
-//        }
+        //        if !cachedEventsToShow.isEmpty {
+        //            print("Cached events already exist. Not caching again.")
+        //
+        //            return
+        //
+        //        }
         
         print("recaching events")
         
         //isLoading = true // Optional, show loading state
         
-        // Collect future events that have started but not passed
-        var displayableEvents = data.filter { $0.hasStarted && !$0.hasPassed }
+        /*
+         // Collect future events that have started but not passed
+         var displayableEvents = data.filter { $0.hasStarted && !$0.hasPassed }
+         
+         // If space remains, add upcoming events that haven't started
+         if displayableEvents.count < maxDisplayedEvents {
+         let futureOnlyEvents = data.filter { !$0.hasStarted && !displayableEvents.contains(where: { $0.id == $0.id }) }
+         displayableEvents.append(contentsOf: futureOnlyEvents)
+         
+         }
+         
+         // If space still remains, add past events, sorted by descending end date
+         // Newer events added first
+         if displayableEvents.count < maxDisplayedEvents {
+         let pastEvents = data
+         .filter { $0.hasPassed && !displayableEvents.contains(where: { $0.id == $0.id }) }
+         .sorted(by: { ($0.endDateAndTime ?? $0.dateAndTime) > ($1.endDateAndTime ?? $1.dateAndTime) })
+         displayableEvents.append(contentsOf: pastEvents)
+         
+         }
+         
+         // If a specific date is set, allow any events on that date.
+         var agreeingEvents: [Event] = []
+         if let targetDate = dateToDisplay {
+         print("wer here")
+         
+         for possibleEvent in displayableEvents {
+         if Calendar.current.isDate(possibleEvent.dateAndTime, inSameDayAs: targetDate) {
+         displayableEvents.append(possibleEvent)
+         
+         }
+         }
+         
+         agreeingEvents = displayableEvents.filter { shouldDisplay(event: $0, dateToDisplay: dateToDisplay) }
+         
+         } else {
+         // Otherwise, filter based on `shouldDisplay` logic
+         print("should display from cache:")
+         agreeingEvents = displayableEvents.filter { shouldDisplay(event: $0, dateToDisplay: dateToDisplay) }
+         
+         }
+         
+         // Limit future events to max displayed events
+         if displayableEvents.count > maxDisplayedEvents {
+         displayableEvents = Array(displayableEvents.prefix(maxDisplayedEvents))
+         
+         }
+         
+         DispatchQueue.main.async {
+         self.cachedEventsToShow = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
+         self.hasCachedEvents = true
+         //self.isLoading = false // Hide loading state
+         
+         }
+         */
         
-        // Limit future events to max displayed events
-        if displayableEvents.count > maxDisplayedEvents {
-            displayableEvents = Array(displayableEvents.prefix(maxDisplayedEvents))
-            
-        }
-        
-        // If space remains, add upcoming events that haven't started
-        if displayableEvents.count < maxDisplayedEvents {
-            let remainingSlots = maxDisplayedEvents - displayableEvents.count
-            let futureOnlyEvents = data.filter { !$0.hasStarted && !displayableEvents.contains(where: { $0.id == $0.id }) }
-            displayableEvents.append(contentsOf: futureOnlyEvents.prefix(remainingSlots))
-            
-        }
-        
-        // If space still remains, add past events, sorted by descending end date
-        if displayableEvents.count < maxDisplayedEvents {
-            let remainingSlots = maxDisplayedEvents - displayableEvents.count
-            let pastEvents = data
-                .filter { $0.hasPassed && !displayableEvents.contains(where: { $0.id == $0.id }) }
-                .sorted(by: { ($0.endDateAndTime ?? $0.dateAndTime) > ($1.endDateAndTime ?? $1.dateAndTime) })
-            displayableEvents.append(contentsOf: pastEvents.prefix(remainingSlots))
-            
-        }
-        
-        // If a specific date is set, filter events occurring on that date
         var agreeingEvents: [Event] = []
-        if let targetDate = dateToDisplay {
-           print("wer here")
+        
+        if let date = dateToDisplay {
+            // Filter events occurring on the specified date
+            agreeingEvents = data.filter { Calendar.current.isDate($0.dateAndTime, inSameDayAs: date) }
             
-            for possibleEvent in displayableEvents {
-                if Calendar.current.isDate(possibleEvent.dateAndTime, inSameDayAs: targetDate) {
-                    displayableEvents.append(possibleEvent)
-                    
-                }
-            }
+        }  else {
+            var goodEvents: [Event] = []
             
-            agreeingEvents = displayableEvents.filter { shouldDisplay(event: $0, dateToDisplay: dateToDisplay) }
+            let filteredData = preferences.removePassedEvents == false ? data : data.filter { !$0.hasExpired() }
             
-        } else {
-            // Otherwise, filter based on `shouldDisplay` logic
-            print("should display from cache:")
-            agreeingEvents = displayableEvents.filter { shouldDisplay(event: $0, dateToDisplay: dateToDisplay) }
+            // Add events that have started but not yet finished
+            goodEvents.append(contentsOf: filteredData.filter { $0.hasStarted && !$0.hasPassed })
+            
+            // Add events that have not started or finished yet
+            goodEvents.append(contentsOf: filteredData.filter { !$0.hasStarted && !$0.hasPassed })
+            
+            // Add past events in reverse chronological order
+            let pastEvents = filteredData.filter { $0.hasPassed }.sorted(by: { $0.endDateAndTime! > $1.endDateAndTime! })
+            goodEvents.append(contentsOf: pastEvents)
+            
+            // Limit to `eventsToShow` count
+            agreeingEvents = Array(goodEvents.prefix(maxDisplayedEvents))
+            
         }
         
+        
+        // Dispatch updates on the main queue
         DispatchQueue.main.async {
             self.cachedEventsToShow = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
             self.hasCachedEvents = true
-            //self.isLoading = false // Hide loading state
-            
         }
     
     }
@@ -358,6 +399,7 @@ struct EventListView: View {
     
     var uniqueDates: [UniqueDate] {
         print("using uniqueDates precache")
+        
         if cachedEventsToShow.isEmpty {
             cacheEvents()
             print("caching events")
@@ -845,28 +887,31 @@ struct EventListView: View {
     }
     
     private func startTimer() {
-            timer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { _ in
-                timerValue += 1
-                
-            }
-        }
-
-        private func stopTimer() {
-            timer?.invalidate()
-            timer = nil
+        timer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { _ in
+            timerValue += 1
             
         }
+    }
+    
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
         
-        private func resetTimer() {
-            timerValue = 0
-        }
+    }
+        
+    private func resetTimer() {
+        timerValue = 0
+        
+    }
 }
 
 struct EventListView_Previews: PreviewProvider {
     static var previews: some View {
         let previewData = EventData()
+        let calendar = Calendar.current
+        
         previewData.events = [
-            Event(name: "Sample Event 1", dateAndTime: Date()),
+            Event(name: "Sample Event 1", dateAndTime: Date(), endDateAndTime: calendar.date(byAdding: .minute, value: 30, to: Date())),
             Event(name: "Sample Event 2", isMuted: true),
             Event(name: "Sample Event 3", isFavourite: true)
             // Add more sample events if needed
