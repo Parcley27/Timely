@@ -9,6 +9,12 @@
             "value" : " "
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41,6 +47,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "'All day on' EEEE, d MMMM yyyy"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'Todo el día encendido' EEEE, d MMMM yyyy"
           }
         },
         "fr" : {
@@ -77,6 +89,12 @@
             "value" : "%1$@ %2$@"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -109,6 +127,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ ago"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ atrás"
           }
         },
         "fr" : {
@@ -145,6 +169,12 @@
             "value" : "%1$@ to\n%2$@"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ a\n%2$@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -179,6 +209,12 @@
             "value" : "%1$@ to %2$@"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ a %2$@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -207,6 +243,12 @@
     },
     "📅" : {
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📅"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -239,6 +281,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "About"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de"
           }
         },
         "fr" : {
@@ -275,6 +323,12 @@
             "value" : "All archived events will be permanently deleted"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos los eventos archivados se eliminarán permanentemente."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -309,6 +363,12 @@
             "value" : "All Day"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo el día"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -337,6 +397,18 @@
     },
     "All Day Tomorrow" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Day Tomorrow"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo el día mañana"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -364,11 +436,18 @@
       }
     },
     "App Behaviour" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "App Behaviour"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comportamiento de la aplicación"
           }
         },
         "fr" : {
@@ -405,6 +484,12 @@
             "value" : "App Information"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Información de la aplicación"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -431,10 +516,56 @@
         }
       }
     },
+    "App Store Page" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store Page"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página de la App Store"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page de l'App Store"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page de l'App Store"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store 页面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "應用程式商店頁面"
+          }
+        }
+      }
+    },
     "App Support" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Support"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "App Support"
@@ -474,6 +605,12 @@
             "value" : "Archive Passed Events"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archive Passed Events"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -506,6 +643,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Calendar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendario"
           }
         },
         "fr" : {
@@ -542,6 +685,12 @@
             "value" : "Cancel"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -574,6 +723,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cannot Send Mail"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se puede enviar correo"
           }
         },
         "fr" : {
@@ -610,6 +765,12 @@
             "value" : "Check that email is set up on your device"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprueba que el correo electrónico esté configurado en tu dispositivo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -642,6 +803,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contact"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contacto"
           }
         },
         "fr" : {
@@ -678,6 +845,12 @@
             "value" : "Contribute to Timely"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contribuya a Timely"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -712,6 +885,12 @@
             "value" : "Copy %1$lld of %2$lld, repeating %3$@"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copia %1$lld de %2$lld, repitiendo %3$@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -738,6 +917,46 @@
         }
       }
     },
+    "Created by Pierce Nestibo-Oxley" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Created by Pierce Nestibo-Oxley"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creado por Pierce Nestibo-Oxley"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créé par Pierce Nestibo-Oxley"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créé par Pierce Nestibo-Oxley"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由 Pierce Nestibo-Oxley 创建"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由 Pierce Nestibo-Oxley 創建"
+          }
+        }
+      }
+    },
     "Created by Pierce Oxley" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -745,6 +964,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Created by Pierce Oxley"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creado por Pierce Oxley"
           }
         },
         "fr" : {
@@ -781,6 +1006,12 @@
             "value" : "Credits"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créditos"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -813,6 +1044,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Date and Time"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fecha y hora"
           }
         },
         "fr" : {
@@ -849,6 +1086,12 @@
             "value" : "Delete"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fecha y hora"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -878,6 +1121,12 @@
     "Delete \"%@\"" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete “%@”"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete “%@”"
@@ -917,6 +1166,12 @@
             "value" : "Delete “%@”?"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete “%@”?"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -949,6 +1204,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete Passed Events"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar Eventos Pasados"
           }
         },
         "fr" : {
@@ -985,6 +1246,12 @@
             "value" : "Description"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descripción"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1017,6 +1284,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Details"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalles"
           }
         },
         "fr" : {
@@ -1053,6 +1326,12 @@
             "value" : "Done"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hecho"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1085,6 +1364,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar"
           }
         },
         "fr" : {
@@ -1121,6 +1406,12 @@
             "value" : "Edit All Copies"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar todas las copias"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1155,6 +1446,12 @@
             "value" : "Edit Event"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar todas las copias"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1184,6 +1481,12 @@
     "Emoji" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emoji"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Emoji"
@@ -1223,6 +1526,12 @@
             "value" : "End Time"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fin del tiempo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1255,6 +1564,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ending"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Final"
           }
         },
         "fr" : {
@@ -1291,6 +1606,12 @@
             "value" : "Ending in %@"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminando en %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1325,6 +1646,12 @@
             "value" : "Ends in less than a minute"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termina en menos de un minuto"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1351,36 +1678,42 @@
         }
       }
     },
-    "Event History" : {
+    "Event Storage" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Event History"
+            "value" : "Event Storage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Almacenamiento de eventos"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Historique des événements"
+            "value" : "Stockage d'événements"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Historique des événements"
+            "value" : "Stockage d'événements"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "事件历史"
+            "value" : "事件存储"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "事件歷史"
+            "value" : "事件儲存"
           }
         }
       }
@@ -1391,6 +1724,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Favourite"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorito"
           }
         },
         "fr" : {
@@ -1428,6 +1767,12 @@
             "value" : "Feature Request"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitud de función"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1460,6 +1805,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrar"
           }
         },
         "fr" : {
@@ -1497,6 +1848,12 @@
             "value" : "Get Support"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenga ayuda"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1526,6 +1883,12 @@
     "h:mm a" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "h:mm a"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "h:mm a"
@@ -1565,6 +1928,12 @@
             "value" : "h:mm a 'on' EEE, d MMMM yyyy"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "h:mm a 'en' EEE, d MMMM yyyy"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1599,6 +1968,12 @@
             "value" : "h:mm a 'on' EEEE, d MMM yyyy"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "h:mm a 'en' EEEE, d MMM yyyy"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1628,6 +2003,12 @@
     "h:mm a 'on' EEEE, d MMMM" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "h:mm a 'on' EEEE, d MMMM"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "h:mm a 'on' EEEE, d MMMM"
@@ -1667,6 +2048,12 @@
             "value" : "h:mm a 'on' EEEE, d MMMM yyyy"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "h:mm a 'encendido' EEEE, d MMMM yyyy"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1701,6 +2088,12 @@
             "value" : "Hide Muted Events"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar eventos silenciados"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1730,6 +2123,12 @@
     "Hide Standard Events" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide Standard Events"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hide Standard Events"
@@ -1769,6 +2168,12 @@
             "value" : "Importance"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importancia"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1801,6 +2206,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "In-App Notifications"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notificaciones dentro de la aplicación"
           }
         },
         "fr" : {
@@ -1837,6 +2248,12 @@
             "value" : "Issue Report"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informe de problemas"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1869,6 +2286,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keep Event History"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantener historial de eventos"
           }
         },
         "fr" : {
@@ -1905,6 +2328,12 @@
             "value" : "Last %@"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Último %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1934,6 +2363,12 @@
     "Less than a minute" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Less than a minute"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Less than a minute"
@@ -1973,6 +2408,12 @@
             "value" : "Less than a minute ago"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hace menos de un minuto"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2007,6 +2448,12 @@
             "value" : "List Tinting"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista de teñido"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2033,12 +2480,58 @@
         }
       }
     },
+    "Loading..." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando..."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargement..."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargement..."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加载中..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "載入中..."
+          }
+        }
+      }
+    },
     "Mute" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mute"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silenciar"
           }
         },
         "fr" : {
@@ -2070,6 +2563,12 @@
     "Muted" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muted"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Muted"
@@ -2109,6 +2608,12 @@
             "value" : "My Events"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Events"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2141,6 +2646,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Name"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
           }
         },
         "fr" : {
@@ -2177,6 +2688,12 @@
             "value" : "New Event"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuevo evento"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2206,6 +2723,12 @@
     "Next %@" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next %@"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Next %@"
@@ -2245,6 +2768,12 @@
             "value" : "No Events"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin eventos"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2271,36 +2800,42 @@
         }
       }
     },
-    "No Upcoming Events" : {
+    "No Saved Events" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Upcoming Events"
+            "value" : "No Saved Events"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay eventos guardados"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun événement à venir"
+            "value" : "Aucun événement enregistré"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun événement à venir"
+            "value" : "Aucun événement enregistré"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有即将举行的活动"
+            "value" : "没有保存的事件"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "沒有即將舉行的活動"
+            "value" : "沒有保存的事件"
           }
         }
       }
@@ -2308,6 +2843,12 @@
     "Note: Changes made apply only to this event" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note: Changes made apply only to this event"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Note: Changes made apply only to this event"
@@ -2339,12 +2880,58 @@
         }
       }
     },
+    "Preferences" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferences"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferencias"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Préférences"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Préférences"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "偏好设置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "偏好設定"
+          }
+        }
+      }
+    },
     "Quick-Add Events" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quick-Add Events"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eventos de adición rápida"
           }
         },
         "fr" : {
@@ -2381,6 +2968,12 @@
             "value" : "Repeating"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repitiendo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2411,6 +3004,12 @@
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Report an Issue"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Report an Issue"
@@ -2451,6 +3050,12 @@
             "value" : "Request a Feature"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitar una función"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2483,6 +3088,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Right Now"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora mismo"
           }
         },
         "fr" : {
@@ -2519,6 +3130,12 @@
             "value" : "Save"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahorrar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2548,6 +3165,12 @@
     "Settings" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
@@ -2587,6 +3210,12 @@
             "value" : "Show Muted Events"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Muted Events"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2619,6 +3248,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show Standard Events"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar eventos estándar"
           }
         },
         "fr" : {
@@ -2655,6 +3290,12 @@
             "value" : "Special thanks to my family, Dale Dai, and everyone else along the way."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un agradecimiento especial a mi familia, a Dale Dai y a todos los demás a lo largo del camino."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2687,6 +3328,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start Date"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fecha de inicio"
           }
         },
         "fr" : {
@@ -2723,6 +3370,12 @@
             "value" : "Start Time"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora de inicio"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2757,6 +3410,12 @@
             "value" : "Starting in %1$@ hours, at %2$@."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comenzando en %1$@ horas, a las %2$@."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2786,6 +3445,12 @@
     "Starting in %1$@ minutes, at %2$@." : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starting in %1$@ minutes, at %2$@."
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Starting in %1$@ minutes, at %2$@."
@@ -2825,6 +3490,12 @@
             "value" : "Starting in 1 hour, at %@."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comenzando en 1 hora, a las %@."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2857,6 +3528,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Starting Now!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Empezando ahora!"
           }
         },
         "fr" : {
@@ -2893,6 +3570,12 @@
             "value" : "This action cannot be undone"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta acción no se puede deshacer"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2925,6 +3608,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "This action will edit all copies of this event"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta acción editará todas las copias de este evento."
           }
         },
         "fr" : {
@@ -2961,6 +3650,12 @@
             "value" : "This event has recurring copies!"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Este evento tiene copias recurrentes!"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2990,6 +3685,12 @@
     "Time Unknown" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time Unknown"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Time Unknown"
@@ -3030,6 +3731,12 @@
             "value" : "Timely Github"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timely Github"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3062,6 +3769,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Today"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoy"
           }
         },
         "fr" : {
@@ -3098,6 +3811,12 @@
             "value" : "Tomorrow"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mañana"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3132,6 +3851,12 @@
             "value" : "Turn Off and Delete"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar y eliminar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3161,6 +3886,12 @@
     "Turn Off Event History?" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn Off Event History?"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Turn Off Event History?"
@@ -3200,6 +3931,12 @@
             "value" : "Unfavourite"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No favorito"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3232,6 +3969,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unmute"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar el sonido"
           }
         },
         "fr" : {
@@ -3268,6 +4011,12 @@
             "value" : "v%1$@ - Build %2$@"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "v%1$@ - Construir %2$@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3297,6 +4046,12 @@
     "Version" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version"
@@ -3336,6 +4091,12 @@
             "value" : "View Original Event"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Original Event"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3368,6 +4129,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Yesterday"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayer"
           }
         },
         "fr" : {
