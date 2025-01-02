@@ -17,7 +17,7 @@ struct NewEventSheetView: View {
             UIDatePicker.appearance().minuteInterval = 5
             
         } else {
-            UIDatePicker.appearance().minuteInterval = 1
+            UIDatePicker.appearance().minuteInterval = 5
         }
     }
     
@@ -27,7 +27,7 @@ struct NewEventSheetView: View {
     
     @Environment(\.dismiss) var dismiss
     
-    //@FocusState private var isTextFieldFocused: Bool
+    @FocusState private var isTextFieldFocused: Bool
     
     @State private var isEditing = false
     
@@ -295,13 +295,13 @@ struct NewEventSheetView: View {
                     Section("About") {
                         TextField("Name", text: $formName)
                             .textInputAutocapitalization(.words)
-                            /*
+                            ///*
                             .focused($isTextFieldFocused)
                             .onAppear {
                                 isTextFieldFocused = true
                                 
                             }
-                             */
+                             //*/
                         
                         //TextField("Emoji", text: $formEmoji)
                         
