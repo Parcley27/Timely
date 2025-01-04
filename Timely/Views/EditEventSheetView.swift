@@ -23,6 +23,8 @@ struct EditEventSheetView: View {
     
     @State var showConfirmationDialog = false
     
+    let calendar = Calendar.current
+    
     let recurringTimeOptions: [String] = ["never", "daily", "weekly", "monthly", "annually"]
     
     @State private var isEditing = false
@@ -34,6 +36,8 @@ struct EditEventSheetView: View {
     
     @State var editedDateAndTime: Date = Date()
     @State var editedEndDateAndTime: Date = Date()
+    
+    @State var dummyDateAndTime: Date = Date()
     
     @State var editedIsAllDay: Bool = false
     
@@ -233,14 +237,24 @@ struct EditEventSheetView: View {
                         
                     }
                     .onAppear() {
+                        //print("BEFORE")
+                        //print(Date())
+                        //print(data[event].dateAndTime)
                         editedDateAndTime = data[event].dateAndTime
                         editedEndDateAndTime = data[event].endDateAndTime ?? data[event].dateAndTime
+                        dummyDateAndTime = data[event].dateAndTime
+                        
                         editedIsAllDay = data[event].isAllDay ?? false
+                        //print("AFTER")
+                        //print(editedDateAndTime)
                         
                     }
                     .onChange(of: editedDateAndTime) { _ in
-                        if editedDateAndTime != data[event].dateAndTime && !editedIsAllDay{
-                            editedEndDateAndTime = editedDateAndTime.addingTimeInterval(60 * 60)
+                        if !editedIsAllDay {
+                            let eventLength = editedEndDateAndTime.timeIntervalSince(dummyDateAndTime)
+                            
+                            editedEndDateAndTime = editedDateAndTime.addingTimeInterval(eventLength)
+                            dummyDateAndTime = editedDateAndTime
                             
                         }
                     }

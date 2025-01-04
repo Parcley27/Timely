@@ -31,6 +31,8 @@ struct NewEventSheetView: View {
     
     @State private var isEditing = false
     
+    let calendar = Calendar.current
+    
     let recurringTimeOptions: [String] = ["never", "daily", "weekly", "monthly", "annually"]
     
     @State private var formName: String = ""
@@ -53,6 +55,16 @@ struct NewEventSheetView: View {
         
         return currentDate.addingTimeInterval(twoHoursInSeconds)
         
+    }()
+    
+    @State private var dummyDateAndTime: Date = {
+        let currentDate = Date()
+        let oneDayInSeconds: TimeInterval = 24 * 60 * 60
+        let oneHourInSeconds: TimeInterval = 60 * 60
+        
+        //return currentDate.addingTimeInterval(oneDayInSeconds)
+        return currentDate.addingTimeInterval(oneHourInSeconds)
+
     }()
     
     @State private var formIsAllDay: Bool = false
@@ -344,12 +356,18 @@ struct NewEventSheetView: View {
                             
                         }
                     }
+                    
                     .onChange(of: formDateAndTime) { _ in
                         if !formIsAllDay {
-                            formEndDateAndTime = formDateAndTime.addingTimeInterval(60 * 60)
+                            let eventLength = formEndDateAndTime.timeIntervalSince(dummyDateAndTime)
+                            
+                            formEndDateAndTime = formDateAndTime.addingTimeInterval(eventLength)
+                            
+                            dummyDateAndTime = formDateAndTime
                             
                         }
                     }
+                     
                     
                     if !preferences.quickAdd {
                         Section("Repeating") {
