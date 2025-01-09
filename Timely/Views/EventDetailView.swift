@@ -5,12 +5,19 @@
 //  Created by Pierce Oxley on 2023-08-06.
 //
 
+/*
+ $data.firstIndex(where: { $0.id == event.id }) {
+     data[index].isFavourite.toggle()
+ */
+
 import SwiftUI
 
 struct EventDetailView: View {
     @Binding var data: [Event]
-    let event: Int
+    let eventID: UUID
     
+    @State var dataIndex: Int = 0
+        
     @Environment(\.dismiss) var dismiss
     
     @Environment(\.presentationMode) private var presentationMode
@@ -20,9 +27,9 @@ struct EventDetailView: View {
     
     @State private var timeUntilEvent: String = ""
     
-    init(data: Binding<[Event]>, event: Int, showEditEventSheet: Bool = false, showConfirmationDialog: Bool = false, timeUntilEvent: String = "") {
+    init(data: Binding<[Event]>, eventID: UUID, showEditEventSheet: Bool = false, showConfirmationDialog: Bool = false, timeUntilEvent: String = "") {
         self._data = data
-        self.event = event
+        self.eventID = eventID
         self._showEditEventSheet = State(initialValue: showEditEventSheet)
         self._showConfirmationDialog = State(initialValue: showConfirmationDialog)
         self._timeUntilEvent = State(initialValue: timeUntilEvent)
@@ -46,13 +53,13 @@ struct EventDetailView: View {
     var body: some View {
             // Alternate navigation bar title
             //let navigationTitleWrapper = (event.emoji ?? "📅") + " " + (event.name ?? "Event Name")
-        let navigationTitleWrapper = (data[event].name ?? "EventName")
-            
+        let navigationTitleWrapper = data[dataIndex].name ?? "EventName"
+        
         List {
             Section {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text(data[event].name ?? "EventName")
+                        Text(data[dataIndex].name ?? "EventName")
                             .font(.title)
                             .bold()
                         
@@ -62,44 +69,43 @@ struct EventDetailView: View {
                                 
                             }
                             .font(.title3)
-                            .foregroundStyle(data[event].hasPassed ? .red : .primary)
-                            .bold(data[event].hasPassed)
+                            .foregroundStyle(data[dataIndex].hasPassed ? .red : .primary)
+                            .bold(data[dataIndex].hasPassed)
                         
                     }
                     
                     Spacer()
                     
-                    Text(data[event].emoji ?? "📅")
+                    Text(data[dataIndex].emoji ?? "📅")
                         .font(.system(size: 42))
                 }
             }
-            .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.13) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
-            
+            .listRowBackground(SettingsStore().listTinting ? data[dataIndex].averageColor(saturation: 0.5, brightness: 1, opacity: 0.13) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
             
             Section {
                 HStack {
-                    Text(data[event].dateString ?? "Event date and time")
-                        .foregroundStyle(data[event].hasPassed ? .red : .primary)
-                        .bold(data[event].hasStarted)
+                    Text(data[dataIndex].dateString ?? "Event date and time")
+                        .foregroundStyle(data[dataIndex].hasPassed ? .red : .primary)
+                        .bold(data[dataIndex].hasStarted)
                     
                 }
             }
-            .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.11) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
-
+            .listRowBackground(SettingsStore().listTinting ? data[dataIndex].averageColor(saturation: 0.5, brightness: 1, opacity: 0.11) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
             
-            if data[event].description != nil {
+            
+            if data[dataIndex].description != nil {
                 Section {
-                    Text(data[event].description ?? "")
+                    Text(data[dataIndex].description ?? "")
                     
                 }
-                .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+                .listRowBackground(SettingsStore().listTinting ? data[dataIndex].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
                 
             }
             
-            if data[event].isCopy ?? false {
-                if let sourceEvent = data.firstIndex(where: { $0.id == data[event].copyOfEventWithID }) {
+            if data[dataIndex].isCopy ?? false {
+                if let sourceEvent = data.firstIndex(where: { $0.id == data[dataIndex].copyOfEventWithID }) {
                     Section {
-                        NavigationLink(destination: EventDetailView(data: $data, event: sourceEvent)) {
+                        NavigationLink(destination: EventDetailView(data: $data, eventID: data[sourceEvent].id)) {
                             Text("View Original Event")
                             
                         }
@@ -107,26 +113,24 @@ struct EventDetailView: View {
                         .foregroundStyle(.selection)
                         
                     }
-                    .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+                    .listRowBackground(SettingsStore().listTinting ? data[dataIndex].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
                     
                 }
-            }
-            
-            if data[event].isCopy ?? false {
-                let totalCopies = data.filter { $0.copyOfEventWithID == data[event].copyOfEventWithID }
+                
+                let totalCopies = data.filter { $0.copyOfEventWithID == data[dataIndex].copyOfEventWithID }
                 
                 Section {
-                    Text("Copy \(data[event].copyNumber ?? 0) of \(totalCopies.count), repeating \(NSLocalizedString(data[event].recurranceRate!, comment: ""))")
+                    Text("Copy \(data[dataIndex].copyNumber ?? 0) of \(totalCopies.count), repeating \(NSLocalizedString(data[dataIndex].recurranceRate!, comment: ""))")
                     
                 }
-                .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color.white : Color.secondary)
+                .listRowBackground(SettingsStore().listTinting ? data[dataIndex].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color.white : Color.secondary)
                 
             }
             
             
             Section {
-                Toggle("Favourite", isOn: $data[event].isFavourite)
-                    .onChange(of: data[event].isFavourite) { newValue in
+                Toggle("Favourite", isOn: $data[dataIndex].isFavourite)
+                    .onChange(of: data[dataIndex].isFavourite) { newValue in
                         Task {
                             do {
                                 try await EventStore().save(events: data)
@@ -138,8 +142,8 @@ struct EventDetailView: View {
                         }
                     }
                 
-                Toggle("Mute", isOn: $data[event].isMuted)
-                    .onChange(of: data[event].isMuted) { newValue in
+                Toggle("Mute", isOn: $data[dataIndex].isMuted)
+                    .onChange(of: data[dataIndex].isMuted) { newValue in
                         Task {
                             do {
                                 try await EventStore().save(events: data)
@@ -151,8 +155,7 @@ struct EventDetailView: View {
                         }
                     }
             }
-            .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
-            
+            .listRowBackground(SettingsStore().listTinting ? data[dataIndex].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
             
             Section {
                 Button {
@@ -162,7 +165,7 @@ struct EventDetailView: View {
                     deleteButton
                     
                 }
-                .confirmationDialog(Text("Delete \"\(data[event].name!)\" ?"),
+                .confirmationDialog(Text("Delete \"\(data[dataIndex].name!)\" ?"),
                     isPresented: $showConfirmationDialog,
                     titleVisibility: .visible,
                     actions: {
@@ -172,7 +175,7 @@ struct EventDetailView: View {
                             presentationMode.wrappedValue.dismiss()
                             dismiss()
                             
-                            data.remove(at: event)
+                            data.remove(at: dataIndex)
                             
                         }
                     },
@@ -182,11 +185,18 @@ struct EventDetailView: View {
                     }
                 )
             }
-            .listRowBackground(SettingsStore().listTinting ? data[event].averageColor(saturation: 0.5, brightness: 1, opacity: 0.08) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+            .listRowBackground(SettingsStore().listTinting ? data[dataIndex].averageColor(saturation: 0.5, brightness: 1, opacity: 0.08) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
 
             
         }
-        
+        .onAppear {
+            dataIndex = data.firstIndex(where: { $0.id == eventID })!
+            
+        }
+        .onChange(of: data) { _ in
+            dataIndex = data.firstIndex(where: { $0.id == eventID })!
+            
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
@@ -201,13 +211,13 @@ struct EventDetailView: View {
         }
         .navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
         .sheet(isPresented: $showEditEventSheet) {
-            EditEventSheetView(data: $data, event: event)
+            EditEventSheetView(data: $data, event: dataIndex)
             
         }
     }
     
     private func updateTimeUntilEvent() {
-        timeUntilEvent = calculateTime(event: data[event])
+        timeUntilEvent = calculateTime(event: data[data.firstIndex(where: { $0.id == eventID })!])
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.updateTimeUntilEvent()
@@ -225,7 +235,7 @@ struct EventDetailViewPreviews: PreviewProvider {
         
         let previewEvents = Binding.constant(previewData.events)
         
-        return EventDetailView(data: previewEvents, event: 0)
+        return EventDetailView(data: previewEvents, eventID: previewEvents[0].id)
         
     }
 }

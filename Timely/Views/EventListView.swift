@@ -130,10 +130,10 @@ struct EventListView: View {
     }
     
     func compareDates(event: Event, date: Date?) -> Bool {
-        print("compareDates")
+        //print("compareDates")
         
-        for event in cachedEventsToShow {
-            print(event.name!)
+        for _ in cachedEventsToShow {
+            //print(event.name!)
             
         }
         
@@ -398,7 +398,7 @@ struct EventListView: View {
      */
     
     var uniqueDates: [UniqueDate] {
-        print("using uniqueDates precache")
+        //print("using uniqueDates precache")
         
         if cachedEventsToShow.isEmpty {
             cacheEvents()
@@ -543,18 +543,18 @@ struct EventListView: View {
         ForEach($data) { $event in
             // Check if the event should be displayed based on its conditions
             let isInEventsToShow = eventsToShow.contains { $0.id == event.id }
-            let dataIndex = data.firstIndex(where: { $0.id == event.id })
+            //let dataIndex = data.firstIndex(where: { $0.id == event.id })
 
             // Ensure the event is valid and conditions are met
             if isInEventsToShow,
-               let index = dataIndex,
+               //let index = dataIndex,
                Calendar.current.isDate(event.dateAndTime, equalTo: dateToDisplay ?? section.id, toGranularity: .day),
                (dateToDisplay != nil || Calendar.current.isDate(event.dateAndTime, inSameDayAs: section.id)),
                (showFavourite || !event.isFavourite),
                (showMuted || !event.isMuted),
                (showStandard || !event.isStandard) {
 
-                NavigationLink(destination: EventDetailView(data: $data, event: index)) {
+                NavigationLink(destination: EventDetailView(data: $data, eventID: event.id)) {
                                 eventTile(event: event)
                                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                         Button {
@@ -694,7 +694,7 @@ struct EventListView: View {
                                 Divider()
                                 
                                 NavigationLink(
-                                    destination: EventDetailView(data: $data, event: $data.firstIndex(where: { $0.id == event.id }) ?? 0, showEditEventSheet: true),
+                                    destination: EventDetailView(data: $data, eventID: data[$data.firstIndex(where: { $0.id == event.id }) ?? 0].id, showEditEventSheet: true),
                                     label: {
                                         Label("Edit", systemImage: "slider.horizontal.3")
                                     })
