@@ -217,7 +217,7 @@ struct EventDetailView: View {
     }
     
     private func updateTimeUntilEvent() {
-        timeUntilEvent = calculateTime(event: data[data.firstIndex(where: { $0.id == eventID })!])
+        timeUntilEvent = calculateTime(event: data[data.firstIndex(where: { $0.id == eventID }) ?? 0])
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.updateTimeUntilEvent()
