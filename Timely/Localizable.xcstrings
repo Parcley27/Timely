@@ -568,7 +568,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Support"
+            "value" : "Soporte de aplicaciones"
           }
         },
         "fr" : {
@@ -1129,7 +1129,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete “%@”"
+            "value" : "Eliminar “%@”"
           }
         },
         "fr" : {
@@ -1169,7 +1169,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete “%@”?"
+            "value" : "Eliminar “%@”?"
           }
         },
         "fr" : {
@@ -2131,7 +2131,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hide Standard Events"
+            "value" : "Ocultar eventos estándar"
           }
         },
         "fr" : {
@@ -2371,7 +2371,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Less than a minute"
+            "value" : "Menos de un minuto"
           }
         },
         "fr" : {
@@ -2571,7 +2571,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Muted"
+            "value" : "Apagado"
           }
         },
         "fr" : {
@@ -2611,7 +2611,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "My Events"
+            "value" : "Mis Eventos"
           }
         },
         "fr" : {
@@ -2731,7 +2731,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Next %@"
+            "value" : "Siguiente %@"
           }
         },
         "fr" : {
@@ -2851,7 +2851,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Note: Changes made apply only to this event"
+            "value" : "Nota: Les cambios realizados solo se aplican a este evento."
           }
         },
         "fr" : {
@@ -3012,7 +3012,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Report an Issue"
+            "value" : "Informar de un problema"
           }
         },
         "fr" : {
@@ -3173,7 +3173,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Settings"
+            "value" : "Ajustes"
           }
         },
         "fr" : {
@@ -3213,7 +3213,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show Muted Events"
+            "value" : "Mostrar eventos en silencio"
           }
         },
         "fr" : {
@@ -3453,7 +3453,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Starting in %1$@ minutes, at %2$@."
+            "value" : "A partir de %1$@ minutos, a las %2$@."
           }
         },
         "fr" : {
@@ -4054,7 +4054,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version"
+            "value" : "Variante"
           }
         },
         "fr" : {
@@ -4094,7 +4094,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "View Original Event"
+            "value" : "Ver el evento original"
           }
         },
         "fr" : {
