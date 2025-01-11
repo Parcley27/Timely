@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct EditEventSheetView: View {
-    init(data: Binding<[Event]>, event: Int) {
+    init(data: Binding<[Event]>, eventID: UUID) {
         self._data = data
-        self.event = event
+        self.eventID = eventID
         
         UIDatePicker.appearance().minuteInterval = 1
         
     }
     
     @Binding var data: [Event]
-    let event: Int
+    let eventID: UUID
     
     @Environment(\.dismiss) var dismiss
     
@@ -74,7 +74,9 @@ struct EditEventSheetView: View {
     }
     
     func saveEvent() {
-        data[event].name = editedName.trimmingCharacters(in: .whitespaces)
+        let eventIndex = data.firstIndex(where: { $0.id == eventID })!
+        
+        data[eventIndex].name = editedName.trimmingCharacters(in: .whitespaces)
         
         if editedEmoji == "" {
             var hasFoundEmoji = false
@@ -84,7 +86,7 @@ struct EditEventSheetView: View {
                 
                 for scalar in unicodeScalars {
                     if (scalar.value >= 0x1F600 && scalar.value <= 0x1F64F) {
-                        data[event].emoji = String(character)
+                        data[eventIndex].emoji = String(character)
                         hasFoundEmoji = true
                         
                         if let characterIndex = editedName.firstIndex(of: character) {
@@ -105,29 +107,29 @@ struct EditEventSheetView: View {
             
         } else {
             editedEmoji = String(editedEmoji.prefix(1))
-            data[event].emoji = editedEmoji
+            data[eventIndex].emoji = editedEmoji
             
         }
         
         if editedDescription != "" {
-            data[event].description = editedDescription.trimmingCharacters(in: .whitespaces)
+            data[eventIndex].description = editedDescription.trimmingCharacters(in: .whitespaces)
             
         }
         
-        data[event].dateAndTime = editedDateAndTime
-        data[event].endDateAndTime = editedEndDateAndTime
-        data[event].isAllDay = editedIsAllDay
+        data[eventIndex].dateAndTime = editedDateAndTime
+        data[eventIndex].endDateAndTime = editedEndDateAndTime
+        data[eventIndex].isAllDay = editedIsAllDay
         
-        data[event].isRecurring = editedIsRecurring
-        data[event].recurranceRate = editedRecurringRate
-        data[event].recurringTimes = editedIsRecurring ? Int(editedRecurringTimes) : 1
+        data[eventIndex].isRecurring = editedIsRecurring
+        data[eventIndex].recurranceRate = editedRecurringRate
+        data[eventIndex].recurringTimes = editedIsRecurring ? Int(editedRecurringTimes) : 1
         
-        data[event].isFavourite = editedFavourite
-        data[event].isMuted = editedMute
+        data[eventIndex].isFavourite = editedFavourite
+        data[eventIndex].isMuted = editedMute
         
         data.sort(by: { $0.dateAndTime < $1.dateAndTime })
         
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [data[event].id.uuidString])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [data[eventIndex].id.uuidString])
         
         Task {
             do {
@@ -139,7 +141,7 @@ struct EditEventSheetView: View {
             }
         }
         
-        print(event)
+        print(data[eventIndex])
         
     }
     
@@ -176,9 +178,11 @@ struct EditEventSheetView: View {
     }
     
     var body: some View {
+        var eventIndex = 0
         NavigationStack {
+            
             VStack(spacing: 0) {
-                if data[event].isCopy ?? false {
+                if data[eventIndex].isCopy ?? false {
                     Text("Note: Changes made apply only to this event")
                         .foregroundStyle(.red)
                         .padding()
@@ -189,16 +193,16 @@ struct EditEventSheetView: View {
                 
                 Form {
                     Section("About") {
-                        TextField(data[event].name ?? "Name", text: $editedName)
+                        TextField(data[eventIndex].name ?? "Name", text: $editedName)
                             .textInputAutocapitalization(.words)
                             .onAppear() {
-                                editedName = data[event].name ?? "Name"
+                                editedName = data[eventIndex].name ?? "Name"
                                 
                             }
                         
-                        EmojiTextField(text: $editedEmoji, placeholder: data[event].emoji ?? "📅")
+                        EmojiTextField(text: $editedEmoji, placeholder: data[eventIndex].emoji ?? "📅")
                             .onAppear() {
-                                editedEmoji = data[event].emoji ?? "📅"
+                                editedEmoji = data[eventIndex].emoji ?? "📅"
                                 
                             }
                             .opacity(editedEmoji == "" ? 0.5: 1.0)
@@ -240,11 +244,11 @@ struct EditEventSheetView: View {
                         //print("BEFORE")
                         //print(Date())
                         //print(data[event].dateAndTime)
-                        editedDateAndTime = data[event].dateAndTime
-                        editedEndDateAndTime = data[event].endDateAndTime ?? data[event].dateAndTime
-                        dummyDateAndTime = data[event].dateAndTime
+                        editedDateAndTime = data[eventIndex].dateAndTime
+                        editedEndDateAndTime = data[eventIndex].endDateAndTime ?? data[eventIndex].dateAndTime
+                        dummyDateAndTime = data[eventIndex].dateAndTime
                         
-                        editedIsAllDay = data[event].isAllDay ?? false
+                        editedIsAllDay = data[eventIndex].isAllDay ?? false
                         //print("AFTER")
                         //print(editedDateAndTime)
                         
@@ -309,11 +313,11 @@ struct EditEventSheetView: View {
                             
                         }
                     }
-                    .disabled(data[event].isCopy ?? false)
+                    .disabled(data[eventIndex].isCopy ?? false)
                     .onAppear() {
-                        editedIsRecurring = data[event].isRecurring ?? false
-                        editedRecurringRate = data[event].recurranceRate ?? "never"
-                        editedRecurringTimes = Double(data[event].recurringTimes ?? 0)
+                        editedIsRecurring = data[eventIndex].isRecurring ?? false
+                        editedRecurringRate = data[eventIndex].recurranceRate ?? "never"
+                        editedRecurringTimes = Double(data[eventIndex].recurringTimes ?? 0)
                         
                     }
                     
@@ -333,20 +337,20 @@ struct EditEventSheetView: View {
                         }
                     }
                     .onAppear() {
-                        editedDescription = data[event].description ?? ""
+                        editedDescription = data[eventIndex].description ?? ""
                         
                     }
                     
                     Section("Importance") {
                         Toggle("Favourite", isOn: $editedFavourite)
                             .onAppear() {
-                                editedFavourite = data[event].isFavourite
+                                editedFavourite = data[eventIndex].isFavourite
                                 
                             }
                         
                         Toggle("Muted", isOn: $editedMute)
                             .onAppear() {
-                                editedMute = data[event].isMuted
+                                editedMute = data[eventIndex].isMuted
                                 
                             }
                     }
@@ -362,14 +366,14 @@ struct EditEventSheetView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        if (data.filter{ $0.copyOfEventWithID == data[event].id }).count > 0 || editedIsRecurring {
+                        if (data.filter{ $0.copyOfEventWithID == eventID }).count > 0 || editedIsRecurring {
                             showConfirmationDialog = true
                             
                         } else {
                             saveEvent()
                             dismiss()
                             
-                        }
+                        }//data.firstIndex(where: {$0.id == eventID})
                     }
                     .confirmationDialog(Text("This event has recurring copies!"),
                         isPresented: $showConfirmationDialog,
@@ -378,7 +382,7 @@ struct EditEventSheetView: View {
                             Button("Edit All Copies") {
                                 saveEvent()
                                 
-                                for event in (data.filter{ $0.copyOfEventWithID == data[event].id }) {
+                                for event in (data.filter{ $0.copyOfEventWithID == eventID }) {
                                     if let eventIndex = data.firstIndex(where: {$0.id == event.id}) {
                                         data.remove(at: eventIndex)
                                         
@@ -412,7 +416,7 @@ struct EditEventSheetView: View {
                                             //recurringTimes: Int(formRecurringTimes),
                                             
                                             isCopy: true,
-                                            copyOfEventWithID: data[event].id,
+                                            copyOfEventWithID: eventID,
                                             copyNumber: recurringSpace,
                                             
                                             isFavourite: editedFavourite,
@@ -450,6 +454,10 @@ struct EditEventSheetView: View {
             .navigationBarTitle("Edit Event", displayMode: .inline)
             
         }
+        .onAppear {
+            eventIndex = data.firstIndex(where: { $0.id == eventID })!
+            
+        }
     }
 }
 
@@ -462,7 +470,7 @@ struct EditEventSheetViewPreviews: PreviewProvider {
         
         let previewEvents = Binding.constant(previewData.events)
         
-        return EditEventSheetView(data: previewEvents, event: 0)
+        return EditEventSheetView(data: previewEvents, eventID: previewEvents[0].id)
         
     }
 }

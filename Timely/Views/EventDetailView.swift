@@ -211,7 +211,7 @@ struct EventDetailView: View {
         }
         .navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
         .sheet(isPresented: $showEditEventSheet) {
-            EditEventSheetView(data: $data, event: dataIndex)
+            EditEventSheetView(data: $data, eventID: eventID)
             
         }
     }
