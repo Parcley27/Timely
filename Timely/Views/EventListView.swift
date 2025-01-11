@@ -71,7 +71,7 @@ struct EventListView: View {
     
     @State var showMuted = true
     @State var showStandard = true
-    @State var showFavourite = true
+    //@State var showFavourite = true
     
     @State private var newTimeUntilEvent: String = ""
     
@@ -305,7 +305,15 @@ struct EventListView: View {
             // Filter events occurring on the specified date
             agreeingEvents = data.filter { Calendar.current.isDate($0.dateAndTime, inSameDayAs: date) }
             
-        }  else {
+            for event in data {
+                if event.isOnDates.contains(where: { Calendar.current.isDate($0, equalTo: date, toGranularity: .day) }) {
+                    agreeingEvents.append(event)
+                    
+                }
+            }
+            
+            
+        } else {
             var goodEvents: [Event] = []
             
             let filteredData = preferences.removePassedEvents == false ? data : data.filter { !$0.hasExpired() }
@@ -408,26 +416,43 @@ struct EventListView: View {
         
         //print(cachedEventsToShow)
         var datesSeen: [UniqueDate] = []
-        
+
         for event in eventsToShow {
             if (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
-                var isUnique = true
-                
-                for seenDate in datesSeen {
-                    if compareDates(event: event, date: seenDate.id) {
-                        isUnique = false
-                        break
-                        
-                    }
+                // Ensure any added date matches dateToDisplay if it's not nil
+                let shouldAddDate: (Date) -> Bool = { date in
+                    guard let dateToDisplay = dateToDisplay else { return true }
+                    return Calendar.current.isDate(date, equalTo: dateToDisplay, toGranularity: .day)
                 }
                 
-                if isUnique {
-                    datesSeen.append(UniqueDate(id: event.dateAndTime))
-                    
+                var dateToAdd: Date?
+
+                // Check if event.dateAndTime is on a unique day and matches dateToDisplay
+                if !datesSeen.contains(where: {
+                    Calendar.current.isDate(event.dateAndTime, equalTo: $0.id, toGranularity: .day)
+                }) && shouldAddDate(event.dateAndTime) {
+                    dateToAdd = event.dateAndTime
+                }
+
+                // If dateAndTime is not unique or doesn't match, check event.isOnDates
+                if dateToAdd == nil {
+                    for date in event.isOnDates {
+                        if !datesSeen.contains(where: {
+                            Calendar.current.isDate(date, equalTo: $0.id, toGranularity: .day)
+                        }) && shouldAddDate(date) {
+                            dateToAdd = date
+                            break
+                        }
+                    }
+                }
+
+                // Add the resolved date if one was found
+                if let uniqueDate = dateToAdd {
+                    datesSeen.append(UniqueDate(id: uniqueDate))
                 }
             }
         }
-        
+
         return datesSeen
         
     }
@@ -541,19 +566,35 @@ struct EventListView: View {
     
     func listSection(for section: UniqueDate) -> some View {
         ForEach($data) { $event in
+            
             // Check if the event should be displayed based on its conditions
             let isInEventsToShow = eventsToShow.contains { $0.id == event.id }
             //let dataIndex = data.firstIndex(where: { $0.id == event.id })
+            
+            let isOnDate = event.isOnDates.contains { occuringDate in
+                if Calendar.current.isDate(occuringDate, equalTo: dateToDisplay ?? section.id, toGranularity: .day) {
+                    
+                    print("\(event.name ?? "No name") not on provided date")
 
+                    return true
+                    
+                }
+                
+                print("\(event.name ?? "No name") not on provided date")
+                
+                return false
+                
+            }
+            
             // Ensure the event is valid and conditions are met
             if isInEventsToShow,
                //let index = dataIndex,
-               Calendar.current.isDate(event.dateAndTime, equalTo: dateToDisplay ?? section.id, toGranularity: .day),
+               (Calendar.current.isDate(event.dateAndTime, equalTo: dateToDisplay ?? section.id, toGranularity: .day) || (isOnDate && dateToDisplay != nil)),
                (dateToDisplay != nil || Calendar.current.isDate(event.dateAndTime, inSameDayAs: section.id)),
-               (showFavourite || !event.isFavourite),
+               //(showFavourite || !event.isFavourite),
                (showMuted || !event.isMuted),
                (showStandard || !event.isStandard) {
-
+                
                 NavigationLink(destination: EventDetailView(data: $data, eventID: event.id)) {
                                 eventTile(event: event)
                                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
@@ -754,10 +795,13 @@ struct EventListView: View {
                     
                 }
             }
+            //.border(.red, width: 1)
         }
         .background(.background)
         .scrollContentBackground(.hidden)
         .listRowSpacing(5)
+        //.listSectionSpacing(2)
+        //.border(.green, width: 1)
         
         .onAppear {
             cacheEvents()
@@ -919,7 +963,9 @@ struct EventListView_Previews: PreviewProvider {
         
         let previewEvents = Binding.constant(previewData.events)
         
-        return EventListView(data: previewEvents, saveAction: {})
+        //return EventListView(data: previewEvents, saveAction: {})
+        return EventListView(data: previewEvents, dateToDisplay: Date(), saveAction: {})
+        
         
     }
 }
