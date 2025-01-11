@@ -13,7 +13,7 @@ struct TimelyApp: App {
     @StateObject var eventStore = EventStore()
     
     let versionNumber = "3.0.0"
-    let buildNumber = "17"
+    let buildNumber = "18"
     
     func filterPassedEvents(events: [Event]) -> [Event]? {
         var passedEvents = events.filter { $0.hasPassed == true }
@@ -42,7 +42,7 @@ struct TimelyApp: App {
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
-    @State var selectedTab: Int = 0
+    //@State var selectedTab: Int = 0
     @State var lastTab: Int = 0
     
     @State private var showNewSheet: Bool = false
@@ -74,7 +74,8 @@ struct TimelyApp: App {
         WindowGroup {
             VStack {
                 ZStack {
-                    TabView(selection: $selectedTab) {
+                    //TabView(selection: $selectedTab) {
+                    TabView() {
                         EventListView(data: $eventStore.events) {
                             Task {
                                 do {
@@ -107,7 +108,7 @@ struct TimelyApp: App {
                             Label("My Events", systemImage: "list.bullet")
                             
                         }
-                        .tag(0)
+                        //.tag(0)
                         
                         EventListView(data: $eventStore.events) {
                             Task {
@@ -136,7 +137,7 @@ struct TimelyApp: App {
                                 
                             }
                         }
-                        .tag(1)
+                        //.tag(1)
                             
                         CalendarView(data: $eventStore.events, month: currentMonth, year: currentYear) {
                             Task {
@@ -169,7 +170,7 @@ struct TimelyApp: App {
                             Label("Calendar", systemImage: "calendar")
                             
                         }
-                        .tag(2)
+                        //.tag(2)
                         
                     }
                     
