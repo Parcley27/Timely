@@ -178,7 +178,8 @@ struct EditEventSheetView: View {
     }
     
     var body: some View {
-        var eventIndex = 0
+        let eventIndex = data.firstIndex(where: { $0.id == eventID })!
+        
         NavigationStack {
             
             VStack(spacing: 0) {
@@ -454,10 +455,10 @@ struct EditEventSheetView: View {
             .navigationBarTitle("Edit Event", displayMode: .inline)
             
         }
-        .onAppear {
-            eventIndex = data.firstIndex(where: { $0.id == eventID })!
-            
-        }
+//        .onAppear {
+//            eventIndex = data.firstIndex(where: { $0.id == eventID })!
+//            
+//        }
     }
 }
 
