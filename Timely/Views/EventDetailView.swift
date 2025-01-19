@@ -123,7 +123,7 @@ struct EventDetailView: View {
                     Text("Copy \(data[dataIndex].copyNumber ?? 0) of \(totalCopies.count), repeating \(NSLocalizedString(data[dataIndex].recurranceRate!, comment: ""))")
                     
                 }
-                .listRowBackground(SettingsStore().listTinting ? data[dataIndex].averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color.white : Color.secondary)
+                .listRowBackground(SettingsStore().listTinting ? data[dataIndex].averageColor(saturation: 0.6, brightness: 1.2, opacity: 0.25) ?? Color.white : Color(UIColor.systemGray6))
                 
             }
             
