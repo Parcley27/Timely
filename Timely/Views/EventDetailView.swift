@@ -189,6 +189,8 @@ struct EventDetailView: View {
 
             
         }
+        .background(.background)
+        .scrollContentBackground(.hidden)
         .onAppear {
             dataIndex = data.firstIndex(where: { $0.id == eventID })!
             
