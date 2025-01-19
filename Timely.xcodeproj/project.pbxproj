@@ -65,6 +65,7 @@
 		6EAEA0272B0196FC0029A8D4 /* NewEventSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventSheetView.swift; sourceTree = "<group>"; };
 		6EAEA02B2B0197270029A8D4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		6EAEA6162C462DBF00B602CF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		6EC062972D335FFA006D07B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6EE9B5172B64E8C4005895DC /* EditEventSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEventSheetView.swift; sourceTree = "<group>"; };
 		6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -140,6 +141,7 @@
 		6EAE9FEE2B018D7B0029A8D4 /* Timely */ = {
 			isa = PBXGroup;
 			children = (
+				6EC062972D335FFA006D07B1 /* Info.plist */,
 				6E88B1CC2C117D5600027AC4 /* Timely.entitlements */,
 				6E6DCD322C0CE58200A69CC8 /* Launch Screen.storyboard */,
 				6EAE9FEF2B018D7B0029A8D4 /* TimelyApp.swift */,
@@ -518,6 +520,7 @@
 				DEVELOPMENT_TEAM = 7WCH78FX92;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Timely/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Timely;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -553,6 +556,7 @@
 				DEVELOPMENT_TEAM = 7WCH78FX92;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Timely/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Timely;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
