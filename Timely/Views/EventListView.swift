@@ -574,13 +574,13 @@ struct EventListView: View {
             let isOnDate = event.isOnDates.contains { occuringDate in
                 if Calendar.current.isDate(occuringDate, equalTo: dateToDisplay ?? section.id, toGranularity: .day) {
                     
-                    print("\(event.name ?? "No name") not on provided date")
+                    //print("\(event.name ?? "No name") not on provided date")
 
                     return true
                     
                 }
                 
-                print("\(event.name ?? "No name") not on provided date")
+                //print("\(event.name ?? "No name") not on provided date")
                 
                 return false
                 
