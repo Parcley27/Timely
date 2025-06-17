@@ -453,6 +453,28 @@ struct EditEventSheetView: View {
                 }
             }
             .navigationBarTitle("Edit Event", displayMode: .inline)
+            .onChange(of: eventID) { _ in
+                // Reset all state variables when editing a different event
+                let eventIndex = data.firstIndex(where: { $0.id == eventID })!
+                
+                editedName = data[eventIndex].name ?? "Name"
+                editedEmoji = data[eventIndex].emoji ?? "📅"
+                editedDescription = data[eventIndex].description ?? ""
+                
+                editedDateAndTime = data[eventIndex].dateAndTime
+                editedEndDateAndTime = data[eventIndex].endDateAndTime ?? data[eventIndex].dateAndTime
+                dummyDateAndTime = data[eventIndex].dateAndTime
+                
+                editedIsAllDay = data[eventIndex].isAllDay ?? false
+                
+                editedIsRecurring = data[eventIndex].isRecurring ?? false
+                editedRecurringRate = data[eventIndex].recurranceRate ?? "never"
+                editedRecurringTimes = Double(data[eventIndex].recurringTimes ?? 0)
+                
+                editedFavourite = data[eventIndex].isFavourite
+                editedMute = data[eventIndex].isMuted
+                
+            }
             
         }
 //        .onAppear {
