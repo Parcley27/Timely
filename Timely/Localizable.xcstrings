@@ -435,47 +435,6 @@
         }
       }
     },
-    "App Behaviour" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Behaviour"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comportamiento de la aplicación"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comportement des applications"
-          }
-        },
-        "fr-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comportement des applications"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "应用程序行为"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "应用程序行为"
-          }
-        }
-      }
-    },
     "App Information" : {
       "localizations" : {
         "en" : {
@@ -1135,13 +1094,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer “%@”"
+            "value" : "Supprimer «%@»"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer “%@”"
+            "value" : "Supprimer «%@»"
           }
         },
         "zh-Hans" : {
@@ -1158,30 +1117,30 @@
         }
       }
     },
-    "Delete \"%@\" ?" : {
+    "Delete \"%@\" ?" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete “%@”?"
+            "value" : "Delete “%@” ?"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eliminar “%@”?"
+            "value" : "Eliminar “%@” ?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer “%@”?"
+            "value" : "Supprimer «%@» ?"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer “%@”?"
+            "value" : "Supprimer «%@» ?"
           }
         },
         "zh-Hans" : {
