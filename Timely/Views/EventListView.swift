@@ -241,64 +241,6 @@ struct EventListView: View {
         
         print("recaching events")
         
-        //isLoading = true // Optional, show loading state
-        
-        /*
-         // Collect future events that have started but not passed
-         var displayableEvents = data.filter { $0.hasStarted && !$0.hasPassed }
-         
-         // If space remains, add upcoming events that haven't started
-         if displayableEvents.count < maxDisplayedEvents {
-         let futureOnlyEvents = data.filter { !$0.hasStarted && !displayableEvents.contains(where: { $0.id == $0.id }) }
-         displayableEvents.append(contentsOf: futureOnlyEvents)
-         
-         }
-         
-         // If space still remains, add past events, sorted by descending end date
-         // Newer events added first
-         if displayableEvents.count < maxDisplayedEvents {
-         let pastEvents = data
-         .filter { $0.hasPassed && !displayableEvents.contains(where: { $0.id == $0.id }) }
-         .sorted(by: { ($0.endDateAndTime ?? $0.dateAndTime) > ($1.endDateAndTime ?? $1.dateAndTime) })
-         displayableEvents.append(contentsOf: pastEvents)
-         
-         }
-         
-         // If a specific date is set, allow any events on that date.
-         var agreeingEvents: [Event] = []
-         if let targetDate = dateToDisplay {
-         print("wer here")
-         
-         for possibleEvent in displayableEvents {
-         if Calendar.current.isDate(possibleEvent.dateAndTime, inSameDayAs: targetDate) {
-         displayableEvents.append(possibleEvent)
-         
-         }
-         }
-         
-         agreeingEvents = displayableEvents.filter { shouldDisplay(event: $0, dateToDisplay: dateToDisplay) }
-         
-         } else {
-         // Otherwise, filter based on `shouldDisplay` logic
-         print("should display from cache:")
-         agreeingEvents = displayableEvents.filter { shouldDisplay(event: $0, dateToDisplay: dateToDisplay) }
-         
-         }
-         
-         // Limit future events to max displayed events
-         if displayableEvents.count > maxDisplayedEvents {
-         displayableEvents = Array(displayableEvents.prefix(maxDisplayedEvents))
-         
-         }
-         
-         DispatchQueue.main.async {
-         self.cachedEventsToShow = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
-         self.hasCachedEvents = true
-         //self.isLoading = false // Hide loading state
-         
-         }
-         */
-        
         var agreeingEvents: [Event] = []
         
         if let date = dateToDisplay {
@@ -351,59 +293,6 @@ struct EventListView: View {
         return cachedEventsToShow
         
     }
-    /*
-    var eventsToShow: [Event] {
-        var agreeingEvents: [Event] = []
-
-        if hasCachedEvents == false {
-            print("eventsToShow")
-            
-            // Collect future events that have started but not passed
-            var futureEvents = data.filter { $0.hasStarted && !$0.hasPassed }
-            
-            // Limit future events to max displayed events
-            if futureEvents.count > maxDisplayedEvents {
-                futureEvents = Array(futureEvents.prefix(maxDisplayedEvents))
-            }
-            
-            // If space remains, add upcoming events that haven't started
-            if futureEvents.count < maxDisplayedEvents {
-                let remainingSlots = maxDisplayedEvents - futureEvents.count
-                let futureOnlyEvents = data.filter { !$0.hasStarted && !futureEvents.contains(where: { $0.id == $0.id }) }
-                futureEvents.append(contentsOf: futureOnlyEvents.prefix(remainingSlots))
-            }
-            
-            // If space still remains, add past events, sorted by descending end date
-            if futureEvents.count < maxDisplayedEvents {
-                let remainingSlots = maxDisplayedEvents - futureEvents.count
-                let pastEvents = data
-                    .filter { $0.hasPassed && !futureEvents.contains(where: { $0.id == $0.id }) }
-                    .sorted(by: { ($0.endDateAndTime ?? $0.dateAndTime) > ($1.endDateAndTime ?? $1.dateAndTime) })
-                futureEvents.append(contentsOf: pastEvents.prefix(remainingSlots))
-            }
-            
-            // If a specific date is set, filter events occurring on that date
-            if let targetDate = dateToDisplay {
-                agreeingEvents = data.prefix(maxDisplayedEvents).filter { event in
-                    event.isOnDates.contains { Calendar.current.isDate($0, equalTo: targetDate, toGranularity: .day) }
-                }
-            } else {
-                // Otherwise, filter based on `shouldDisplay` logic
-                agreeingEvents = futureEvents.filter { shouldDisplay(event: $0, dateToDisplay: dateToDisplay) }
-            }
-            
-            // Return events sorted by `dateAndTime`
-            
-        }
-        
-        cachedEventsToShow = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
-        
-        hasCachedEvents = true
-        
-        return cachedEventsToShow
-        
-    }
-     */
     
     var uniqueDates: [UniqueDate] {
         //print("using uniqueDates precache")
@@ -416,25 +305,28 @@ struct EventListView: View {
         
         //print(cachedEventsToShow)
         var datesSeen: [UniqueDate] = []
-
+        
         for event in eventsToShow {
             if (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
-                // Ensure any added date matches dateToDisplay if it's not nil
+                // Ensure any added date matches dateToDisplay if not nil
                 let shouldAddDate: (Date) -> Bool = { date in
                     guard let dateToDisplay = dateToDisplay else { return true }
                     return Calendar.current.isDate(date, equalTo: dateToDisplay, toGranularity: .day)
+                    
                 }
                 
                 var dateToAdd: Date?
-
+                
                 // Check if event.dateAndTime is on a unique day and matches dateToDisplay
                 if !datesSeen.contains(where: {
                     Calendar.current.isDate(event.dateAndTime, equalTo: $0.id, toGranularity: .day)
+                    
                 }) && shouldAddDate(event.dateAndTime) {
                     dateToAdd = event.dateAndTime
+                    
                 }
-
-                // If dateAndTime is not unique or doesn't match, check event.isOnDates
+                
+                // If dateAndTime is not unique or doesn't match then check event.isOnDates
                 if dateToAdd == nil {
                     for date in event.isOnDates {
                         if !datesSeen.contains(where: {
@@ -442,51 +334,22 @@ struct EventListView: View {
                         }) && shouldAddDate(date) {
                             dateToAdd = date
                             break
+                            
                         }
                     }
                 }
-
+                
                 // Add the resolved date if one was found
                 if let uniqueDate = dateToAdd {
                     datesSeen.append(UniqueDate(id: uniqueDate))
+                    
                 }
             }
         }
-
+        
         return datesSeen
         
     }
-    /*
-    func countEvents(withType type: EventType, in events: [Event]) -> Int {
-        print("countEvents")
-        switch type {
-        case .isFavourite:
-            return events.filter { $0.isFavourite }.count
-            
-        case .isStandard:
-            return events.filter { $0.isStandard }.count
-            
-        case .isMuted:
-            return events.filter { $0.isMuted }.count
-            
-        }
-    }
-    
-    var canHideStandard: Bool {
-        let noMutedOrStandard = countEvents(withType: .isMuted, in: eventsToShow) == 0 && (!showFavourite || countEvents(withType: .isStandard, in: eventsToShow) == 0)
-        let noFavouriteEvents = countEvents(withType: .isFavourite, in: eventsToShow) == 0
-        
-        return !(noMutedOrStandard || noFavouriteEvents)
-    }
-    
-    var canHideMuted: Bool {
-        let noFavouritesOrStandard = countEvents(withType: .isFavourite, in: eventsToShow) == 0 && (!showMuted || countEvents(withType: .isStandard, in: eventsToShow) == 0)
-        let noMutedEvents = countEvents(withType: .isMuted, in: eventsToShow) == 0
-        
-        return !(noFavouritesOrStandard || noMutedEvents)
-        
-    }
-     */
     
     func shouldDisplay(event: Event, dateToDisplay: Date?) -> Bool {
         print("shouldDisplay")
@@ -806,13 +669,11 @@ struct EventListView: View {
         .onAppear {
             cacheEvents()
             startTimer()
-            print("HERE START")
             
         }
         
         .onDisappear {
             stopTimer()
-            print("HERE STOP")
             
         }
         .onChange(of: data.count) { _ in
