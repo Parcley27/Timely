@@ -3,6 +3,6 @@ Timely is an app designed to help you keep track of your upcoming events. You ca
 
 Timely works on any device running iOS 16, iPadOS 16, or MacOS 11 or later, and was designed for English (en-CA), Chinese (zh-CN & zh-TR) and, French (fr & fr-CA), and Spanish (es-MX) languages.
 
-v3.0.1 is available on the App Store! [Try it Here](https://apps.apple.com/us/app/timely/id6503667182)
+v3.1.0 is available on the App Store! [Try it Here](https://apps.apple.com/us/app/timely/id6503667182)
 
 Developed by [Pierce Oxley](https://github.com/Parcley27), and special thanks to [Dale Dai](https://github.com/CouldNot).
