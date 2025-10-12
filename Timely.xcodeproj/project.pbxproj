@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6E6DCD332C0CE58200A69CC8 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6E6DCD322C0CE58200A69CC8 /* Launch Screen.storyboard */; };
+		6E818AC12E9C53000090A25D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E818AC02E9C53000090A25D /* ContentView.swift */; };
 		6E843E182B7F49D000C8761E /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E843E172B7F49D000C8761E /* EventStore.swift */; };
 		6EA0FCA42BFB0EA000981724 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA0FCA32BFB0EA000981724 /* SettingsStore.swift */; };
 		6EAE9FF02B018D7B0029A8D4 /* TimelyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAE9FEF2B018D7B0029A8D4 /* TimelyApp.swift */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		6E6DCD322C0CE58200A69CC8 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		6E818AC02E9C53000090A25D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6E843E172B7F49D000C8761E /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
 		6E88B1CC2C117D5600027AC4 /* Timely.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Timely.entitlements; sourceTree = "<group>"; };
 		6EA0FCA32BFB0EA000981724 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 			children = (
 				6EF777162C745F55007D65BF /* Helper Views */,
 				6EA411A62E9B42050074F749 /* Sheet Views */,
+				6E818AC02E9C53000090A25D /* ContentView.swift */,
 				6EAEA0252B0196E50029A8D4 /* EventListView.swift */,
 				6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */,
 				6EAEA0232B0196C30029A8D4 /* EventDetailView.swift */,
@@ -339,6 +342,7 @@
 				6EAE9FF02B018D7B0029A8D4 /* TimelyApp.swift in Sources */,
 				6E843E182B7F49D000C8761E /* EventStore.swift in Sources */,
 				6EAEA0242B0196C30029A8D4 /* EventDetailView.swift in Sources */,
+				6E818AC12E9C53000090A25D /* ContentView.swift in Sources */,
 				6EAEA0262B0196E50029A8D4 /* EventListView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
