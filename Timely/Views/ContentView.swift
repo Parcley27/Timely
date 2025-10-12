@@ -65,13 +65,12 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            ZStack {
-                TabView() {
+            TabView {
+                Tab("My Events", systemImage: "list.bullet") {
                     EventListView(data: $eventStore.events) {
                         Task {
                             do {
                                 try await eventStore.save(events: eventStore.events)
-                                
                             } catch {
                                 fatalError(error.localizedDescription)
                                 
@@ -94,37 +93,10 @@ struct ContentView: View {
                         }
                     }
                     .badge(localizedNumber(filterPassedEvents(events: eventStore.events)!.count))
-                    .tabItem {
-                        Label("My Events", systemImage: "list.bullet")
-                        
-                    }
                     
-                    EventListView(data: $eventStore.events) {
-                        Task {
-                            do {
-                                try await eventStore.save(events: eventStore.events)
-                                
-                            } catch {
-                                fatalError(error.localizedDescription)
-                                
-                            }
-                        }
-                    }
-                    .task {
-                        do {
-                            eventStore.loadFromiCloud()
-                            
-                            print("Loading events: ")
-                            
-                            for event in eventStore.events {
-                                print(event.name!, terminator: " ")
-                                
-                            }
-                            
-                            print("")
-                        }
-                    }
-                    
+                }
+                
+                Tab("Calendar", systemImage: "calendar") {
                     CalendarView(data: $eventStore.events, month: currentMonth, year: currentYear) {
                         Task {
                             do {
@@ -148,28 +120,36 @@ struct ContentView: View {
                             }
                             
                             print("")
+                            
                         }
-                    }
-                    .tabItem {
-                        Label("Calendar", systemImage: "calendar")
-                        
                     }
                 }
                 
-                GeometryReader { metrics in
-                    plusButton
-                        .frame(width: metrics.size.width / 4.5, height: metrics.size.height / 9.0)
-                        .onTapGesture {
-                            print("plus")
+                Tab("New Event", systemImage: "plus", role: .search) {
+                    Color.clear
+                        .onAppear {
                             showNewSheet = true
                             
                         }
-                        .position(x: metrics.size.width * 0.5, y: metrics.size.height - 48)
                 }
-                .sheet(isPresented: $showNewSheet) {
-                    NewEventSheetView(data: $eventStore.events)
-                    
+                .disabled(true)
+                
+            }
+            .overlay(alignment: .bottom) {
+                GeometryReader { geometry in
+                    Color.clear
+                        .contentShape(Circle())
+                        .frame(width: 60, height: 60)
+                        .position(x: geometry.size.width * 0.87, y: geometry.size.height * 0.98)
+                        .onTapGesture {
+                            showNewSheet = true
+                            
+                        }
                 }
+            }
+            .sheet(isPresented: $showNewSheet) {
+                NewEventSheetView(data: $eventStore.events)
+                
             }
         }
         .onReceive(timer) { _ in
