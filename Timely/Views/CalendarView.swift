@@ -331,6 +331,7 @@ struct CalendarView: View {
                     Spacer()
                 }
                 .toolbar {
+                    /*
                     ToolbarItem(placement: .navigationBarLeading) {
                         NavigationLink(destination: EventListView(data: $data, dateToDisplay: Date()) {
                             Task {
@@ -356,9 +357,10 @@ struct CalendarView: View {
                                     
                                 }
                             }) {
-                                //Text("Today")
+                                Text("Today")
                             }
                     }
+                     */
                     
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button() {
