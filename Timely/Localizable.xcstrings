@@ -2639,6 +2639,40 @@
         }
       }
     },
+    "Never" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nunca"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jamais"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jamais"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从不"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從不"
+          }
+        }
+      }
+    },
     "New Event" : {
       "localizations" : {
         "en" : {
@@ -2839,6 +2873,40 @@
         }
       }
     },
+    "Occurs" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocurre"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se produit"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se produit"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发生"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "發生"
+          }
+        }
+      }
+    },
     "Preferences" : {
       "localizations" : {
         "en" : {
@@ -2955,6 +3023,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重複中"
+          }
+        }
+      }
+    },
+    "Repeats %lld %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Repeats %1$lld %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repite %lld %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Répète %lld %@"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Répète %lld %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重复 %lld %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重複 %lld %@"
           }
         }
       }
@@ -3561,82 +3669,70 @@
         }
       }
     },
-    "This action will edit all copies of this event" : {
+    "This action will edit all copies of your event" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This action will edit all copies of this event"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esta acción editará todas las copias de este evento."
+            "value" : "Esta acción editará todas las copias de tu evento"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cette action modifiera toutes les copies de cet événement"
+            "value" : "Cette action modifiera toutes les copies de votre événement"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cette action modifiera toutes les copies de cet événement"
+            "value" : "Cette action modifiera toutes les copies de votre événement"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此操作将编辑此事件的所有副本"
+            "value" : "此操作将编辑您事件的所有副本"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此操作將編輯此事件的所有副本"
+            "value" : "此操作將編輯您事件的所有副本"
           }
         }
       }
     },
-    "This event has recurring copies!" : {
+    "This Event has Recurring Copies" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This event has recurring copies!"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¡Este evento tiene copias recurrentes!"
+            "value" : "Este Evento tiene copias recurrentes"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cet événement a des copies récurrentes!"
+            "value" : "Cet événement a des copies récurrentes"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cet événement a des copies récurrentes!"
+            "value" : "Cet événement a des copies récurrentes"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此活动有重复副本！"
+            "value" : "此事件有重复副本"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此活動有重複副本！"
+            "value" : "此事件有重複副本"
           }
         }
       }

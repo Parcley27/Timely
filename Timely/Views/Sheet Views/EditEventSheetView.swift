@@ -61,6 +61,19 @@ struct EditEventSheetView: View {
         
     }
     
+    private var pickerLabel: String {
+        if editedRecurringRate == "never" {
+            return NSLocalizedString("Never", comment: "")
+            
+        } else if editedRecurringTimes < 10.5 {
+            return String.localizedStringWithFormat(NSLocalizedString("Repeating %d Times", comment: ""), Int(editedRecurringTimes))
+            
+        } else {
+            return String.localizedStringWithFormat(NSLocalizedString("Repeating %d+ Times", comment: ""), Int(editedRecurringTimes))
+            
+        }
+    }
+    
     func setTime(for date: Date, hour: Int, minute: Int, second: Int) -> Date? {
         let calendar = Calendar.current
         var components = calendar.dateComponents([.year, .month, .day], from: date)
@@ -184,7 +197,7 @@ struct EditEventSheetView: View {
             
             VStack(spacing: 0) {
                 if data[eventIndex].isCopy ?? false {
-                    Text("Note: Changes made apply only to this event")
+                    Text(NSLocalizedString("Note: Changes made apply only to this event", comment: ""))
                         .foregroundStyle(.red)
                         .padding()
                         .frame(maxWidth: .infinity)
@@ -193,29 +206,21 @@ struct EditEventSheetView: View {
                 }
                 
                 Form {
-                    Section("About") {
-                        TextField(data[eventIndex].name ?? "Name", text: $editedName)
+                    Section(NSLocalizedString("About", comment: "")) {
+                        TextField(data[eventIndex].name ?? NSLocalizedString("Name", comment: ""), text: $editedName)
                             .textInputAutocapitalization(.words)
-                            .onAppear() {
-                                editedName = data[eventIndex].name ?? "Name"
-                                
-                            }
                         
                         EmojiTextField(text: $editedEmoji, placeholder: data[eventIndex].emoji ?? "📅")
-                            .onAppear() {
-                                editedEmoji = data[eventIndex].emoji ?? "📅"
-                                
-                            }
                             .opacity(editedEmoji == "" ? 0.5: 1.0)
                         
                     }
                     
-                    Section("Date and Time") {
-                        DatePicker("Start Date", selection: $editedDateAndTime, displayedComponents: [.date])
+                    Section(NSLocalizedString("Date and Time", comment: "")) {
+                        DatePicker(NSLocalizedString("Start Date", comment: ""), selection: $editedDateAndTime, displayedComponents: [.date])
                             .datePickerStyle(GraphicalDatePickerStyle())
                         
                         HStack {
-                            Text("Start Time")
+                            Text(NSLocalizedString("Start Time", comment: ""))
                             
                             DatePicker(" ", selection: $editedDateAndTime, displayedComponents: [.hourAndMinute])
                                 .datePickerStyle(GraphicalDatePickerStyle())
@@ -224,7 +229,7 @@ struct EditEventSheetView: View {
                         .disabled(editedIsAllDay)
                         .opacity(!editedIsAllDay ? 1.0 : 0.5)
                         
-                        Toggle("All Day", isOn: $editedIsAllDay)
+                        Toggle(NSLocalizedString("All Day", comment: ""), isOn: $editedIsAllDay)
                             .onChange(of: editedIsAllDay) { _ in
                                 if editedIsAllDay {
                                     editedDateAndTime = setTime(for: editedDateAndTime, hour: 0, minute: 0, second: 0) ?? editedDateAndTime
@@ -232,26 +237,13 @@ struct EditEventSheetView: View {
                                     
                                 }
                             }
-                            .padding(.vertical, 8)                        
+                            .padding(.vertical, 8)
                         
-                        DatePicker("End Time", selection: $editedEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
+                        DatePicker(NSLocalizedString("End Time", comment: ""), selection: $editedEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
                             .datePickerStyle(.compact)
                             .padding(.vertical, 8)
                             .opacity(!editedIsAllDay ? 1.0 : 0.5)
                             .disabled(editedIsAllDay)
-                        
-                    }
-                    .onAppear() {
-                        //print("BEFORE")
-                        //print(Date())
-                        //print(data[event].dateAndTime)
-                        editedDateAndTime = data[eventIndex].dateAndTime
-                        editedEndDateAndTime = data[eventIndex].endDateAndTime ?? data[eventIndex].dateAndTime
-                        dummyDateAndTime = data[eventIndex].dateAndTime
-                        
-                        editedIsAllDay = data[eventIndex].isAllDay ?? false
-                        //print("AFTER")
-                        //print(editedDateAndTime)
                         
                     }
                     .onChange(of: editedDateAndTime) { _ in
@@ -264,68 +256,43 @@ struct EditEventSheetView: View {
                         }
                     }
                     
-                    Section("Repeating") {
-                        Picker(editedRecurringRate != "never" ? (editedRecurringTimes < 10.5 ? String(format: "Repeating %.0f times", editedRecurringTimes) : "Repeating forever") : "Repeating" , selection: $editedRecurringRate) {
+                    Section(NSLocalizedString("Repeating", comment: "")) {
+                        Picker(editedRecurringRate != "never" ? NSLocalizedString("Occurs", comment: "") : NSLocalizedString("Never", comment: ""), selection: $editedRecurringRate) {
                             ForEach(recurringTimeOptions, id: \.self) { timeOption in
-                                Text(timeOption.capitalized)
+                                Text(NSLocalizedString(timeOption.capitalized, comment: ""))
                                     .id(timeOption)
-                                
                             }
                         }
-                        .onChange(of: editedRecurringRate) { _ in
-                            if editedRecurringRate == "never" {
+                        .onChange(of: editedRecurringRate) { newValue in
+                            if newValue == "never" {
                                 editedIsRecurring = false
+                                editedRecurringTimes = 2 // Reset to sensible default
                                 
                             } else {
                                 editedIsRecurring = true
-                                
+                                if editedRecurringTimes < 2 {
+                                    editedRecurringTimes = 2 // Minimum 2 occurrences
+                                    
+                                }
                             }
                         }
-                        .pickerStyle(.menu )
+                        .pickerStyle(.menu)
                         
-                        if editedIsRecurring {
-                            Slider(
-                                value: $editedRecurringTimes,
-                                        in: 1 ... 10,
-                                        onEditingChanged: { editing in
-                                            if !editing {
-                                                editedRecurringTimes = editedRecurringTimes.rounded()
-                                                
-                                                if editedRecurringTimes == 1 {
-                                                    editedIsRecurring = false
-                                                    editedRecurringRate = "never"
-                                                    
-                                                    editedRecurringTimes = 2
-                                                    
-                                                }
-                                                
-                                            }
-                                        }
-                                    )
+                        // Only show stepper when actively recurring
+                        if editedRecurringRate != "never" {
+                            let timesCount = Int(editedRecurringTimes) - 1
+                            let timesText = timesCount == 1 ? NSLocalizedString("time", comment: "") : NSLocalizedString("times", comment: "")
+                            Stepper(String.localizedStringWithFormat(NSLocalizedString("Repeats %d %@", comment: ""), timesCount, timesText), value: $editedRecurringTimes, in: 2...100, step: 1)
                             
                         }
-                    }
-                    .onChange(of: editedRecurringRate) { _ in
-                        if editedRecurringRate == "never" {
-                            editedIsRecurring = false
-                            
-                        } else {
-                            editedIsRecurring = true
-                            
-                        }
+                        
                     }
                     .disabled(data[eventIndex].isCopy ?? false)
-                    .onAppear() {
-                        editedIsRecurring = data[eventIndex].isRecurring ?? false
-                        editedRecurringRate = data[eventIndex].recurranceRate ?? "never"
-                        editedRecurringTimes = Double(data[eventIndex].recurringTimes ?? 0)
-                        
-                    }
                     
-                    Section("Details") {
+                    Section(NSLocalizedString("Details", comment: "")) {
                         ZStack {
                             HStack {
-                                Text("Description")
+                                Text(NSLocalizedString("Description", comment: ""))
                                     .foregroundStyle(.quaternary)
                                     .opacity(editedDescription == "" ? 100 : 0)
                                     .padding(.leading, 4)
@@ -337,36 +304,45 @@ struct EditEventSheetView: View {
                             
                         }
                     }
-                    .onAppear() {
-                        editedDescription = data[eventIndex].description ?? ""
-                        
-                    }
                     
-                    Section("Importance") {
-                        Toggle("Favourite", isOn: $editedFavourite)
-                            .onAppear() {
-                                editedFavourite = data[eventIndex].isFavourite
-                                
-                            }
+                    Section(NSLocalizedString("Importance", comment: "")) {
+                        Toggle(NSLocalizedString("Favourite", comment: ""), isOn: $editedFavourite)
                         
-                        Toggle("Muted", isOn: $editedMute)
-                            .onAppear() {
-                                editedMute = data[eventIndex].isMuted
-                                
-                            }
+                        Toggle(NSLocalizedString("Muted", comment: ""), isOn: $editedMute)
+                        
                     }
+                }
+                .onAppear {
+                    // Initialize ALL values once when the form appears
+                    editedName = data[eventIndex].name ?? "Name"
+                    editedEmoji = data[eventIndex].emoji ?? "📅"
+                    editedDescription = data[eventIndex].description ?? ""
+                    
+                    editedDateAndTime = data[eventIndex].dateAndTime
+                    editedEndDateAndTime = data[eventIndex].endDateAndTime ?? data[eventIndex].dateAndTime
+                    dummyDateAndTime = data[eventIndex].dateAndTime
+                    
+                    editedIsAllDay = data[eventIndex].isAllDay ?? false
+                    
+                    editedIsRecurring = data[eventIndex].isRecurring ?? false
+                    editedRecurringRate = data[eventIndex].recurranceRate ?? "never"
+                    editedRecurringTimes = Double(data[eventIndex].recurringTimes ?? 0)
+                    
+                    editedFavourite = data[eventIndex].isFavourite
+                    editedMute = data[eventIndex].isMuted
+                    
                 }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                    Button(NSLocalizedString("Cancel", comment: "")) {
                         dismiss()
                         
                     }
                 }
-
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
+                    Button(NSLocalizedString("Save", comment: "")) {
                         if (data.filter{ $0.copyOfEventWithID == eventID }).count > 0 || editedIsRecurring {
                             showConfirmationDialog = true
                             
@@ -374,13 +350,13 @@ struct EditEventSheetView: View {
                             saveEvent()
                             dismiss()
                             
-                        }//data.firstIndex(where: {$0.id == eventID})
+                        }
                     }
-                    .confirmationDialog(Text("This event has recurring copies!"),
+                    .confirmationDialog(Text(NSLocalizedString("This Event has Recurring Copies", comment: "")),
                         isPresented: $showConfirmationDialog,
                         titleVisibility: .visible,
                         actions: {
-                            Button("Edit All Copies") {
+                            Button(NSLocalizedString("Edit All Copies", comment: "")) {
                                 saveEvent()
                                 
                                 for event in (data.filter{ $0.copyOfEventWithID == eventID }) {
@@ -388,19 +364,10 @@ struct EditEventSheetView: View {
                                         data.remove(at: eventIndex)
                                         
                                     }
-                                    
-                                    Task {
-                                        do {
-                                            try await EventStore().save(events: data)
-                                            
-                                        } catch {
-                                            fatalError(error.localizedDescription)
-                                            
-                                        }
-                                    }
                                 }
                                 
-                                if editedIsRecurring {
+                                // Only iterate if there are copies to create
+                                if editedIsRecurring && editedRecurringTimes >= 2 {
                                     for recurringSpace in 1 ... (Int(editedRecurringTimes) - 1) {
                                         let newRecurringEvent = Event (
                                             name: editedName.trimmingCharacters(in: .whitespaces),
@@ -412,9 +379,7 @@ struct EditEventSheetView: View {
                                             endDateAndTime: moveDate(editedEndDateAndTime, by: editedRecurringRate, amount: recurringSpace),
                                             isAllDay: editedIsAllDay,
                                             
-                                            //isRecurring: formIsRecurring,
                                             recurranceRate: editedRecurringRate,
-                                            //recurringTimes: Int(formRecurringTimes),
                                             
                                             isCopy: true,
                                             copyOfEventWithID: eventID,
@@ -422,29 +387,26 @@ struct EditEventSheetView: View {
                                             
                                             isFavourite: editedFavourite,
                                             isMuted: editedMute
-                                            
                                         )
                                         
                                         data.append(newRecurringEvent)
                                         
-                                        Task {
-                                            do {
-                                                try await EventStore().save(events: data)
-                                                
-                                            } catch {
-                                                fatalError(error.localizedDescription)
-                                                
-                                            }
-                                        }
+                                    }
+                                }
+                                
+                                Task {
+                                    do {
+                                        try await EventStore().save(events: data)
+                                    } catch {
+                                        fatalError(error.localizedDescription)
                                     }
                                 }
                                 
                                 dismiss()
-                                
                             }
                         },
                         message: {
-                            Text("This action will edit all copies of this event")
+                            Text(NSLocalizedString("This action will edit all copies of your Event", comment: ""))
                         
                         }
                     )
@@ -452,7 +414,7 @@ struct EditEventSheetView: View {
                     
                 }
             }
-            .navigationBarTitle("Edit Event", displayMode: .inline)
+            .navigationBarTitle(NSLocalizedString("Edit Event", comment: ""), displayMode: .inline)
             .onChange(of: eventID) { _ in
                 // Reset all state variables when editing a different event
                 let eventIndex = data.firstIndex(where: { $0.id == eventID })!
@@ -475,12 +437,7 @@ struct EditEventSheetView: View {
                 editedMute = data[eventIndex].isMuted
                 
             }
-            
         }
-//        .onAppear {
-//            eventIndex = data.firstIndex(where: { $0.id == eventID })!
-//            
-//        }
     }
 }
 
