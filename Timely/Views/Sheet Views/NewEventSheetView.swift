@@ -376,52 +376,56 @@ struct NewEventSheetView: View {
                         }
                     }
                     
-                    Section("Repeating") {
-                        Picker(formRecurringRate != "never" ? NSLocalizedString("Occurs", comment: "") : NSLocalizedString("Never", comment: ""), selection: $formRecurringRate) {
-                            ForEach(recurringTimeOptions, id: \.self) { timeOption in
-                                Text(timeOption.capitalized)
-                                    .id(timeOption)
-                                
-                            }
-                        }
-                        .onChange(of: formRecurringRate) { newValue in
-                            if newValue == "never" {
-                                formIsRecurring = false
-                                formRecurringTimes = 2 // Reset to sensible default
-                                
-                            } else {
-                                formIsRecurring = true
-                                if formRecurringTimes < 2 {
-                                    formRecurringTimes = 2 // Minimum 2 occurrences
+                    if !preferences.quickAdd {
+                        Section("Repeating") {
+                            Picker(formRecurringRate != "never" ? NSLocalizedString("Occurs", comment: "") : NSLocalizedString("Never", comment: ""), selection: $formRecurringRate) {
+                                ForEach(recurringTimeOptions, id: \.self) { timeOption in
+                                    Text(timeOption.capitalized)
+                                        .id(timeOption)
                                     
                                 }
                             }
-                        }
-                        .pickerStyle(.menu)
-                        
-                        // Only show stepper when actively recurring
-                        if formRecurringRate != "never" {
-                            let timesCount = Int(formRecurringTimes) - 1
-                            let timesText = timesCount == 1 ? NSLocalizedString("time", comment: "") : NSLocalizedString("times", comment: "")
-                            Stepper(String.localizedStringWithFormat(NSLocalizedString("Repeats %d %@", comment: ""), timesCount, timesText), value: $formRecurringTimes, in: 2...100, step: 1)
+                            .onChange(of: formRecurringRate) { newValue in
+                                if newValue == "never" {
+                                    formIsRecurring = false
+                                    formRecurringTimes = 2 // Reset to sensible default
+                                    
+                                } else {
+                                    formIsRecurring = true
+                                    if formRecurringTimes < 2 {
+                                        formRecurringTimes = 2 // Minimum 2 occurrences
+                                        
+                                    }
+                                }
+                            }
+                            .pickerStyle(.menu)
                             
-                        }
-                        
-                    }
-                    
-                    Section("Details") {
-                        ZStack {
-                            HStack {
-                                Text("Description")
-                                    .foregroundStyle(.quaternary)
-                                    .opacity(formDescription == "" ? 100 : 0)
-                                    .padding(.leading, 4)
-                                Spacer()
+                            // Only show stepper when actively recurring
+                            if formRecurringRate != "never" {
+                                let timesCount = Int(formRecurringTimes) - 1
+                                let timesText = timesCount == 1 ? NSLocalizedString("time", comment: "") : NSLocalizedString("times", comment: "")
+                                Stepper(String.localizedStringWithFormat(NSLocalizedString("Repeats %d %@", comment: ""), timesCount, timesText), value: $formRecurringTimes, in: 2...100, step: 1)
                                 
                             }
                             
-                            TextEditor(text: $formDescription)
+                        }
+                    }
+                    
+                    if !preferences.quickAdd {
+                        Section("Details") {
+                            ZStack {
+                                HStack {
+                                    Text("Description")
+                                        .foregroundStyle(.quaternary)
+                                        .opacity(formDescription == "" ? 100 : 0)
+                                        .padding(.leading, 4)
+                                    Spacer()
+                                    
+                                }
                                 
+                                TextEditor(text: $formDescription)
+                                    
+                            }
                         }
                     }
                     
