@@ -176,7 +176,7 @@ struct SettingsView: View {
                     
                     Section("App Information") {
                         Text("Version")
-                            .badge("v\(TimelyApp().versionNumber) - Build \(TimelyApp().buildNumber)")
+                            .badge(Bundle.main.fullVersion)
                         
                         Button() {
                             openURL(URL(string: "https://apps.apple.com/ca/app/timely-event-tracker/id6503667182")!)

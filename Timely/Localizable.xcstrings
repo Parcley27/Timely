@@ -4143,6 +4143,7 @@
       }
     },
     "v%@ - Build %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

@@ -76,6 +76,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		6E818A9F2E9B8F890090A25D /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		6EA411A62E9B42050074F749 /* Sheet Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Sheet Views"; sourceTree = "<group>"; };
 		6EF777162C745F55007D65BF /* Helper Views */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6EF777192C745F7A007D65BF /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Helper Views"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -132,6 +133,7 @@
 				6E88B1CC2C117D5600027AC4 /* Timely.entitlements */,
 				6E6DCD322C0CE58200A69CC8 /* Launch Screen.storyboard */,
 				6EAE9FEF2B018D7B0029A8D4 /* TimelyApp.swift */,
+				6E818A9F2E9B8F890090A25D /* Extensions */,
 				6EFDF1DE2BD25DF600D6904F /* Data */,
 				6EFDF1DF2BD25E3000D6904F /* Views */,
 				6EAE9FF52B018D7C0029A8D4 /* Assets.xcassets */,
@@ -205,6 +207,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				6E818A9F2E9B8F890090A25D /* Extensions */,
 				6EA411A62E9B42050074F749 /* Sheet Views */,
 			);
 			name = Timely;
@@ -505,7 +508,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Timely/Timely.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 19;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_ASSET_PATHS = "\"Timely/Preview Content\"";
 				DEVELOPMENT_TEAM = 7WCH78FX92;
 				ENABLE_PREVIEWS = YES;
@@ -525,7 +528,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.1;
+				MARKETING_VERSION = "3.2.0 Beta";
 				PRODUCT_BUNDLE_IDENTIFIER = dev.PierceOxley.Timely;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -541,7 +544,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Timely/Timely.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 19;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_ASSET_PATHS = "\"Timely/Preview Content\"";
 				DEVELOPMENT_TEAM = 7WCH78FX92;
 				ENABLE_PREVIEWS = YES;
@@ -561,7 +564,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.1;
+				MARKETING_VERSION = "3.2.0 Beta";
 				PRODUCT_BUNDLE_IDENTIFIER = dev.PierceOxley.Timely;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
