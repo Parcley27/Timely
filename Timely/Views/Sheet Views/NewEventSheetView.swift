@@ -14,10 +14,11 @@ struct NewEventSheetView: View {
         self._data = data
         
         if SettingsStore().quickAdd {
-            UIDatePicker.appearance().minuteInterval = 5
+            UIDatePicker.appearance().minuteInterval = 15
             
         } else {
             UIDatePicker.appearance().minuteInterval = 5
+            
         }
     }
     
@@ -42,16 +43,56 @@ struct NewEventSheetView: View {
     
     @State private var formDateAndTime: Date = {
         let currentDate = Date()
-        let oneDayInSeconds: TimeInterval = 24 * 60 * 60
+        let calendar = Calendar.current
         let oneHourInSeconds: TimeInterval = 60 * 60
         
-        //return currentDate.addingTimeInterval(oneDayInSeconds)
+        // Round to nearest 5 minutes if quick add is enabled
+        if SettingsStore().quickAdd {
+            let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: currentDate)
+            let minute = components.minute ?? 0
+            let roundedMinute = Int(ceil(Double(minute) / 5.0) * 5.0)
+            
+            var newComponents = components
+            newComponents.minute = roundedMinute % 60
+            
+            if roundedMinute >= 60 {
+                newComponents.hour = (components.hour ?? 0) + 1
+            }
+            
+            if let roundedDate = calendar.date(from: newComponents) {
+                return roundedDate.addingTimeInterval(oneHourInSeconds)
+                
+            }
+        }
+        
         return currentDate.addingTimeInterval(oneHourInSeconds)
-
+        
     }()
+
     @State private var formEndDateAndTime: Date = {
         let currentDate = Date()
+        let calendar = Calendar.current
         let twoHoursInSeconds: TimeInterval = 2 * 60 * 60
+        
+        // Round to nearest 5 minutes if quick add is enabled
+        if SettingsStore().quickAdd {
+            let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: currentDate)
+            let minute = components.minute ?? 0
+            let roundedMinute = Int(ceil(Double(minute) / 5.0) * 5.0)
+            
+            var newComponents = components
+            newComponents.minute = roundedMinute % 60
+            
+            if roundedMinute >= 60 {
+                newComponents.hour = (components.hour ?? 0) + 1
+                
+            }
+            
+            if let roundedDate = calendar.date(from: newComponents) {
+                return roundedDate.addingTimeInterval(twoHoursInSeconds)
+                
+            }
+        }
         
         return currentDate.addingTimeInterval(twoHoursInSeconds)
         
