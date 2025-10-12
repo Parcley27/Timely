@@ -1478,7 +1478,32 @@
       }
     },
     "Enable Quick Add Events" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activer l'ajout rapide d'événements"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activer l'ajout rapide d'événements"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用快速添加事件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用快速添加事件"
+          }
+        }
+      }
     },
     "End Time" : {
       "localizations" : {
@@ -2911,45 +2936,35 @@
       }
     },
     "Quick Add enabled: Some fields auto-filled with defaults" : {
-
-    },
-    "Quick-Add Events" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quick-Add Events"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eventos de adición rápida"
+            "value" : "Adición rápida habilitada: Algunos campos completados automáticamente con valores predeterminados"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouter rapidement"
+            "value" : "Ajout rapide activé : Certains champs remplis automatiquement avec les valeurs par défaut"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouter rapidement"
+            "value" : "Ajout rapide activé : Certains champs remplis automatiquement avec les valeurs par défaut"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快速添加事件"
+            "value" : "已启用快速添加：某些字段已自动填入默认值"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快速新增事件"
+            "value" : "已啟用快速添加：某些字段已自動填入預設值\n"
           }
         }
       }
@@ -4094,7 +4109,38 @@
       }
     },
     "Use Emoji Keyboard" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar teclado de Emoji"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser le clavier Emoji"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser le clavier Emoji"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用表情符号键盘"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用表情符號鍵盤"
+          }
+        }
+      }
     },
     "v%@ - Build %@" : {
       "localizations" : {
