@@ -430,6 +430,14 @@ struct NewEventSheetView: View {
                         Toggle("Muted", isOn: $formMuted)
                         
                     }
+                    
+                    if preferences.quickAdd {
+                        Section {
+                            Label("Quick Add enabled: Some fields auto-filled with defaults", systemImage: "bolt.fill")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 }
             }
             .toolbar {
