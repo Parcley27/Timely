@@ -61,19 +61,6 @@ struct EditEventSheetView: View {
         
     }
     
-    private var pickerLabel: String {
-        if editedRecurringRate == "never" {
-            return NSLocalizedString("Never", comment: "")
-            
-        } else if editedRecurringTimes < 10.5 {
-            return String.localizedStringWithFormat(NSLocalizedString("Repeating %d Times", comment: ""), Int(editedRecurringTimes))
-            
-        } else {
-            return String.localizedStringWithFormat(NSLocalizedString("Repeating %d+ Times", comment: ""), Int(editedRecurringTimes))
-            
-        }
-    }
-    
     func setTime(for date: Date, hour: Int, minute: Int, second: Int) -> Date? {
         let calendar = Calendar.current
         var components = calendar.dateComponents([.year, .month, .day], from: date)
