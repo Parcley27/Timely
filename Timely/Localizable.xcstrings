@@ -1517,46 +1517,6 @@
         }
       }
     },
-    "Ending" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ending"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Final"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fin"
-          }
-        },
-        "fr-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fin"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "结束"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "結束"
-          }
-        }
-      }
-    },
     "Ending in %@" : {
       "localizations" : {
         "en" : {
@@ -3027,42 +2987,42 @@
         }
       }
     },
-    "Repeats %lld %@" : {
+    "Repeats %d %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Repeats %1$lld %2$@"
+            "value" : "Repeats %1$d %2$@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Repite %lld %@"
+            "value" : "Repite %d %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Répète %lld %@"
+            "value" : "Répète %d %@"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Répète %lld %@"
+            "value" : "Répète %d %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重复 %lld %@"
+            "value" : "重复 %d %@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重複 %lld %@"
+            "value" : "重複 %d %@"
           }
         }
       }
@@ -3669,24 +3629,24 @@
         }
       }
     },
-    "This action will edit all copies of your event" : {
+    "This action will edit all copies of your Event" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esta acción editará todas las copias de tu evento"
+            "value" : "Esta acción editará todas las copias de tu Evento"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cette action modifiera toutes les copies de votre événement"
+            "value" : "Cette action modifiera toutes les copies de votre Événement"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cette action modifiera toutes les copies de votre événement"
+            "value" : "Cette action modifiera toutes les copies de votre Événement"
           }
         },
         "zh-Hans" : {
@@ -3733,6 +3693,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此事件有重複副本"
+          }
+        }
+      }
+    },
+    "time" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vez"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fois"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fois"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次"
           }
         }
       }
@@ -3814,6 +3808,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timely 程式碼（GitHub）"
+          }
+        }
+      }
+    },
+    "times" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "veces"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fois"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fois"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次"
           }
         }
       }

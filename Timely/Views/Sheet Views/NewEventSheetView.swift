@@ -83,7 +83,7 @@ struct NewEventSheetView: View {
         
         if let formattedDate = calendar.date(from: components) {
             return formattedDate
-            
+          
         } else {
             return inputDate
             
@@ -157,47 +157,37 @@ struct NewEventSheetView: View {
         
     }
     
-    private func createEvent() {
-        if formEmoji.isEmpty || formEmoji == "" {
-            
-            formEmoji = "📅"
-            
+    func createEvent() {
+        if formEmoji == "" {
             var hasFoundEmoji = false
-            
-            formName = formName.trimmingCharacters(in: .whitespaces)
             
             for character in formName {
                 let unicodeScalars = character.unicodeScalars
                 
                 for scalar in unicodeScalars {
-                    switch scalar.value {
-                    case 0x1F600...0x1F64F, // Emoticons
-                         0x1F300...0x1F5FF, // Misc Symbols and Pictographs
-                         0x1F680...0x1F6FF, // Transport and Map
-                         0x2600...0x26FF,   // Misc symbols
-                         0x2700...0x27BF,   // Dingbats
-                         0xFE00...0xFE0F,   // Variation Selectors
-                         0x1F900...0x1F9FF, // Supplemental Symbols and Pictographs
-                         0x1F1E6...0x1F1FF: // Flags
+                    if (scalar.value >= 0x1F600 && scalar.value <= 0x1F64F) {
+                        formEmoji = String(character)
                         hasFoundEmoji = true
                         
-                    default:
-                        continue
+                        if let characterIndex = formName.firstIndex(of: character) {
+                            formName.remove(at: characterIndex)
+                            
+                        }
+                        
+                        break
                         
                     }
                 }
                 
                 if hasFoundEmoji {
-                    formEmoji = String(character)
-                    
-                    if let characterIndex = formName.firstIndex(of: character) {
-                        formName.remove(at: characterIndex)
-                        
-                    }
-                    
                     break
                     
                 }
+            }
+            
+            if !hasFoundEmoji {
+                formEmoji = "📅"
+                
             }
             
         } else {
@@ -228,44 +218,35 @@ struct NewEventSheetView: View {
         data.sort(by: { $0.dateAndTime < $1.dateAndTime })
         
         if formIsRecurring {
-            /*
-            for event in data {
-                if event.copyOfEventWithID  == newEvent.id {
-                    data.remove(at: data.firstIndex(where: {$0.copyOfEventWithID == newEvent.id})!)
+            
+            // Only iterate if there are copies to create
+            if formRecurringTimes >= 2 {
+                for recurringSpace in 1 ... (Int(formRecurringTimes) - 1) {
+                    
+                    let newRecurringEvent = Event (
+                        name: formName.trimmingCharacters(in: .whitespaces),
+                        emoji: formEmoji,
+                        
+                        description: (formDescription != "" ? formDescription.trimmingCharacters(in: .whitespaces) : nil),
+                        
+                        dateAndTime: moveDate(formDateAndTime, by: formRecurringRate, amount: recurringSpace),
+                        endDateAndTime: moveDate(formEndDateAndTime, by: formRecurringRate, amount: recurringSpace),
+                        isAllDay: formIsAllDay,
+                        
+                        recurranceRate: formRecurringRate,
+                        
+                        isCopy: true,
+                        copyOfEventWithID: newEvent.id,
+                        copyNumber: recurringSpace,
+                        
+                        isFavourite: formFavourited,
+                        isMuted: formMuted
+                        
+                    )
+                    
+                    data.append(newRecurringEvent)
                     
                 }
-            }
-             */
-            
-            for recurringSpace in 1 ... (Int(formRecurringTimes) - 1) {
-                //let newDateAndTime: Date = moveDate(formDateAndTime, by: formRecurringRate, amount: recurringSpace)
-                //let newEndDateAndTime: Date = moveDate(formEndDateAndTime, by: formRecurringRate, amount: recurringSpace)
-                
-                let newRecurringEvent = Event (
-                    name: formName.trimmingCharacters(in: .whitespaces),
-                    emoji: formEmoji,
-                    
-                    description: (formDescription != "" ? formDescription.trimmingCharacters(in: .whitespaces) : nil),
-                    
-                    dateAndTime: moveDate(formDateAndTime, by: formRecurringRate, amount: recurringSpace),
-                    endDateAndTime: moveDate(formEndDateAndTime, by: formRecurringRate, amount: recurringSpace),
-                    isAllDay: formIsAllDay,
-                    
-                    //isRecurring: formIsRecurring,
-                    recurranceRate: formRecurringRate,
-                    //recurringTimes: Int(formRecurringTimes),
-                    
-                    isCopy: true,
-                    copyOfEventWithID: newEvent.id,
-                    copyNumber: recurringSpace,
-                    
-                    isFavourite: formFavourited,
-                    isMuted: formMuted
-                    
-                )
-                
-                data.append(newRecurringEvent)
-                
             }
         }
         
@@ -307,15 +288,6 @@ struct NewEventSheetView: View {
                     Section("About") {
                         TextField("Name", text: $formName)
                             .textInputAutocapitalization(.words)
-                            ///*
-                            .focused($isTextFieldFocused)
-                            .onAppear {
-                                isTextFieldFocused = true
-                                
-                            }
-                             //*/
-                        
-                        //TextField("Emoji", text: $formEmoji)
                         
                         EmojiTextField(text: $formEmoji, placeholder: NSLocalizedString("Emoji", comment: ""))
                         
@@ -345,94 +317,77 @@ struct NewEventSheetView: View {
                                 }
                             }
                             .padding(.vertical, 8)
-                            .disabled(Calendar.current.isDateInToday(formDateAndTime))
                         
-                        if !preferences.quickAdd {
-                            DatePicker("Ending", selection: $formEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
-                                .datePickerStyle(.compact)
-                                .padding(.vertical, 8)
-                                .opacity(!formIsAllDay ? 1.0 : 0.5)
-                                .disabled(formIsAllDay)
-                            
-                        }
+                        DatePicker("End Time", selection: $formEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.compact)
+                            .padding(.vertical, 8)
+                            .opacity(!formIsAllDay ? 1.0 : 0.5)
+                            .disabled(formIsAllDay)
+                        
                     }
-                    
                     .onChange(of: formDateAndTime) { _ in
                         if !formIsAllDay {
                             let eventLength = formEndDateAndTime.timeIntervalSince(dummyDateAndTime)
                             
                             formEndDateAndTime = formDateAndTime.addingTimeInterval(eventLength)
-                            
                             dummyDateAndTime = formDateAndTime
                             
                         }
                     }
-                     
                     
-                    if !preferences.quickAdd {
-                        Section("Repeating") {
-                            
-                            
-                            Picker(formRecurringRate != "never" ? (formRecurringTimes < 10.5 ? String(format: "Repeating %.0f times", formRecurringTimes) : "Repeating forever") : "Repeating" , selection: $formRecurringRate) {
-                                ForEach(recurringTimeOptions, id: \.self) { timeOption in
-                                    Text(timeOption.capitalized)
-                                        .id(timeOption)
-                                    
-                                }
-                            }
-                            .onChange(of: formRecurringRate) { _ in
-                                if formRecurringRate == "never" {
-                                    formIsRecurring = false
-                                    
-                                } else {
-                                    formIsRecurring = true
-                                    
-                                }
-                            }
-                            .pickerStyle(.menu )
-                            
-                            if formIsRecurring {
-                                Slider(
-                                    value: $formRecurringTimes,
-                                        in: 1 ... 10,
-                                        onEditingChanged: { editing in
-                                            if !editing {
-                                                formRecurringTimes = formRecurringTimes.rounded()
-                                                
-                                                if formRecurringTimes == 1 {
-                                                    formIsRecurring = false
-                                                    formRecurringRate = "never"
-                                                    
-                                                    formRecurringTimes = 2
-                                                    
-                                                }
-                                            }
-                                        }
-                                    )
-                            }
-                        }
-                        
-                        Section("Details") {
-                            ZStack {
-                                HStack {
-                                    Text("Description")
-                                        .foregroundStyle(.quaternary)
-                                        .opacity(formDescription == "" ? 100 : 0)
-                                        .padding(.leading, 4)
-                                    Spacer()
-                                    
-                                }
+                    Section("Repeating") {
+                        Picker(formRecurringRate != "never" ? NSLocalizedString("Occurs", comment: "") : NSLocalizedString("Never", comment: ""), selection: $formRecurringRate) {
+                            ForEach(recurringTimeOptions, id: \.self) { timeOption in
+                                Text(timeOption.capitalized)
+                                    .id(timeOption)
                                 
-                                TextEditor(text: $formDescription)
-                                    
                             }
                         }
+                        .onChange(of: formRecurringRate) { newValue in
+                            if newValue == "never" {
+                                formIsRecurring = false
+                                formRecurringTimes = 2 // Reset to sensible default
+                                
+                            } else {
+                                formIsRecurring = true
+                                if formRecurringTimes < 2 {
+                                    formRecurringTimes = 2 // Minimum 2 occurrences
+                                    
+                                }
+                            }
+                        }
+                        .pickerStyle(.menu)
                         
-                        Section("Importance") {
-                            Toggle("Favourite", isOn: $formFavourited)
-                            Toggle("Muted", isOn: $formMuted)
+                        // Only show stepper when actively recurring
+                        if formRecurringRate != "never" {
+                            let timesCount = Int(formRecurringTimes) - 1
+                            let timesText = timesCount == 1 ? NSLocalizedString("time", comment: "") : NSLocalizedString("times", comment: "")
+                            Stepper(String.localizedStringWithFormat(NSLocalizedString("Repeats %d %@", comment: ""), timesCount, timesText), value: $formRecurringTimes, in: 2...100, step: 1)
                             
                         }
+                        
+                    }
+                    
+                    Section("Details") {
+                        ZStack {
+                            HStack {
+                                Text("Description")
+                                    .foregroundStyle(.quaternary)
+                                    .opacity(formDescription == "" ? 100 : 0)
+                                    .padding(.leading, 4)
+                                Spacer()
+                                
+                            }
+                            
+                            TextEditor(text: $formDescription)
+                                
+                        }
+                    }
+                    
+                    Section("Importance") {
+                        Toggle("Favourite", isOn: $formFavourited)
+                        Toggle("Muted", isOn: $formMuted)
+                        
                     }
                 }
             }
