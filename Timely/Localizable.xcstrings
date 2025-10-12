@@ -596,6 +596,40 @@
         }
       }
     },
+    "Build" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "构建"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "構"
+          }
+        }
+      }
+    },
     "Calendar" : {
       "localizations" : {
         "en" : {
@@ -1479,6 +1513,12 @@
     },
     "Enable Quick Add Events" : {
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habilitar adición rápida de eventos"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4138,47 +4178,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用表情符號鍵盤"
-          }
-        }
-      }
-    },
-    "v%@ - Build %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "v%1$@ - Build %2$@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "v%1$@ - Construir %2$@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "v%1$@ - Build %2$@"
-          }
-        },
-        "fr-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "v%1$@ - Build %2$@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "版本 %1$@ - 构建 %2$@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "版本 %1$@ - 建置 %2$@"
           }
         }
       }

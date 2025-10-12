@@ -19,7 +19,7 @@ extension Bundle {
     }
     
     var fullVersion: String {
-        return "v\(appVersion) (Build \(buildNumber))"
+        return "v\(appVersion) (\(NSLocalizedString("Build", comment: "")) \(buildNumber))"
         
     }
 }
