@@ -330,7 +330,13 @@ struct NewEventSheetView: View {
                         TextField("Name", text: $formName)
                             .textInputAutocapitalization(.words)
                         
-                        EmojiTextField(text: $formEmoji, placeholder: NSLocalizedString("Emoji", comment: ""))
+                        if preferences.useEmojiKeyboard {
+                            EmojiTextField(text: $formEmoji, placeholder: NSLocalizedString("Emoji", comment: ""))
+
+                        } else {
+                            TextField(NSLocalizedString("Emoji", comment: ""), text: $formEmoji)
+                            
+                        }
                         
                     }
                     

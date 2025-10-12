@@ -19,6 +19,8 @@ struct EditEventSheetView: View {
     @Binding var data: [Event]
     let eventID: UUID
     
+    @StateObject private var preferences = SettingsStore()
+    
     @Environment(\.dismiss) var dismiss
     
     @State var showConfirmationDialog = false
@@ -197,8 +199,15 @@ struct EditEventSheetView: View {
                         TextField(data[eventIndex].name ?? NSLocalizedString("Name", comment: ""), text: $editedName)
                             .textInputAutocapitalization(.words)
                         
-                        EmojiTextField(text: $editedEmoji, placeholder: data[eventIndex].emoji ?? "📅")
-                            .opacity(editedEmoji == "" ? 0.5: 1.0)
+                        if preferences.useEmojiKeyboard {
+                            EmojiTextField(text: $editedEmoji, placeholder: data[eventIndex].emoji ?? "📅")
+                                .opacity(editedEmoji == "" ? 0.5: 1.0)
+
+                        } else {
+                            TextField(data[eventIndex].emoji ?? "📅", text: $editedEmoji)
+                                .opacity(editedEmoji == "" ? 0.5: 1.0)
+                            
+                        }
                         
                     }
                     

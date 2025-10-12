@@ -52,6 +52,13 @@ class SettingsStore: ObservableObject {
         }
     }
     
+    var useEmojiKeyboard: Bool {
+        didSet {
+            UserDefaults.standard.set(useEmojiKeyboard, forKey: "useEmojiKeyboard")
+            
+        }
+    }
+    
     /*
     @Published var stringData: String {
         didSet {
@@ -68,6 +75,7 @@ class SettingsStore: ObservableObject {
         self.quickAdd = UserDefaults.standard.object(forKey: "quickAdd") as? Bool ?? false
         self.listTinting = UserDefaults.standard.object(forKey: "listTinting") as? Bool ?? true
         self.doiCloudSync = UserDefaults.standard.object(forKey: "doiCloudSync") as? Bool ?? false
+        self.useEmojiKeyboard = UserDefaults.standard.object(forKey: "useEmojiKeyboard") as? Bool ?? true
         //self.stringData = UserDefaults.standard.object(forKey: "stringData") as? String ?? ""
         
     }
