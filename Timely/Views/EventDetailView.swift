@@ -140,7 +140,7 @@ struct EventDetailView: View {
                 
                 Section {
                     Toggle("Favourite", isOn: $data[dataIndex].isFavourite)
-                        .onChange(of: data[dataIndex].isFavourite) { newValue in
+                        .onChange(of: data[dataIndex].isFavourite) {
                             Task {
                                 do {
                                     try await EventStore().save(events: data)
@@ -153,7 +153,7 @@ struct EventDetailView: View {
                         }
                     
                     Toggle("Mute", isOn: $data[dataIndex].isMuted)
-                        .onChange(of: data[dataIndex].isMuted) { newValue in
+                        .onChange(of: data[dataIndex].isMuted) {
                             Task {
                                 do {
                                     try await EventStore().save(events: data)
@@ -217,7 +217,7 @@ struct EventDetailView: View {
                     
                 }
             }
-            .onChange(of: data) { _ in
+            .onChange(of: data) {
                 if let index = data.firstIndex(where: { $0.id == eventID }) {
                     dataIndex = index
                     

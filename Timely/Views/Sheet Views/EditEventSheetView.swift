@@ -226,7 +226,7 @@ struct EditEventSheetView: View {
                         .opacity(!editedIsAllDay ? 1.0 : 0.5)
                         
                         Toggle(NSLocalizedString("All Day", comment: ""), isOn: $editedIsAllDay)
-                            .onChange(of: editedIsAllDay) { _ in
+                            .onChange(of: editedIsAllDay) {
                                 if editedIsAllDay {
                                     editedDateAndTime = setTime(for: editedDateAndTime, hour: 0, minute: 0, second: 0) ?? editedDateAndTime
                                     editedEndDateAndTime = setTime(for: editedDateAndTime, hour: 23, minute: 59, second: 59) ?? editedEndDateAndTime
@@ -242,7 +242,7 @@ struct EditEventSheetView: View {
                             .disabled(editedIsAllDay)
                         
                     }
-                    .onChange(of: editedDateAndTime) { _ in
+                    .onChange(of: editedDateAndTime) {
                         if !editedIsAllDay {
                             let eventLength = editedEndDateAndTime.timeIntervalSince(dummyDateAndTime)
                             
@@ -259,8 +259,8 @@ struct EditEventSheetView: View {
                                     .id(timeOption)
                             }
                         }
-                        .onChange(of: editedRecurringRate) { newValue in
-                            if newValue == "never" {
+                        .onChange(of: editedRecurringRate) {
+                            if editedRecurringRate == "never" {
                                 editedIsRecurring = false
                                 editedRecurringTimes = 2 // Reset to sensible default
                                 
@@ -411,7 +411,7 @@ struct EditEventSheetView: View {
                 }
             }
             .navigationBarTitle(NSLocalizedString("Edit Event", comment: ""), displayMode: .inline)
-            .onChange(of: eventID) { _ in
+            .onChange(of: eventID) {
                 // Reset all state variables when editing a different event
                 let eventIndex = data.firstIndex(where: { $0.id == eventID })!
                 

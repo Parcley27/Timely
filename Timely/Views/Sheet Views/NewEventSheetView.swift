@@ -356,8 +356,8 @@ struct NewEventSheetView: View {
                         
                         
                         Toggle("All Day", isOn: $formIsAllDay)
-                            .onChange(of: formIsAllDay) { _ in
-                                if formIsAllDay {
+                            .onChange(of: formIsAllDay) { _, newValue in
+                                if newValue {
                                     formDateAndTime = setTime(for: formDateAndTime, hour: 0, minute: 0, second: 0) ?? formDateAndTime
                                     formEndDateAndTime = setTime(for: formDateAndTime, hour: 23, minute: 59, second: 59) ?? formEndDateAndTime
                                     
@@ -372,7 +372,7 @@ struct NewEventSheetView: View {
                             .disabled(formIsAllDay)
                         
                     }
-                    .onChange(of: formDateAndTime) { _ in
+                    .onChange(of: formDateAndTime) { _, _ in
                         if !formIsAllDay {
                             let eventLength = formEndDateAndTime.timeIntervalSince(dummyDateAndTime)
                             
@@ -391,7 +391,7 @@ struct NewEventSheetView: View {
                                     
                                 }
                             }
-                            .onChange(of: formRecurringRate) { newValue in
+                            .onChange(of: formRecurringRate) { _, newValue in
                                 if newValue == "never" {
                                     formIsRecurring = false
                                     formRecurringTimes = 2 // Reset to sensible default

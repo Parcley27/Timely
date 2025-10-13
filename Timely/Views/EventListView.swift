@@ -401,7 +401,7 @@ struct EventListView: View {
                     HStack {
                         Text(event.timeUntil)
                             .font(.caption)
-                            .onChange(of: timer) { _ in
+                            .onChange(of: timer) {
                                 // Reset timeUpdater every second
                                 // This tricks the text object into getting a new timeUntil
                                 timeUpdater = " "
@@ -676,7 +676,7 @@ struct EventListView: View {
             stopTimer()
             
         }
-        .onChange(of: data.count) { _ in
+        .onChange(of: data.count) {
             print("updated length")
             cacheEvents()
             
@@ -774,8 +774,8 @@ struct EventListView: View {
                     NewEventSheetView(data: $data)
                     
                 }
-                .onChange(of: scenePhase) { phase in
-                    if phase == .inactive {
+                .onChange(of: scenePhase) {
+                    if scenePhase == .inactive {
                         Task {
                             do {
                                 try await EventStore().save(events: data)
