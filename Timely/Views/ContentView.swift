@@ -132,8 +132,6 @@ struct ContentView: View {
                             
                         }
                 }
-                .disabled(true)
-                
             }
             .overlay(alignment: .bottom) {
                 GeometryReader { geometry in
