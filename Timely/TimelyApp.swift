@@ -13,11 +13,13 @@ import SwiftUI
 @main
 struct TimelyApp: App {
     @StateObject var eventStore = EventStore()
+    @StateObject var settingsStore = SettingsStore()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(eventStore)
+                .environmentObject(settingsStore)
             
         }
     }

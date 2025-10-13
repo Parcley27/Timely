@@ -8,7 +8,7 @@
 import Foundation
 
 class SettingsStore: ObservableObject {
-    var showBadge: Bool {
+    @Published var showBadge: Bool {
         didSet {
             UserDefaults.standard.set(showBadge, forKey: "showBadge")
             
@@ -16,7 +16,7 @@ class SettingsStore: ObservableObject {
     }
     
     // deletePassedEvents
-    var removePassedEvents: Bool {
+    @Published var removePassedEvents: Bool {
         didSet {
             UserDefaults.standard.set(removePassedEvents, forKey: "removePassedEvents")
             
@@ -24,35 +24,35 @@ class SettingsStore: ObservableObject {
     }
     
     // archiveOldEvents
-    var keepEventHistory: Bool {
+    @Published var keepEventHistory: Bool {
         didSet {
             UserDefaults.standard.set(keepEventHistory, forKey: "keepEventHistory")
             
         }
     }
     
-    var quickAdd: Bool {
+    @Published var quickAdd: Bool {
         didSet {
             UserDefaults.standard.set(quickAdd, forKey: "quickAdd")
             
         }
     }
     
-    var listTinting: Bool {
+    @Published var listTinting: Bool {
         didSet {
             UserDefaults.standard.set(listTinting, forKey: "listTinting")
             
         }
     }
     
-    var doiCloudSync: Bool {
+    @Published var doiCloudSync: Bool {
         didSet {
             UserDefaults.standard.set(doiCloudSync, forKey: "doiCloudSync")
             
         }
     }
     
-    var useEmojiKeyboard: Bool {
+    @Published var useEmojiKeyboard: Bool {
         didSet {
             UserDefaults.standard.set(useEmojiKeyboard, forKey: "useEmojiKeyboard")
             

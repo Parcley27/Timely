@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var eventStore: EventStore
+    @EnvironmentObject var preferences: SettingsStore
     
     @State var lastTab: Int = 0
     @State private var showNewSheet: Bool = false
@@ -162,5 +163,6 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .environmentObject(EventStore())
+        .environmentObject(SettingsStore())
     
 }

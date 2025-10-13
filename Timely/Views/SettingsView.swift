@@ -19,7 +19,7 @@ struct NoMailView: View {
 }
 
 struct SettingsView: View {
-    @StateObject private var preferences = SettingsStore()
+    @EnvironmentObject var preferences: SettingsStore
     @State var editedAutoDelete: Bool = false
     
     @State private var result: Result<MFMailComposeResult, Error>? = nil
@@ -239,6 +239,7 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+            .environmentObject(SettingsStore())
         
     }
 }

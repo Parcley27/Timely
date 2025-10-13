@@ -55,7 +55,7 @@ struct NoEventsView: View {
 }
 
 struct EventListView: View {
-    @StateObject var preferences = SettingsStore()
+    @EnvironmentObject var preferences: SettingsStore
     
     @Binding var data: [Event]
     var dateToDisplay: Date?
@@ -545,7 +545,7 @@ struct EventListView: View {
                                     }
                                 //.disabled(!isEditing)
                             }
-                            .listRowBackground(SettingsStore().listTinting ? event.averageColor(saturation: 0.6, brightness: 1.2, opacity: 0.25) : Color(UIColor.systemGray6))
+                            .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.6, brightness: 1.2, opacity: 0.25) : Color(UIColor.systemGray6))
                             .contextMenu {
                                 Button {
                                     if let index = $data.firstIndex(where: { $0.id == event.id }) {
