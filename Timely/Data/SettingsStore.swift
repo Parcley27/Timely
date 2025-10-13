@@ -59,6 +59,13 @@ class SettingsStore: ObservableObject {
         }
     }
     
+    @Published var useLegacyLayout: Bool {
+        didSet {
+            UserDefaults.standard.set(useLegacyLayout, forKey: "useLegacyLayout")
+            
+        }
+    }
+    
     /*
     @Published var stringData: String {
         didSet {
@@ -76,6 +83,8 @@ class SettingsStore: ObservableObject {
         self.listTinting = UserDefaults.standard.object(forKey: "listTinting") as? Bool ?? true
         self.doiCloudSync = UserDefaults.standard.object(forKey: "doiCloudSync") as? Bool ?? false
         self.useEmojiKeyboard = UserDefaults.standard.object(forKey: "useEmojiKeyboard") as? Bool ?? true
+        self.useLegacyLayout = UserDefaults.standard.object(forKey: "useLegacyLayout") as? Bool ?? false
+        
         //self.stringData = UserDefaults.standard.object(forKey: "stringData") as? String ?? ""
         
     }

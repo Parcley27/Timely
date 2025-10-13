@@ -33,6 +33,7 @@ struct SettingsView: View {
     
     @State private var showConfirmationDialog: Bool = false
     @State private var temporaryToggleState: Bool = false
+    @State private var temporaryLegacyLayout: Bool = false
     
     private var gitHubLink: some View {
         HStack {
@@ -64,7 +65,7 @@ struct SettingsView: View {
         NavigationStack {
             VStack {
                 List {
-                    Section("Preferences") {
+                    Section("App Behaviour") {
                         Toggle(isOn: $preferences.quickAdd) {
                             Text("Enable Quick Add Events")
                             
@@ -76,6 +77,13 @@ struct SettingsView: View {
                         
                         Toggle(isOn: $preferences.showBadge) {
                             Text("In-App Notifications")
+                            
+                        }
+                    }
+                    
+                    Section("Apperance") {
+                        Toggle(isOn: $temporaryLegacyLayout) {
+                            Text("Use Legacy Layout")
                             
                         }
                         
@@ -225,12 +233,18 @@ struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {
+                        // Commit the temporary legacy layout setting
+                        preferences.useLegacyLayout = temporaryLegacyLayout
                         dismiss()
                         
                     }
                 }
             }
             .navigationBarTitle("Settings", displayMode: .inline)
+            .onAppear {
+                // Initialize temporary state with current preference
+                temporaryLegacyLayout = preferences.useLegacyLayout
+            }
             
         }
     }
