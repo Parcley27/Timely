@@ -240,12 +240,12 @@ struct SettingsView: View {
                     }
                 }
             }
-            .navigationBarTitle("Settings", displayMode: .inline)
+            .navigationBarTitle("Settings")
             .onAppear {
                 // Initialize temporary state with current preference
                 temporaryLegacyLayout = preferences.useLegacyLayout
+                
             }
-            
         }
     }
 }

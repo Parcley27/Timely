@@ -54,11 +54,18 @@ struct ContentView: View {
         }
     }
     
-    func localizedNumber(_ number: Int) -> Int {
+    func localizedNumber(_ number: Int) -> String {
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
-        return Int(formatter.string(from: NSNumber(value: number))!) ?? number
+        return formatter.string(from: NSNumber(value: number)) ?? "\(number)"
         
+    }
+    var badgeCount: Int {
+        return filterPassedEvents(events: eventStore.events)?.count ?? 0
+    }
+    
+    var shouldShowBadge: Bool {
+        return preferences.showBadge && badgeCount > 0
     }
     
 
@@ -93,9 +100,9 @@ struct ContentView: View {
                                 
                             }
                         }
-                        .badge(localizedNumber(filterPassedEvents(events: eventStore.events)!.count))
                         
                     }
+                    .badge(shouldShowBadge ? Text(localizedNumber(badgeCount)) : nil)
                     
                     if preferences.useLegacyLayout {
                         Tab("", systemImage: "") {
@@ -143,7 +150,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                .id(preferences.useLegacyLayout) // Force re-render when layout preference changes
+                .id(preferences.useLegacyLayout) // Force to rerender when layout preference changes
                 .overlay(alignment: .bottom) {
                     GeometryReader { geometry in // New button collider
                         Color.red
@@ -178,7 +185,6 @@ struct ContentView: View {
                         .position(x: metrics.size.width * 0.5, y: metrics.size.height * 0.94)
                     
                 }
-                
             }
         }
         .overlay(alignment: .bottom) { // Legacy button collider
