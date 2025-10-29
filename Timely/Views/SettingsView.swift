@@ -31,7 +31,9 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
     
-    @State private var showConfirmationDialog: Bool = false
+    @State private var showArchiveDisableConfirmation: Bool = false
+    @State private var showSettingsResetConfirmation: Bool = false
+    
     @State private var temporaryToggleState: Bool = false
     @State private var temporaryLegacyLayout: Bool = false
     
@@ -116,7 +118,7 @@ struct SettingsView: View {
                             set: { newValue in
                                 if !newValue {
                                     temporaryToggleState = newValue
-                                    showConfirmationDialog = true
+                                    showArchiveDisableConfirmation = true
                                     
                                 } else {
                                     preferences.keepEventHistory = newValue
@@ -128,13 +130,16 @@ struct SettingsView: View {
                             
                         }
                         .confirmationDialog(Text("Turn Off Event History?"),
-                            isPresented: $showConfirmationDialog,
+                            isPresented: $showArchiveDisableConfirmation,
                             titleVisibility: .visible,
                             actions: {
                                 Button("Turn Off and Delete", role: .destructive) {
                                     preferences.keepEventHistory = temporaryToggleState
                                     
                                 }
+                                
+                                Button("Cancel", role: .cancel) {}
+                            
                             },
                             message: {
                                 Text("All archived events will be permanently deleted")
@@ -200,6 +205,38 @@ struct SettingsView: View {
                             customButton(text: NSLocalizedString("Timely GitHub", comment: ""), icon: "arrow.up.forward.app")
                             
                         }
+                    }
+                    
+                    Section("Danger Zone") {
+                        Button () {
+                            showSettingsResetConfirmation = true
+                            
+                        } label: {
+                            HStack {
+                                Text("Restore Defaults")
+                                Spacer()
+                                Image(systemName: "arrow.trianglehead.counterclockwise")
+                                
+                            }
+                            .foregroundStyle(.red)
+                            
+                        }
+                        .confirmationDialog(
+                            Text("Reset to Default Settings?"),
+                            isPresented: $showSettingsResetConfirmation,
+                            titleVisibility: .visible,
+                            actions: {
+                            Button("Reset", role: .destructive) {
+                                    preferences.resetToDefaults()
+                                    temporaryLegacyLayout = SettingsStore.Defaults.useLegacyLayout
+                                    
+                                }
+                            },
+                            message: {
+                                Text("This action cannot be undone")
+                            
+                            }
+                        )
                     }
                 }
             }
