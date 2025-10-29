@@ -645,43 +645,45 @@ struct EventListView: View {
     }
     
     var listDisplay: some View {
-        List {
-            ForEach(uniqueDates) { UniqueDate in
-                if dateToDisplay == nil {
-                    Section(dateToDisplay == nil ? formatStringForDate(date: UniqueDate.id, style: "long") : "") {
+        ZStack {            
+            List {
+                ForEach(uniqueDates) { UniqueDate in
+                    if dateToDisplay == nil {
+                        Section(dateToDisplay == nil ? formatStringForDate(date: UniqueDate.id, style: "long") : "") {
+                            listSection(for: UniqueDate)
+                            
+                        }
+                        
+                    } else {
                         listSection(for: UniqueDate)
                         
                     }
-                    
-                } else {
-                    listSection(for: UniqueDate)
-                    
                 }
+                //.border(.red, width: 1)
             }
-            //.border(.red, width: 1)
-        }
-        .background(.background)
-        .scrollContentBackground(.hidden)
-        .listRowSpacing(5)
-        //.listSectionSpacing(2)
-        //.border(.green, width: 1)
-        
-        .onAppear {
-            cacheEvents()
-            startTimer()
+            .background()
+            .scrollContentBackground(.hidden)
+            .listRowSpacing(5)
+            //.listSectionSpacing(2)
+            //.border(.green, width: 1)
+            
+            .onAppear {
+                cacheEvents()
+                startTimer()
+                
+            }
+            
+            .onDisappear {
+                stopTimer()
+                
+            }
+            .onChange(of: data.count) {
+                print("updated length")
+                cacheEvents()
+                
+            }
             
         }
-        
-        .onDisappear {
-            stopTimer()
-            
-        }
-        .onChange(of: data.count) {
-            print("updated length")
-            cacheEvents()
-            
-        }
-        
     }
     
     var body: some View {
@@ -826,6 +828,7 @@ struct EventListView_Previews: PreviewProvider {
         
         //return EventListView(data: previewEvents, saveAction: {})
         return EventListView(data: previewEvents, dateToDisplay: Date(), saveAction: {})
+            .environmentObject(SettingsStore())
         
         
     }

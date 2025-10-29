@@ -72,6 +72,7 @@
 			membershipExceptions = (
 				EmojiTextField.swift,
 				MailView.swift,
+				NoiseView.swift,
 			);
 			target = 6EAE9FEB2B018D7B0029A8D4 /* Timely */;
 		};

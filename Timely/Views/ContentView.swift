@@ -85,6 +85,7 @@ struct ContentView: View {
                                 }
                             }
                         }
+                        .environmentObject(preferences)
                         .task {
                             do {
                                 eventStore.loadFromiCloud()
@@ -139,6 +140,15 @@ struct ContentView: View {
                             }
                         }
                     }
+                    
+//                    Tab("Noise Test", systemImage: "speaker") {
+//                        ZStack {
+//                            Color.blue
+//                            Text("Hello, Noise!")
+//                            NoiseView()
+//                            
+//                        }
+//                    }
                     
                     if !preferences.useLegacyLayout {
                         Tab("New Event", systemImage: "plus", role: .search) {
