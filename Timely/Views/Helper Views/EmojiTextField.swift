@@ -23,7 +23,7 @@ class UIEmojiTextField: UITextField {
     }
     
     override var textInputContextIdentifier: String? {
-           return ""
+        return ""
         
     }
     
@@ -37,6 +37,11 @@ class UIEmojiTextField: UITextField {
         }
         
         return nil
+        
+    }
+    
+    override var canResignFirstResponder: Bool {
+        return true
         
     }
 }
