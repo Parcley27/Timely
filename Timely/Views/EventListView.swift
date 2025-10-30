@@ -56,6 +56,7 @@ struct NoEventsView: View {
 
 struct EventListView: View {
     @EnvironmentObject var preferences: SettingsStore
+    @EnvironmentObject var eventStore: EventStore
     
     @Binding var data: [Event]
     var dateToDisplay: Date?
@@ -388,7 +389,7 @@ struct EventListView: View {
                                                 data[index].isFavourite.toggle()
                                                 Task {
                                                     do {
-                                                        try await EventStore().save(events: data)
+                                                        try await eventStore.save(events: data)
                                                         
                                                     } catch {
                                                         fatalError(error.localizedDescription)
@@ -418,7 +419,7 @@ struct EventListView: View {
                                                 
                                                 Task {
                                                     do {
-                                                        try await EventStore().save(events: data)
+                                                        try await eventStore.save(events: data)
                                                         
                                                     } catch {
                                                         fatalError(error.localizedDescription)
@@ -441,7 +442,7 @@ struct EventListView: View {
                                                     data[index].isMuted.toggle()
                                                     Task {
                                                         do {
-                                                            try await EventStore().save(events: data)
+                                                            try await eventStore.save(events: data)
                                                             
                                                         } catch {
                                                             fatalError(error.localizedDescription)
@@ -474,7 +475,7 @@ struct EventListView: View {
                                         data[index].isFavourite.toggle()
                                         Task {
                                             do {
-                                                try await EventStore().save(events: data)
+                                                try await eventStore.save(events: data)
                                                 
                                             } catch {
                                                 fatalError(error.localizedDescription)
@@ -498,7 +499,7 @@ struct EventListView: View {
                                         data[index].isMuted.toggle()
                                         Task {
                                             do {
-                                                try await EventStore().save(events: data)
+                                                try await eventStore.save(events: data)
                                                 
                                             } catch {
                                                 fatalError(error.localizedDescription)
@@ -533,7 +534,7 @@ struct EventListView: View {
                                         
                                         Task {
                                             do {
-                                                try await EventStore().save(events: data)
+                                                try await eventStore.save(events: data)
                                                 
                                             } catch {
                                                 fatalError(error.localizedDescription)
@@ -555,7 +556,7 @@ struct EventListView: View {
             
             Task {
                 do {
-                    try await EventStore().save(events: data)
+                    try await eventStore.save(events: data)
                     
                 } catch {
                     fatalError(error.localizedDescription)
@@ -776,7 +777,7 @@ struct EventListView: View {
                     if scenePhase == .inactive {
                         Task {
                             do {
-                                try await EventStore().save(events: data)
+                                try await eventStore.save(events: data)
                                 
                             } catch {
                                 fatalError(error.localizedDescription)
@@ -825,11 +826,13 @@ struct EventListView_Previews: PreviewProvider {
         ]
         
         let previewEvents = Binding.constant(previewData.events)
+        let previewStore = EventStore()
+        previewStore.events = previewData.events
         
         //return EventListView(data: previewEvents, saveAction: {})
         return EventListView(data: previewEvents, dateToDisplay: dateToDisplay, saveAction: {})
             .environmentObject(SettingsStore())
-        
+            .environmentObject(previewStore)
         
     }
 }

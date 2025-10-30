@@ -30,7 +30,7 @@ struct CalendarDay: Identifiable, Hashable {
 }
 
 struct CalendarView: View {
-    @StateObject private var eventList = EventStore()
+    @StateObject private var eventStore = EventStore()
     
     @Binding var data: [Event]
     
@@ -267,7 +267,7 @@ struct CalendarView: View {
                             NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date) {
                                 Task {
                                     do {
-                                        try await eventList.save(events: eventList.events)
+                                        try await eventStore.save(events: eventStore.events)
                                         
                                     } catch {
                                         fatalError(error.localizedDescription)
@@ -278,10 +278,10 @@ struct CalendarView: View {
                                 .task {
                                     do {
                                         //try await eventList.load()
-                                        eventList.loadFromiCloud()
+                                        eventStore.loadFromiCloud()
                                         print("Loading events: ")
                                         
-                                        for event in eventList.events {
+                                        for event in eventStore.events {
                                             print(event.name!, terminator: " ")
                                             
                                         }

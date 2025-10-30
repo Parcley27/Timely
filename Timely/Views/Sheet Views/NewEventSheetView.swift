@@ -23,7 +23,7 @@ struct NewEventSheetView: View {
     }
     
     @Binding var data: [Event]
-    @StateObject private var store = EventStore()
+    @StateObject private var eventStore = EventStore()
     @StateObject private var preferences = SettingsStore()
     
     @Environment(\.dismiss) var dismiss
@@ -293,7 +293,7 @@ struct NewEventSheetView: View {
         
         Task {
             do {
-                try await store.save(events: data)
+                try await eventStore.save(events: data)
                 
             } catch {
                 fatalError(error.localizedDescription)

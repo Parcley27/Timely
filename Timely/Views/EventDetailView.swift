@@ -13,6 +13,9 @@
 import SwiftUI
 
 struct EventDetailView: View {
+    @EnvironmentObject var preferences: SettingsStore
+    @EnvironmentObject var eventStore: EventStore
+    
     @Binding var data: [Event]
     let eventID: UUID
     
@@ -91,7 +94,7 @@ struct EventDetailView: View {
                         
                     }
                 }
-                .listRowBackground(SettingsStore().listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.13) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+                .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.13) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
                 
                 Section {
                     HStack {
@@ -101,7 +104,7 @@ struct EventDetailView: View {
                         
                     }
                 }
-                .listRowBackground(SettingsStore().listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.11) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+                .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.11) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
                 
                 
                 if event.description != nil {
@@ -109,7 +112,7 @@ struct EventDetailView: View {
                         Text(event.description ?? "")
                         
                     }
-                    .listRowBackground(SettingsStore().listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+                    .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
                     
                 }
                 
@@ -124,7 +127,7 @@ struct EventDetailView: View {
                             .foregroundStyle(.selection)
                             
                         }
-                        .listRowBackground(SettingsStore().listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+                        .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
                         
                     }
                     
@@ -133,7 +136,7 @@ struct EventDetailView: View {
                     Section {
                         Text("Copy \(event.copyNumber ?? 0) of \(totalCopies.count), repeating \(NSLocalizedString(event.recurranceRate ?? "never", comment: ""))")
                     }
-                    .listRowBackground(SettingsStore().listTinting ? event.averageColor(saturation: 0.6, brightness: 1.2, opacity: 0.25) ?? Color.white : Color(UIColor.systemGray6))
+                    .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.6, brightness: 1.2, opacity: 0.25) ?? Color.white : Color(UIColor.systemGray6))
                     
                 }
                 
@@ -143,7 +146,7 @@ struct EventDetailView: View {
                         .onChange(of: data[dataIndex].isFavourite) {
                             Task {
                                 do {
-                                    try await EventStore().save(events: data)
+                                    try await eventStore.save(events: data)
                                     
                                 } catch {
                                     fatalError(error.localizedDescription)
@@ -156,7 +159,7 @@ struct EventDetailView: View {
                         .onChange(of: data[dataIndex].isMuted) {
                             Task {
                                 do {
-                                    try await EventStore().save(events: data)
+                                    try await eventStore.save(events: data)
                                     
                                 } catch {
                                     fatalError(error.localizedDescription)
@@ -165,7 +168,7 @@ struct EventDetailView: View {
                             }
                         }
                 }
-                .listRowBackground(SettingsStore().listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+                .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
                 
                 Section {
                     Button {
@@ -186,7 +189,7 @@ struct EventDetailView: View {
                             
                             Task {
                                 do {
-                                    try await EventStore().save(events: data)
+                                    try await eventStore.save(events: data)
                                     
                                 } catch {
                                     fatalError(error.localizedDescription)
@@ -205,7 +208,7 @@ struct EventDetailView: View {
                     }
                     )
                 }
-                .listRowBackground(SettingsStore().listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.08) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+                .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.08) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
                 
                 
             }
