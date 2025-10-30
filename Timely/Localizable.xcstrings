@@ -2877,46 +2877,6 @@
         }
       }
     },
-    "Next %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Siguiente %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prochain %@"
-          }
-        },
-        "fr-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prochain %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "下个 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "下個 %@"
-          }
-        }
-      }
-    },
     "No Events" : {
       "localizations" : {
         "en" : {
@@ -3301,7 +3261,7 @@
         }
       }
     },
-    "Reset Settings to Defaults?" : {
+    "Reset to Default Settings?" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -3312,7 +3272,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réiitialiser les paramètres par défaut ?\n"
+            "value" : "Réiitialiser les paramètres par défaut ?"
           }
         },
         "fr-CA" : {
