@@ -85,7 +85,7 @@ struct EventListView: View {
             return titleText
             
         } else {
-            titleText = formatStringForDate(date: displayDate!, style: "long")
+            titleText = displayDate!.formattedDate(.long)
             return titleText
             
         }
@@ -138,89 +138,11 @@ struct EventListView: View {
         }
         
         if date != nil {
-            let eventDay = Calendar.current.component(.day, from: event.dateAndTime)
-            let eventMonth = Calendar.current.component(.month, from: event.dateAndTime)
-            let eventYear = Calendar.current.component(.year, from: event.dateAndTime)
-            
-            let dateDay = Calendar.current.component(.day, from: date!)
-            let dateMonth = Calendar.current.component(.month, from: date!)
-            let dateYear = Calendar.current.component(.year, from: date!)
-            
-            if eventDay == dateDay && eventMonth == dateMonth && eventYear == dateYear {
-                return true
-                
-            } else {
-                return false
-                
-            }
-            
+            return event.dateAndTime.isSameDay(as: date!)
         } else {
             return false
             
         }
-    }
-    
-    func formatStringForDate(date: Date, style: String?) -> String {
-        let dateFormatter = DateFormatter()
-        var dateString: String = ""
-        
-        //let oneDayInSeconds: Double = 60 * 60 * 24
-        let oneWeekInSeconds: Double = 60 * 60 * 24 * 7
-        
-        if abs(date.timeIntervalSinceNow) < oneWeekInSeconds {
-            if Calendar.current.isDate(date, inSameDayAs: Date()) {
-                dateString = NSLocalizedString("Today", comment: "")
-                
-            } else if Calendar.current.isDateInYesterday(date) {
-                dateString = NSLocalizedString("Yesterday", comment: "")
-                
-            } else if Calendar.current.isDateInTomorrow(date) {
-                dateString = NSLocalizedString("Tomorrow", comment: "")
-                
-            } else {
-                dateFormatter.dateFormat = "EEEE"
-                let dayString = dateFormatter.string(from: date)
-                
-                if date.timeIntervalSinceNow > 0.0 {
-                    //let stringFormat = NSLocalizedString("Next %@", comment: "")
-                    //dateString = String(format: stringFormat, dayString)
-                    dateString = dayString
-                    
-                } else {
-                    let stringFormat = NSLocalizedString("Last %@", comment: "")
-                    dateString = String(format: stringFormat, dayString)
-                    
-                }
-            }
-            
-        } else if Calendar.current.isDate(date, equalTo: Date(), toGranularity: .year) {
-            dateFormatter.dateFormat = "MMMM d"
-            
-            let dayString = dateFormatter.string(from: date)
-            dateString = "\(dayString)"
-            
-        } else {
-            if style == "short" {
-                dateFormatter.dateStyle = .short
-                
-            } else if style == "long" {
-                dateFormatter.dateStyle = .long
-                
-            } else if style == "full" {
-                dateFormatter.dateStyle = .full
-                
-            } else {
-                dateFormatter.dateStyle = .medium
-                
-            }
-            
-            //dateFormatter.dateFormat = "h:mm a 'on' EEEE, MMMM d, yyyy"
-            
-            dateString = dateFormatter.string(from: date)
-        }
-        
-        return dateString
-        
     }
     
     @State private var hasCachedEvents: Bool = false
@@ -245,10 +167,10 @@ struct EventListView: View {
         
         if let date = dateToDisplay {
             // Filter events occurring on the specified date
-            agreeingEvents = data.filter { Calendar.current.isDate($0.dateAndTime, inSameDayAs: date) }
+            agreeingEvents = data.filter { $0.dateAndTime.isSameDay(as: date) }
             
             for event in data {
-                if event.isOnDates.contains(where: { Calendar.current.isDate($0, equalTo: date, toGranularity: .day) }) {
+                if event.isOnDates.contains(where: { $0.isSameDay(as: date) }) {
                     agreeingEvents.append(event)
                     
                 }
@@ -311,7 +233,7 @@ struct EventListView: View {
                 // Ensure any added date matches dateToDisplay if not nil
                 let shouldAddDate: (Date) -> Bool = { date in
                     guard let dateToDisplay = dateToDisplay else { return true }
-                    return Calendar.current.isDate(date, equalTo: dateToDisplay, toGranularity: .day)
+                    return date.isSameDay(as: dateToDisplay)
                     
                 }
                 
@@ -319,7 +241,7 @@ struct EventListView: View {
                 
                 // Check if event.dateAndTime is on a unique day and matches dateToDisplay
                 if !datesSeen.contains(where: {
-                    Calendar.current.isDate(event.dateAndTime, equalTo: $0.id, toGranularity: .day)
+                    event.dateAndTime.isSameDay(as: $0.id)
                     
                 }) && shouldAddDate(event.dateAndTime) {
                     dateToAdd = event.dateAndTime
@@ -330,7 +252,7 @@ struct EventListView: View {
                 if dateToAdd == nil {
                     for date in event.isOnDates {
                         if !datesSeen.contains(where: {
-                            Calendar.current.isDate(date, equalTo: $0.id, toGranularity: .day)
+                            date.isSameDay(as: $0.id)
                         }) && shouldAddDate(date) {
                             dateToAdd = date
                             break
@@ -369,7 +291,7 @@ struct EventListView: View {
             
         } else {
             for occuringDate in event.isOnDates {
-                if Calendar.current.isDate(occuringDate, equalTo: dateToDisplay!, toGranularity: .day) {
+                if occuringDate.isSameDay(as: dateToDisplay!) {
                     return true
                     
                 }
@@ -435,7 +357,7 @@ struct EventListView: View {
             //let dataIndex = data.firstIndex(where: { $0.id == event.id })
             
             let isOnDate = event.isOnDates.contains { occuringDate in
-                if Calendar.current.isDate(occuringDate, equalTo: dateToDisplay ?? section.id, toGranularity: .day) {
+                if occuringDate.isSameDay(as: dateToDisplay ?? section.id) {
                     
                     //print("\(event.name ?? "No name") not on provided date")
 
@@ -452,8 +374,8 @@ struct EventListView: View {
             // Ensure the event is valid and conditions are met
             if isInEventsToShow,
                //let index = dataIndex,
-               (Calendar.current.isDate(event.dateAndTime, equalTo: dateToDisplay ?? section.id, toGranularity: .day) || (isOnDate && dateToDisplay != nil)),
-               (dateToDisplay != nil || Calendar.current.isDate(event.dateAndTime, inSameDayAs: section.id)),
+               (event.dateAndTime.isSameDay(as: dateToDisplay ?? section.id) || (isOnDate && dateToDisplay != nil)),
+               (dateToDisplay != nil || event.dateAndTime.isSameDay(as: section.id)),
                //(showFavourite || !event.isFavourite),
                (showMuted || !event.isMuted),
                (showStandard || !event.isStandard) {
@@ -645,44 +567,116 @@ struct EventListView: View {
     }
     
     var listDisplay: some View {
-        ZStack {            
-            List {
-                ForEach(uniqueDates) { UniqueDate in
+        ScrollView {
+            LazyVStack(spacing: 12) {
+                ForEach(uniqueDates) { uniqueDate in
                     if dateToDisplay == nil {
-                        Section(dateToDisplay == nil ? formatStringForDate(date: UniqueDate.id, style: "long") : "") {
-                            listSection(for: UniqueDate)
-                            
+                        Text(uniqueDate.id.formattedDate(.long))
+                            .font(.title3)
+                            .bold()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 16)
+                            .padding(.top, 12)
+                    }
+                    
+                    ForEach(data) { event in
+                        let isInEventsToShow = eventsToShow.contains { $0.id == event.id }
+                        
+                        let isOnDate = event.isOnDates.contains { occuringDate in
+                            occuringDate.isSameDay(as: dateToDisplay ?? uniqueDate.id)
                         }
                         
-                    } else {
-                        listSection(for: UniqueDate)
-                        
+                        if isInEventsToShow,
+                           (event.dateAndTime.isSameDay(as: dateToDisplay ?? uniqueDate.id) || (isOnDate && dateToDisplay != nil)),
+                           (dateToDisplay != nil || event.dateAndTime.isSameDay(as: uniqueDate.id)),
+                           (showMuted || !event.isMuted),
+                           (showStandard || !event.isStandard) {
+                            
+                            NavigationLink(destination: EventDetailView(data: $data, eventID: event.id)) {
+                                HStack(spacing: 12) {
+                                    // Emoji icon
+                                    Text(event.emoji ?? "📅")
+                                        .font(.system(size: 36))
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        // Event name
+                                        Text(event.name ?? "Event Name")
+                                            .font(.system(size: 17, weight: .semibold))
+                                            .foregroundStyle(.primary)
+                                            .lineLimit(2)
+                                        
+                                        // Time until
+                                        Text(event.timeUntil)
+                                            .font(.system(size: 15, weight: .regular))
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    // Status badges (subtle pills)
+                                    HStack(spacing: 6) {
+                                        if event.isFavourite {
+                                            Image(systemName: "star.fill")
+                                                .font(.system(size: 12))
+                                                .foregroundStyle(.yellow)
+                                        }
+                                        
+                                        if event.isMuted {
+                                            Image(systemName: "bell.slash.fill")
+                                                .font(.system(size: 12))
+                                                .foregroundStyle(.gray)
+                                        }
+                                    }
+                                }
+                                .padding(16)
+                                .background(
+                                    ZStack {
+                                        // Soft gradient background (derived from emoji/event)
+                                        LinearGradient(
+                                            colors: [
+                                                event.averageColor(saturation: 0.3, brightness: 0.95, opacity: 1.0) ?? Color(.systemGray6),
+                                                event.averageColor(saturation: 0.2, brightness: 0.95, opacity: 1.0) ?? Color(.systemGray5)
+                                            ],
+                                            startPoint: .top,
+                                            endPoint: .bottomTrailing
+                                        )
+                                        
+                                        // Noise texture overlay
+                                        NoiseView()
+                                            .opacity(0.08)
+                                        
+                                    }
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                        .strokeBorder(
+                                            LinearGradient(
+                                                colors: [
+                                                    //event.averageColor(saturation: 0.3, brightness: 0.9, opacity: 1.0),
+                                                    Color.white.opacity(0.3),
+                                                    Color.clear
+                                                ],
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            ),
+                                            lineWidth: 0.5
+                                            
+                                        )
+                                )
+                                .shadow(color: Color.black.opacity(0.06), radius: 8, x: 0, y: 2)
+                                .shadow(color: Color.black.opacity(0.04), radius: 2, x: 0, y: 1)
+                                //.glassEffect(in: .rect(cornerRadius: 24))
+                                .glassEffect(.regular.tint(.white).interactive(), in: .rect(cornerRadius: 24.0))
+                                
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.horizontal, 16)
+                            
+                        }
                     }
                 }
-                //.border(.red, width: 1)
             }
-            .background()
-            .scrollContentBackground(.hidden)
-            .listRowSpacing(5)
-            //.listSectionSpacing(2)
-            //.border(.green, width: 1)
-            
-            .onAppear {
-                cacheEvents()
-                startTimer()
-                
-            }
-            
-            .onDisappear {
-                stopTimer()
-                
-            }
-            .onChange(of: data.count) {
-                print("updated length")
-                cacheEvents()
-                
-            }
-            
         }
     }
     
@@ -695,8 +689,10 @@ struct EventListView: View {
                         //listDisplay
                         
                     } else {
-                        listDisplay
-                        
+                        ZStack{
+                            NoiseView()
+                            listDisplay
+                        }
                     }
                 }
                 .toolbar {
@@ -760,7 +756,7 @@ struct EventListView: View {
                                     Label("Filter", systemImage: "line.3.horizontal.decrease.circle.fill")
                                     
                                 } else {
-                                    Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
+                                    Label("Filter", systemImage: "line.3.horizontal.decrease")
                                     
                                 }
                             }
@@ -817,19 +813,24 @@ struct EventListView_Previews: PreviewProvider {
         let previewData = EventData()
         let calendar = Calendar.current
         
+        let dateToDisplay: Date? = nil
+        
         previewData.events = [
             Event(name: "Sample Event 1", dateAndTime: Date(), endDateAndTime: calendar.date(byAdding: .minute, value: 30, to: Date())),
-            Event(name: "Sample Event 2", isMuted: true),
-            Event(name: "Sample Event 3", isFavourite: true)
-            // Add more sample events if needed
+            Event(name: "Sample Event 2", dateAndTime: calendar.date(byAdding: .minute, value: 50, to: Date())!, endDateAndTime: calendar.date(byAdding: .minute, value: 100, to: Date()), isMuted: true),
+            Event(name: "Sample Event 3", dateAndTime: calendar.date(byAdding: .minute, value: 150, to: Date())!, endDateAndTime: calendar.date(byAdding: .minute, value: 200, to: Date()), isFavourite: true)
+                  
+            // Add more sample events as needed
+                  
         ]
         
         let previewEvents = Binding.constant(previewData.events)
         
         //return EventListView(data: previewEvents, saveAction: {})
-        return EventListView(data: previewEvents, dateToDisplay: Date(), saveAction: {})
+        return EventListView(data: previewEvents, dateToDisplay: dateToDisplay, saveAction: {})
             .environmentObject(SettingsStore())
         
         
     }
 }
+
