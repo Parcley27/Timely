@@ -130,22 +130,6 @@ struct EventListView: View {
         
     }
     
-    func compareDates(event: Event, date: Date?) -> Bool {
-        //print("compareDates")
-        
-        for _ in cachedEventsToShow {
-            //print(event.name!)
-            
-        }
-        
-        if date != nil {
-            return event.dateAndTime.isSameDay(as: date!)
-        } else {
-            return false
-            
-        }
-    }
-    
     @State private var hasCachedEvents: Bool = false
     @State private var cachedEventsToShow: [Event] = []
     
