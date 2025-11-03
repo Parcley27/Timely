@@ -188,7 +188,6 @@ struct EventListView: View {
             self.cachedEventsToShow = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
             self.hasCachedEvents = true
         }
-    
     }
     
     var eventsToShow: [Event] {
@@ -198,6 +197,54 @@ struct EventListView: View {
         }
         
         return cachedEventsToShow
+        
+    }
+    
+    private var eventsByDate: [Date: [Event]] {
+        var grouped: [Date: [Event]] = [:]
+        
+        for event in eventsToShow {
+            guard (showMuted || !event.isMuted),
+                  (showStandard || !event.isStandard) else {
+                continue
+                
+            }
+            
+            var relaventDates: [Date] = []
+            
+            if dateToDisplay == nil || event.dateAndTime.isSameDay(as: dateToDisplay!) {
+                relaventDates.append(event.dateAndTime)
+                
+            }
+            
+            // If on a single day view, add dates that overlap with the specific day even if they aren't on it
+            if let dateToDisplay = dateToDisplay {
+                for recurringDate in event.isOnDates {
+                    if recurringDate.isSameDay(as: dateToDisplay) {
+                        relaventDates.append(recurringDate)
+                        
+                    }
+                }
+            } else {
+                // Otherwise, just make all of them relavent
+                relaventDates = [event.dateAndTime]
+                
+            }
+            
+            for date in relaventDates {
+                let normalizedDate = Calendar.current.startOfDay(for: date)
+                
+                if grouped[normalizedDate] == nil {
+                    grouped[normalizedDate] = []
+                    
+                }
+                
+                grouped[normalizedDate]?.append(event)
+                
+            }
+        }
+        
+        return grouped
         
     }
     
@@ -555,6 +602,7 @@ struct EventListView: View {
         ScrollView {
             LazyVStack(spacing: 12) {
                 ForEach(uniqueDates) { uniqueDate in
+                    // Date header for when used with multiple dates
                     if dateToDisplay == nil {
                         Text(uniqueDate.id.formattedDate(.long))
                             .font(.title3)
