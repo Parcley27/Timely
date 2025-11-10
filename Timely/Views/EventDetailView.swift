@@ -274,14 +274,24 @@ struct EventDetailView: View {
 
 struct EventDetailViewPreviews: PreviewProvider {
     static var previews: some View {
+        let previewPreferences = SettingsStore()
         let previewData = EventData()
+        let calendar = Calendar.current
+        
         previewData.events = [
-            Event(name: "Sample Event 1", dateAndTime: Date()),
+            Event(name: "Sample Event", emoji: "📅", description: "Multi-line description so that text spacing can be properly tested in the view :)", dateAndTime: calendar.date(byAdding: .day, value: 7, to: Date())!, endDateAndTime: calendar.date(byAdding: .day, value: 8, to: Date()), isFavourite: true)
+            
         ]
         
         let previewEvents = Binding.constant(previewData.events)
+        let previewStore = EventStore()
+        previewStore.events = previewData.events
         
-        return EventDetailView(data: previewEvents, eventID: previewEvents[0].id)
-        
+        return NavigationStack {
+            EventDetailView(data: previewEvents, eventID: previewEvents[0].id)
+                .environmentObject(previewPreferences)
+                .environmentObject(previewStore)
+            
+        }
     }
 }
