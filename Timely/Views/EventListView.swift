@@ -9,13 +9,6 @@ import SwiftUI
 import Foundation
 import Combine
 
-enum EventType {
-    case isFavourite
-    case isStandard
-    case isMuted
-    
-}
-
 struct UniqueDate: Identifiable {
     let id: Date
     
@@ -70,22 +63,17 @@ struct EventListView: View {
         
     }
     
-    @State private var isEditing =  false
     @State private var editMode = EditMode.inactive
     
     @State private var showingSheet = false
-    @State private var confirmationIsShowing = false
     
     @State var showMuted = true
     @State var showStandard = true
-    //@State var showFavourite = true
     
     @State private var hasCachedEvents: Bool = false
     @State private var cachedEventsToShow: [Event] = []
     
     @State private var eventsByDate: [Date: [Event]] = [:]
-    
-    @Namespace private var namespace
     
     let maxDisplayedEvents = 50
     
@@ -103,13 +91,7 @@ struct EventListView: View {
         }
     }
     
-    func calculateTime(event: Event) -> String {
-        return event.timeUntil
-        
-    }
-    
     @State private var timeUpdater: String = ""
-    //@State private var timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
     
     @State private var timer: Timer?
     @State private var timerValue: Int = 0
@@ -360,35 +342,6 @@ struct EventListView: View {
         
     }
     
-    func shouldDisplay(event: Event, dateToDisplay: Date?) -> Bool {
-        print("shouldDisplay")
-        if dateToDisplay == nil {
-            if preferences.removePassedEvents == false {
-                return true
-                
-            } else if preferences.removePassedEvents == true {
-                if event.hasExpired() == false {
-                    return true
-                    
-                } else if event.hasExpired() == true {
-                    return false
-                    
-                }
-            }
-            
-        } else {
-            for occuringDate in event.isOnDates {
-                if occuringDate.isSameDay(as: dateToDisplay!) {
-                    return true
-                    
-                }
-            }
-        }
-        
-        return false
-        
-    }
-    
     var listDisplay: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
@@ -583,8 +536,6 @@ struct EventListView: View {
                     } else {
                         ZStack{
                             NoiseView(intensity: (isLightMode ? 0.12 : 0.20), noiseScale: 1.5, contrast: 1.6)
-//                                .brightness(isLightMode ? 0.0 : 0.5) // -1 ... 1
-//                                .contrast(isLightMode ? 0.0 : 0.5) 
                             
                             listDisplay
                             
@@ -593,30 +544,6 @@ struct EventListView: View {
                 }
                 .toolbar {
                     if !eventsToShow.isEmpty {
-                        /*
-                         ToolbarItem(placement: .navigationBarLeading) {
-                         Button("Test Performance") {
-                         for index in 1 ... 100 {
-                         let newTestEvent = Event(name: "Test Event \(index)")
-                         
-                         data.append(newTestEvent)
-                         data.sort(by: { $0.dateAndTime < $1.dateAndTime })
-                         
-                         }
-                         
-                         Task {
-                         do {
-                         try await EventStore().save(events: data)
-                         
-                         } catch {
-                         fatalError(error.localizedDescription)
-                         
-                         }
-                         }
-                         }
-                         }
-                         */
-                        
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Menu {
                                 Button {
@@ -671,6 +598,7 @@ struct EventListView: View {
                 .onChange(of: scenePhase) {
                     if scenePhase == .inactive {
                         saveEvents()
+                        
                     }
                 }
                 // Clear cache and rebuild event list on change of list
