@@ -8,9 +8,16 @@
 import SwiftUI
 
 struct NoiseView: View {
-    let intensity: Double = 0.12
-    let noiseScale: Double = 1.5
-    let contrast: Double = 1.6
+    var intensity: Double = 0.12
+    var noiseScale: Double = 1.5
+    var contrast: Double = 1.6
+    
+    init(intensity: Double = 0.12, noiseScale: Double = 1.5, contrast: Double = 1.6) {
+        self.intensity = intensity
+        self.noiseScale = noiseScale
+        self.contrast = contrast
+        
+    }
     
     var body: some View {
         ZStack {
