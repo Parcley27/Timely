@@ -47,10 +47,10 @@ struct NoEventsView: View {
                 
             }
         }
-            .onAppear {
-                startOneTimeTimer()
-                
-            }
+        .onAppear {
+            startOneTimeTimer()
+            
+        }
     }
 }
 
@@ -63,6 +63,12 @@ struct EventListView: View {
     let saveAction: () -> Void
     
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.colorScheme) var colorScheme
+
+    var isLightMode: Bool {
+        colorScheme == .light
+        
+    }
     
     @State private var isEditing =  false
     @State private var editMode = EditMode.inactive
@@ -74,7 +80,12 @@ struct EventListView: View {
     @State var showStandard = true
     //@State var showFavourite = true
     
-    @State private var newTimeUntilEvent: String = ""
+    @State private var hasCachedEvents: Bool = false
+    @State private var cachedEventsToShow: [Event] = []
+    
+    @State private var eventsByDate: [Date: [Event]] = [:]
+    
+    @Namespace private var namespace
     
     let maxDisplayedEvents = 50
     
@@ -108,50 +119,51 @@ struct EventListView: View {
         
     }
     
-    func favouriteStatusIcon(event: Event) -> some View {
+    func favouriteStatusIcon(isFavourite: Bool, _ colour: Color? = nil) -> some View {
         var favouriteIcon: some View {
-            Image(systemName: event.isFavourite == true ? "star.fill" : "star.slash.fill")
-                .foregroundStyle(event.isFavourite == true ? .yellow : .gray)
-            
+            if let colour = colour {
+                Image(systemName: isFavourite == true ? "star.fill" : "star.slash.fill")
+                    .foregroundStyle(isFavourite == true ? colour : Color.gray)
+            } else {
+                Image(systemName: isFavourite == true ? "star.fill" : "star.slash.fill")
+                    .foregroundStyle(isFavourite == true ? Color.yellow : Color.gray)
+                
+            }
         }
         
         return favouriteIcon
         
     }
     
-    func mutedStatusIcon(event: Event) -> some View {
+    func mutedStatusIcon(isMuted: Bool, colour : Color? = nil) -> some View {
         var muteIcon: some View {
-            Image(systemName: event.isMuted == true ? "bell.slash.fill" : "bell.fill")
-                .foregroundStyle(event.isMuted == true ? .indigo : .gray)
-            
+            if let colour = colour {
+                Image(systemName: isMuted == true ? "bell.slash.fill" : "bell.fill")
+                    .foregroundStyle(isMuted == true ? colour : Color.gray)
+            } else {
+                Image(systemName: isMuted == true ? "bell.slash.fill" : "bell.fill")
+                    .foregroundStyle(isMuted == true ? Color.indigo : Color.gray)
+                
+            }
         }
         
         return muteIcon
         
     }
     
-    @State private var hasCachedEvents: Bool = false
-    @State private var cachedEventsToShow: [Event] = []
-    
     //@State private var isLoading: Bool = false  // Optional, for handling loading state
+    private func invalidateCache() {
+        cachedEventsToShow = []
+        hasCachedEvents = false
+        
+    }
     
     private func cacheEvents() {
-        print("Caching eventss")
-        //guard cachedEventsToShow.count == 0 else { return } // Exit if already cached
-        
-        //        if !cachedEventsToShow.isEmpty {
-        //            print("Cached events already exist. Not caching again.")
-        //
-        //            return
-        //
-        //        }
-        
-        print("recaching events")
+        print("Caching events")
         
         var agreeingEvents: [Event] = []
         
         if let date = dateToDisplay {
-            // Filter events occurring on the specified date
             agreeingEvents = data.filter { $0.dateAndTime.isSameDay(as: date) }
             
             for event in data {
@@ -161,37 +173,82 @@ struct EventListView: View {
                 }
             }
             
-            
         } else {
             var goodEvents: [Event] = []
             
             let filteredData = preferences.removePassedEvents == false ? data : data.filter { !$0.hasExpired() }
             
-            // Add events that have started but not yet finished
             goodEvents.append(contentsOf: filteredData.filter { $0.hasStarted && !$0.hasPassed })
-            
-            // Add events that have not started or finished yet
             goodEvents.append(contentsOf: filteredData.filter { !$0.hasStarted && !$0.hasPassed })
             
-            // Add past events in reverse chronological order
             let pastEvents = filteredData.filter { $0.hasPassed }.sorted(by: { $0.endDateAndTime! > $1.endDateAndTime! })
             goodEvents.append(contentsOf: pastEvents)
             
-            // Limit to `eventsToShow` count
             agreeingEvents = Array(goodEvents.prefix(maxDisplayedEvents))
             
         }
         
+        cachedEventsToShow = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
+        hasCachedEvents = true
         
-        // Dispatch updates on the main queue
-        DispatchQueue.main.async {
-            self.cachedEventsToShow = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
-            self.hasCachedEvents = true
+    }
+    
+    private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { _ in
+            timerValue += 1
+            
+        }
+    }
+    
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+        
+    }
+        
+    private func resetTimer() {
+        timerValue = 0
+        
+    }
+        
+    private func toggleFavourite(for eventID: UUID) {
+        guard let index = data.firstIndex(where: { $0.id == eventID }) else { return }
+        
+        data[index].isFavourite.toggle()
+        saveEvents()
+    }
+    
+    private func toggleMuted(for eventID: UUID) {
+        guard let index = data.firstIndex(where: { $0.id == eventID }) else { return }
+        
+        data[index].isMuted.toggle()
+        saveEvents()
+        
+    }
+    
+    private func deleteEvent(with eventID: UUID) {
+        guard let index = data.firstIndex(where: { $0.id == eventID }) else { return }
+        
+        data.remove(at: index)
+        saveEvents()
+        
+    }
+    
+    private func saveEvents() {
+        Task {
+            do {
+                try await eventStore.save(events: data)
+                
+            } catch {
+                // TODO: Present error to user instead of crashing
+                print("Failed to save events: \(error.localizedDescription)")
+                
+            }
         }
     }
     
     var eventsToShow: [Event] {
-        if cachedEventsToShow.isEmpty {
+        if !hasCachedEvents {
             cacheEvents()
             
         }
@@ -200,7 +257,7 @@ struct EventListView: View {
         
     }
     
-    private var eventsByDate: [Date: [Event]] {
+    private func rebuildEventsByDate() {
         var grouped: [Date: [Event]] = [:]
         
         for event in eventsToShow {
@@ -210,28 +267,26 @@ struct EventListView: View {
                 
             }
             
-            var relaventDates: [Date] = []
+            var relevantDates: [Date] = []
             
             if dateToDisplay == nil || event.dateAndTime.isSameDay(as: dateToDisplay!) {
-                relaventDates.append(event.dateAndTime)
+                relevantDates.append(event.dateAndTime)
                 
             }
             
-            // If on a single day view, add dates that overlap with the specific day even if they aren't on it
             if let dateToDisplay = dateToDisplay {
                 for recurringDate in event.isOnDates {
                     if recurringDate.isSameDay(as: dateToDisplay) {
-                        relaventDates.append(recurringDate)
+                        relevantDates.append(recurringDate)
                         
                     }
                 }
             } else {
-                // Otherwise, just make all of them relavent
-                relaventDates = [event.dateAndTime]
+                relevantDates = [event.dateAndTime]
                 
             }
             
-            for date in relaventDates {
+            for date in relevantDates {
                 let normalizedDate = Calendar.current.startOfDay(for: date)
                 
                 if grouped[normalizedDate] == nil {
@@ -244,7 +299,7 @@ struct EventListView: View {
             }
         }
         
-        return grouped
+        eventsByDate = grouped
         
     }
     
@@ -334,270 +389,6 @@ struct EventListView: View {
         
     }
     
-    func eventTile(event: Event) -> some View {
-        ZStack {
-            HStack {
-                ZStack {
-                    Text("📅")
-                        .font(.title)
-                        .opacity(0)
-                    
-                    Text(event.emoji ?? "📅")
-                        .font(.title)
-                    
-                }
-                
-                VStack(alignment: .leading) {
-                    Text(event.name ?? "Event Name")
-                        .font(.title3)
-                        .bold()
-                    
-                    HStack {
-                        Text(event.timeUntil)
-                            .font(.caption)
-                            .onChange(of: timer) {
-                                // Reset timeUpdater every second
-                                // This tricks the text object into getting a new timeUntil
-                                timeUpdater = " "
-                                timeUpdater = ""
-                                
-                            }
-                            .foregroundStyle(event.hasPassed ? .red : .primary)
-                            .bold(event.hasStarted)
-                        
-                    }
-                }
-                
-                Spacer()
-                
-                HStack {
-                    favouriteStatusIcon(event: event)
-                    mutedStatusIcon(event: event)
-                    
-                }
-                .padding(.horizontal, 10)
-                
-            }
-        }
-    }
-    
-    func listSection(for section: UniqueDate) -> some View {
-        ForEach($data) { $event in
-            
-            // Check if the event should be displayed based on its conditions
-            let isInEventsToShow = eventsToShow.contains { $0.id == event.id }
-            //let dataIndex = data.firstIndex(where: { $0.id == event.id })
-            
-            let isOnDate = event.isOnDates.contains { occuringDate in
-                if occuringDate.isSameDay(as: dateToDisplay ?? section.id) {
-                    
-                    //print("\(event.name ?? "No name") not on provided date")
-
-                    return true
-                    
-                }
-                
-                //print("\(event.name ?? "No name") not on provided date")
-                
-                return false
-                
-            }
-            
-            // Ensure the event is valid and conditions are met
-            if isInEventsToShow,
-               //let index = dataIndex,
-               (event.dateAndTime.isSameDay(as: dateToDisplay ?? section.id) || (isOnDate && dateToDisplay != nil)),
-               (dateToDisplay != nil || event.dateAndTime.isSameDay(as: section.id)),
-               //(showFavourite || !event.isFavourite),
-               (showMuted || !event.isMuted),
-               (showStandard || !event.isStandard) {
-                
-                NavigationLink(destination: EventDetailView(data: $data, eventID: event.id)) {
-                                eventTile(event: event)
-                                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                        Button {
-                                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                                data[index].isFavourite.toggle()
-                                                Task {
-                                                    do {
-                                                        try await eventStore.save(events: data)
-                                                        
-                                                    } catch {
-                                                        fatalError(error.localizedDescription)
-                                                        
-                                                    }
-                                                }
-                                            }
-                                            
-                                            print("Toggling favourite on \(event.name!)")
-                                            
-                                        } label: {
-                                            if event.isFavourite == true {
-                                                Label("Unfavourite", systemImage: "star.slash.fill")
-                                                
-                                            } else {
-                                                Label("Favourite", systemImage: "star.fill")
-                                                
-                                            }
-                                        }
-                                        .tint(.yellow)
-                                        
-                                    }
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button(role: .destructive) {
-                                            if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                                data.remove(at: index)
-                                                
-                                                Task {
-                                                    do {
-                                                        try await eventStore.save(events: data)
-                                                        
-                                                    } catch {
-                                                        fatalError(error.localizedDescription)
-                                                        
-                                                    }
-                                                }
-                                            }
-                                            
-                                            print("Deleting \($event.name)")
-                                            
-                                        } label: {
-                                            Label("Delete", systemImage: "trash.fill")
-                                            
-                                        }
-                                        .tint(.red)
-                                        
-                                        if editMode == .inactive {
-                                            Button {
-                                                if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                                    data[index].isMuted.toggle()
-                                                    Task {
-                                                        do {
-                                                            try await eventStore.save(events: data)
-                                                            
-                                                        } catch {
-                                                            fatalError(error.localizedDescription)
-                                                            
-                                                        }
-                                                    }
-                                                }
-                                                
-                                                print("Toggling mute on \(event.name!)")
-                                                
-                                            } label: {
-                                                if event.isMuted == true {
-                                                    Label("Unmute", systemImage: "bell.fill")
-                                                    
-                                                } else {
-                                                    Label("Mute", systemImage: "bell.slash.fill")
-                                                    
-                                                }
-                                            }
-                                            .tint(.indigo)
-                                            
-                                        }
-                                    }
-                                //.disabled(!isEditing)
-                            }
-                            .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.6, brightness: 1.2, opacity: 0.25) : Color(UIColor.systemGray6))
-                            .contextMenu {
-                                Button {
-                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                        data[index].isFavourite.toggle()
-                                        Task {
-                                            do {
-                                                try await eventStore.save(events: data)
-                                                
-                                            } catch {
-                                                fatalError(error.localizedDescription)
-                                                
-                                            }
-                                        }
-                                    }
-                                    
-                                } label: {
-                                    if event.isFavourite {
-                                        Label("Unfavourite", systemImage: "star.slash")
-                                        
-                                    } else {
-                                        Label("Favourite", systemImage: "star")
-                                        
-                                    }
-                                }
-                                
-                                Button {
-                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                        data[index].isMuted.toggle()
-                                        Task {
-                                            do {
-                                                try await eventStore.save(events: data)
-                                                
-                                            } catch {
-                                                fatalError(error.localizedDescription)
-                                                
-                                            }
-                                        }
-                                    }
-                                    
-                                } label: {
-                                    if event.isMuted {
-                                        Label("Unmute", systemImage: "bell")
-                                        
-                                    } else {
-                                        Label("Mute", systemImage: "bell.slash")
-                                        
-                                    }
-                                }
-                                
-                                Divider()
-                                
-                                NavigationLink(
-                                    destination: EventDetailView(data: $data, eventID: data[$data.firstIndex(where: { $0.id == event.id }) ?? 0].id, showEditEventSheet: true),
-                                    label: {
-                                        Label("Edit", systemImage: "slider.horizontal.3")
-                                    })
-                                
-                                Divider()
-                                
-                                Button {
-                                    if let index = $data.firstIndex(where: { $0.id == event.id }) {
-                                        data.remove(at: index)
-                                        
-                                        Task {
-                                            do {
-                                                try await eventStore.save(events: data)
-                                                
-                                            } catch {
-                                                fatalError(error.localizedDescription)
-                                                
-                                            }
-                                        }
-                                    }
-                                    
-                                } label: {
-                                    Label("Delete \"\(event.name!)\"", systemImage: "trash")
-                                    
-                                }
-                            }
-                        }
-        }
-        .onDelete { indexSet in            
-            data.remove(atOffsets: indexSet)
-            data.sort(by: { $0.dateAndTime < $1.dateAndTime })
-            
-            Task {
-                do {
-                    try await eventStore.save(events: data)
-                    
-                } catch {
-                    fatalError(error.localizedDescription)
-                    
-                }
-            }
-            
-        }
-    }
-    
     var listDisplay: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
@@ -610,102 +401,170 @@ struct EventListView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 16)
                             .padding(.top, 12)
+                        
                     }
                     
-                    ForEach(data) { event in
-                        let isInEventsToShow = eventsToShow.contains { $0.id == event.id }
-                        
-                        let isOnDate = event.isOnDates.contains { occuringDate in
-                            occuringDate.isSameDay(as: dateToDisplay ?? uniqueDate.id)
-                        }
-                        
-                        if isInEventsToShow,
-                           (event.dateAndTime.isSameDay(as: dateToDisplay ?? uniqueDate.id) || (isOnDate && dateToDisplay != nil)),
-                           (dateToDisplay != nil || event.dateAndTime.isSameDay(as: uniqueDate.id)),
-                           (showMuted || !event.isMuted),
-                           (showStandard || !event.isStandard) {
-                            
-                            NavigationLink(destination: EventDetailView(data: $data, eventID: event.id)) {
-                                HStack(spacing: 12) {
-                                    // Emoji icon
-                                    Text(event.emoji ?? "📅")
-                                        .font(.system(size: 36))
+                    let normalizedDate = Calendar.current.startOfDay(for: uniqueDate.id)
+                    let eventsForDate = eventsByDate[normalizedDate] ?? []
+                    
+                    ForEach(eventsForDate) { event in
+                        NavigationLink(destination: EventDetailView(data: $data, eventID: event.id)) {
+                            HStack(spacing: 12) {
+                                // Emoji icon
+                                Text(event.emoji ?? "📅")
+                                    .font(.system(size: 36))
+                                
+                                VStack(alignment: .leading, spacing: 4) {
+                                    // Event name
+                                    Text(event.name ?? "Event Name")
+                                        .font(.headline)
+                                        .fontWeight(.semibold)
+                                        //.font(.system(size: 17, weight: .semibold))
+                                        .foregroundStyle(.primary)
+                                        .lineLimit(2)
                                     
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        // Event name
-                                        Text(event.name ?? "Event Name")
-                                            .font(.system(size: 17, weight: .semibold))
-                                            .foregroundStyle(.primary)
-                                            .lineLimit(2)
-                                        
-                                        // Time until
-                                        Text(event.timeUntil)
-                                            .font(.system(size: 15, weight: .regular))
-                                            .foregroundStyle(.secondary)
-                                    }
+                                    // Time until
+                                    Text(event.timeUntil)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
                                     
-                                    Spacer()
+                                }
+                                
+                                Spacer()
+                                
+                                VStack(spacing: 8) {
+                                    favouriteStatusIcon(isFavourite: event.isFavourite)
+                                        .padding(.horizontal, 4)
+                                        .padding(.top, 6)
                                     
-                                    // Status badges (subtle pills)
-                                    HStack(spacing: 6) {
-                                        if event.isFavourite {
-                                            Image(systemName: "star.fill")
-                                                .font(.system(size: 12))
-                                                .foregroundStyle(.yellow)
+                                    mutedStatusIcon(isMuted: event.isMuted)
+                                        .padding(.bottom, 6)
+                                        .padding(.horizontal, 4)
+                                    
+                                }
+                                .shadow(color: Color.black.opacity(preferences.listTinting ? 0.4 : 0), radius: 10, x: 0, y: 2)
+                                .font(.footnote)
+                                .saturation(1.65)
+                                .brightness(preferences.listTinting ? 0.15 : 0) // -1 ... 1
+                                
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 16))
+                                    .foregroundColor(.secondary)
+                                    .brightness(0.2) // -1 ... 1
+                                
+                            }
+                            .padding(16)
+                            .background(
+                                ZStack {
+                                    if preferences.listTinting {
+                                        if isLightMode {
+                                            Color.white
+                                            
+                                            // Soft gradient background
+                                            LinearGradient(
+                                                colors: [
+                                                    event.averageColor(saturation: 0.5, brightness: 1.05, opacity: 0.45) ?? Color(.systemGray6),
+                                                    event.averageColor(saturation: 0.65, brightness: 1.0, opacity: 0.45) ?? Color(.systemGray5),
+                                                    event.averageColor(saturation: 0.75, brightness: 0.95, opacity: 0.45) ?? Color(.systemGray5)
+                                                    
+                                                ],
+                                                
+                                                startPoint: .top,
+                                                endPoint: .bottom
+                                                
+                                            )
+                                            //.brightness(0.25) // -1 ... 1
+                                            
+                                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                                .stroke(event.averageColor(saturation: 0.75, brightness: 1.0, opacity: 0.6) ?? Color(.systemGray6), lineWidth: 2)
+                                            
+                                        } else {
+                                            Color.black
+                                            
+                                            // Soft gradient background
+                                            LinearGradient(
+                                                colors: [
+                                                    event.averageColor(saturation: 0.40, brightness: 0.85, opacity: 0.45) ?? Color(.systemGray6),
+                                                    event.averageColor(saturation: 0.50, brightness: 0.60, opacity: 0.45) ?? Color(.systemGray5),
+                                                    event.averageColor(saturation: 0.75, brightness: 0.55, opacity: 0.45) ?? Color(.systemGray5)
+                                                    
+                                                ],
+                                                
+                                                startPoint: .top,
+                                                endPoint: .bottom
+                                                
+                                            )
+                                            //.brightness(0.25) // -1 ... 1
+                                            
+                                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                                .stroke(event.averageColor(saturation: 0.55, brightness: 0.5, opacity: 0.45) ?? Color(.systemGray6), lineWidth: 2)
+                                            
                                         }
                                         
-                                        if event.isMuted {
-                                            Image(systemName: "bell.slash.fill")
-                                                .font(.system(size: 12))
-                                                .foregroundStyle(.gray)
+
+                                    } else {
+                                        if isLightMode {
+                                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                                .stroke(.tertiary, lineWidth: 2)
+                                            
                                         }
                                     }
                                 }
-                                .padding(16)
-                                .background(
-                                    ZStack {
-                                        // Soft gradient background (derived from emoji/event)
-                                        LinearGradient(
-                                            colors: [
-                                                event.averageColor(saturation: 0.3, brightness: 0.95, opacity: 1.0) ?? Color(.systemGray6),
-                                                event.averageColor(saturation: 0.2, brightness: 0.95, opacity: 1.0) ?? Color(.systemGray5)
-                                            ],
-                                            startPoint: .top,
-                                            endPoint: .bottomTrailing
-                                        )
-                                        
-                                        // Noise texture overlay
-                                        NoiseView()
-                                            .opacity(0.08)
-                                        
-                                    }
-                                )
-                                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                        .strokeBorder(
-                                            LinearGradient(
-                                                colors: [
-                                                    //event.averageColor(saturation: 0.3, brightness: 0.9, opacity: 1.0),
-                                                    Color.white.opacity(0.3),
-                                                    Color.clear
-                                                ],
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            ),
-                                            lineWidth: 0.5
-                                            
-                                        )
-                                )
-                                .shadow(color: Color.black.opacity(0.06), radius: 8, x: 0, y: 2)
-                                .shadow(color: Color.black.opacity(0.04), radius: 2, x: 0, y: 1)
-                                //.glassEffect(in: .rect(cornerRadius: 24))
-                                .glassEffect(.regular.tint(.white).interactive(), in: .rect(cornerRadius: 24.0))
+                            )
+                            .clipShape(
+                                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                
+                            )
+                            .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 2)
+                            .shadow(color: Color.black.opacity(0.06), radius: 2, x: 0, y: 1)
+                            .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                            
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal, 16)
+                        .contextMenu {
+                            Button {
+                                toggleFavourite(for: event.id)
+                                
+                            } label: {
+                                if event.isFavourite {
+                                    Label("Unfavourite", systemImage: "star.slash")
+                                    
+                                } else {
+                                    Label("Favourite", systemImage: "star")
+                                    
+                                }
+                            }
+                            
+                            Button {
+                                toggleMuted(for: event.id)
+                                
+                            } label: {
+                                if event.isMuted {
+                                    Label("Unmute", systemImage: "bell")
+                                    
+                                } else {
+                                    Label("Mute", systemImage: "bell.slash")
+                                    
+                                }
+                            }
+                            
+                            Divider()
+                            
+                            NavigationLink(destination: EventDetailView(data: $data, eventID: event.id, showEditEventSheet: true)) {
+                                Label("Edit", systemImage: "slider.horizontal.3")
                                 
                             }
-                            .buttonStyle(.plain)
-                            .padding(.horizontal, 16)
                             
+                            Divider()
+                            
+                            Button(role: .destructive) {
+                                deleteEvent(with: event.id)
+                                
+                            } label: {
+                                Label("Delete \"\(event.name!)\"", systemImage: "trash")
+                                
+                            }
                         }
                     }
                 }
@@ -723,8 +582,12 @@ struct EventListView: View {
                         
                     } else {
                         ZStack{
-                            NoiseView()
+                            NoiseView(intensity: (isLightMode ? 0.12 : 0.20), noiseScale: 1.5, contrast: 1.6)
+//                                .brightness(isLightMode ? 0.0 : 0.5) // -1 ... 1
+//                                .contrast(isLightMode ? 0.0 : 0.5) 
+                            
                             listDisplay
+                            
                         }
                     }
                 }
@@ -807,51 +670,54 @@ struct EventListView: View {
                 }
                 .onChange(of: scenePhase) {
                     if scenePhase == .inactive {
-                        Task {
-                            do {
-                                try await eventStore.save(events: data)
-                                
-                            } catch {
-                                fatalError(error.localizedDescription)
-                                
-                            }
-                        }
+                        saveEvents()
                     }
+                }
+                // Clear cache and rebuild event list on change of list
+                .onChange(of: data) { oldValue, newValue in
+                    invalidateCache()
+                    cacheEvents()
+                    rebuildEventsByDate()
+                    
+                }
+                // Rebuild list when filters change
+                .onChange(of: showMuted) { oldValue, newValue in
+                    rebuildEventsByDate()
+                    
+                }
+                .onChange(of: showStandard) { oldValue, newValue in
+                    rebuildEventsByDate()
+                    
+                }
+                // Initial build of event list
+                .onAppear {
+                    cacheEvents()
+                    rebuildEventsByDate()
+                    
                 }
             }
         }
-    }
-    
-    private func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { _ in
-            timerValue += 1
-            
-        }
-    }
-    
-    private func stopTimer() {
-        timer?.invalidate()
-        timer = nil
-        
-    }
-        
-    private func resetTimer() {
-        timerValue = 0
-        
     }
 }
 
 struct EventListView_Previews: PreviewProvider {
     static var previews: some View {
+        let previewPreferences = SettingsStore()
         let previewData = EventData()
+        
+        //previewPreferences.listTinting = true
+        
         let calendar = Calendar.current
         
         let dateToDisplay: Date? = nil
         
         previewData.events = [
-            Event(name: "Sample Event 1", dateAndTime: Date(), endDateAndTime: calendar.date(byAdding: .minute, value: 30, to: Date())),
+            Event(name: "Sample Event 1", emoji: "🌲", dateAndTime: Date(), endDateAndTime: calendar.date(byAdding: .minute, value: 30, to: Date())),
             Event(name: "Sample Event 2", dateAndTime: calendar.date(byAdding: .minute, value: 50, to: Date())!, endDateAndTime: calendar.date(byAdding: .minute, value: 100, to: Date()), isMuted: true),
-            Event(name: "Sample Event 3", dateAndTime: calendar.date(byAdding: .minute, value: 150, to: Date())!, endDateAndTime: calendar.date(byAdding: .minute, value: 200, to: Date()), isFavourite: true)
+            Event(name: "Sample Event 3", emoji: "🩻", dateAndTime: calendar.date(byAdding: .minute, value: 150, to: Date())!, endDateAndTime: calendar.date(byAdding: .minute, value: 200, to: Date()), isFavourite: true),
+            Event(name: "Sample Event 4", emoji: "⚽️", dateAndTime: calendar.date(byAdding: .day, value: 5, to: Date())!, endDateAndTime: calendar.date(byAdding: .day, value: 5, to: Date())),
+            Event(name: "Sample Event 5", emoji: "💛", dateAndTime: calendar.date(byAdding: .month, value: 1, to: Date())!, endDateAndTime: calendar.date(byAdding: .month, value: 1, to: Date()), isFavourite: true),
+            Event(name: "Sample Event 6", emoji: "💜", dateAndTime: calendar.date(byAdding: .month, value: 1, to: Date())!, endDateAndTime: calendar.date(byAdding: .month, value: 1, to: Date()), isMuted: true)
                   
             // Add more sample events as needed
                   
@@ -863,7 +729,7 @@ struct EventListView_Previews: PreviewProvider {
         
         //return EventListView(data: previewEvents, saveAction: {})
         return EventListView(data: previewEvents, dateToDisplay: dateToDisplay, saveAction: {})
-            .environmentObject(SettingsStore())
+            .environmentObject(previewPreferences)
             .environmentObject(previewStore)
         
     }
