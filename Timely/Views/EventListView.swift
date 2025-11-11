@@ -535,7 +535,10 @@ struct EventListView: View {
                         
                     } else {
                         ZStack{
-                            NoiseView(intensity: (isLightMode ? 0.12 : 0.20), noiseScale: 1.5, contrast: 1.6)
+                            if isLightMode {
+                                NoiseView()
+                                
+                            }
                             
                             listDisplay
                             
