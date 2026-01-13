@@ -361,162 +361,105 @@ struct EventListView: View {
                     let eventsForDate = eventsByDate[normalizedDate] ?? []
                     
                     ForEach(eventsForDate) { event in
-                        NavigationLink(destination: EventDetailView(data: $data, eventID: event.id)) {
-                            HStack(spacing: 12) {
-                                // Emoji icon
-                                Text(event.emoji ?? "📅")
-                                    .font(.system(size: 36))
-                                
-                                VStack(alignment: .leading, spacing: 4) {
-                                    // Event name
-                                    Text(event.name ?? "Event Name")
-                                        .font(.headline)
-                                        .fontWeight(.semibold)
+                        ZStack {
+                            NavigationLink(destination: EventDetailView(data: $data, eventID: event.id)) {
+                                HStack(spacing: 12) {
+                                    // Emoji icon
+                                    Text(event.emoji ?? "📅")
+                                        .font(.system(size: 36))
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        // Event name
+                                        Text(event.name ?? "Event Name")
+                                            .font(.headline)
+                                            .fontWeight(.semibold)
                                         //.font(.system(size: 17, weight: .semibold))
-                                        .foregroundStyle(.primary)
-                                        .lineLimit(2)
+                                            .foregroundStyle(.primary)
+                                            .lineLimit(2)
+                                        
+                                        // Time until
+                                        Text(event.timeUntil)
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                        
+                                    }
+                                    .shadow(color: Color.black, radius: 20)
                                     
-                                    // Time until
-                                    Text(event.timeUntil)
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
+                                    Spacer()
+                                    
+                                    VStack(spacing: 8) {
+                                        favouriteStatusIcon(isFavourite: event.isFavourite)
+                                            .padding(.horizontal, 4)
+                                            .padding(.top, 6)
+                                        
+                                        mutedStatusIcon(isMuted: event.isMuted)
+                                            .padding(.bottom, 6)
+                                            .padding(.horizontal, 4)
+                                        
+                                    }
+                                    .font(.footnote)
+                                    .saturation(1.65)
+                                    .brightness(preferences.listTinting ? 0.15 : 0) // -1 ... 1
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.secondary)
+                                        .brightness(0.2) // -1 ... 1
                                     
                                 }
-                                
-                                Spacer()
-                                
-                                VStack(spacing: 8) {
-                                    favouriteStatusIcon(isFavourite: event.isFavourite)
-                                        .padding(.horizontal, 4)
-                                        .padding(.top, 6)
+                                .padding(16)
+                                .background(
+                                    TileView(inputColours: event.averageColour() ?? Color(.systemGray6))
                                     
-                                    mutedStatusIcon(isMuted: event.isMuted)
-                                        .padding(.bottom, 6)
-                                        .padding(.horizontal, 4)
-                                    
-                                }
-                                .shadow(color: Color.black.opacity(preferences.listTinting ? 0.4 : 0), radius: 10, x: 0, y: 2)
-                                .font(.footnote)
-                                .saturation(1.65)
-                                .brightness(preferences.listTinting ? 0.15 : 0) // -1 ... 1
-                                
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.secondary)
-                                    .brightness(0.2) // -1 ... 1
+                                )
                                 
                             }
-                            .padding(16)
-                            .background(
-                                ZStack {
-                                    if preferences.listTinting {
-                                        if isLightMode {
-                                            Color.white
-                                            
-                                            // Soft gradient background
-                                            LinearGradient(
-                                                colors: [
-                                                    event.averageColor(saturation: 0.5, brightness: 1.05, opacity: 0.45) ?? Color(.systemGray6),
-                                                    event.averageColor(saturation: 0.65, brightness: 1.0, opacity: 0.45) ?? Color(.systemGray5),
-                                                    event.averageColor(saturation: 0.75, brightness: 0.95, opacity: 0.45) ?? Color(.systemGray5)
-                                                    
-                                                ],
-                                                
-                                                startPoint: .top,
-                                                endPoint: .bottom
-                                                
-                                            )
-                                            //.brightness(0.25) // -1 ... 1
-                                            
-                                            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                                                .stroke(event.averageColor(saturation: 0.75, brightness: 1.0, opacity: 0.6) ?? Color(.systemGray6), lineWidth: 2)
-                                            
-                                        } else {
-                                            Color.black
-                                            
-                                            // Soft gradient background
-                                            LinearGradient(
-                                                colors: [
-                                                    event.averageColor(saturation: 0.40, brightness: 0.85, opacity: 0.45) ?? Color(.systemGray6),
-                                                    event.averageColor(saturation: 0.50, brightness: 0.60, opacity: 0.45) ?? Color(.systemGray5),
-                                                    event.averageColor(saturation: 0.75, brightness: 0.55, opacity: 0.45) ?? Color(.systemGray5)
-                                                    
-                                                ],
-                                                
-                                                startPoint: .top,
-                                                endPoint: .bottom
-                                                
-                                            )
-                                            //.brightness(0.25) // -1 ... 1
-                                            
-                                            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                                                .stroke(event.averageColor(saturation: 0.55, brightness: 0.5, opacity: 0.45) ?? Color(.systemGray6), lineWidth: 2)
-                                            
-                                        }
+                            .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                            .buttonStyle(.plain)
+                            .padding(.horizontal, 16)
+                            .contextMenu {
+                                Button {
+                                    toggleFavourite(for: event.id)
+                                    
+                                } label: {
+                                    if event.isFavourite {
+                                        Label("Unfavourite", systemImage: "star.slash")
                                         
-
                                     } else {
-                                        if isLightMode {
-                                            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                                                .stroke(.tertiary, lineWidth: 2)
-                                            
-                                        }
+                                        Label("Favourite", systemImage: "star")
+                                        
                                     }
                                 }
-                            )
-                            .clipShape(
-                                RoundedRectangle(cornerRadius: 24, style: .continuous)
                                 
-                            )
-                            .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 2)
-                            .shadow(color: Color.black.opacity(0.06), radius: 2, x: 0, y: 1)
-                            .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
-                            
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .contextMenu {
-                            Button {
-                                toggleFavourite(for: event.id)
-                                
-                            } label: {
-                                if event.isFavourite {
-                                    Label("Unfavourite", systemImage: "star.slash")
+                                Button {
+                                    toggleMuted(for: event.id)
                                     
-                                } else {
-                                    Label("Favourite", systemImage: "star")
+                                } label: {
+                                    if event.isMuted {
+                                        Label("Unmute", systemImage: "bell")
+                                        
+                                    } else {
+                                        Label("Mute", systemImage: "bell.slash")
+                                        
+                                    }
+                                }
+                                
+                                Divider()
+                                
+                                NavigationLink(destination: EventDetailView(data: $data, eventID: event.id, showEditEventSheet: true)) {
+                                    Label("Edit", systemImage: "slider.horizontal.3")
                                     
                                 }
-                            }
-                            
-                            Button {
-                                toggleMuted(for: event.id)
                                 
-                            } label: {
-                                if event.isMuted {
-                                    Label("Unmute", systemImage: "bell")
+                                Divider()
+                                
+                                Button(role: .destructive) {
+                                    deleteEvent(with: event.id)
                                     
-                                } else {
-                                    Label("Mute", systemImage: "bell.slash")
+                                } label: {
+                                    Label("Delete \"\(event.name!)\"", systemImage: "trash")
                                     
                                 }
-                            }
-                            
-                            Divider()
-                            
-                            NavigationLink(destination: EventDetailView(data: $data, eventID: event.id, showEditEventSheet: true)) {
-                                Label("Edit", systemImage: "slider.horizontal.3")
-                                
-                            }
-                            
-                            Divider()
-                            
-                            Button(role: .destructive) {
-                                deleteEvent(with: event.id)
-                                
-                            } label: {
-                                Label("Delete \"\(event.name!)\"", systemImage: "trash")
-                                
                             }
                         }
                     }
@@ -622,9 +565,12 @@ struct EventListView: View {
                 }
                 // Initial build of event list
                 .onAppear {
-                    cacheEvents()
-                    rebuildEventsByDate()
-                    
+                    invalidateCache()
+                    DispatchQueue.main.async {
+                        cacheEvents()
+                        rebuildEventsByDate()
+                        
+                    }
                 }
             }
         }
