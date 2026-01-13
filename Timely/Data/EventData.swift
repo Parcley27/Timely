@@ -22,7 +22,7 @@ struct Event: Identifiable, Codable, Hashable {
     var name: String? = "Event Name"
     var emoji: String? = "📅"
     
-    func averageColor(saturation: Double = 1.0, brightness: Double = 1.0, opacity: Double = 1.0) -> Color? {
+    func averageColour(saturation: Double = 1.0, brightness: Double = 1.0, opacity: Double = 1.0) -> Color? {
         // Render Emoji as an Image
         let size = CGSize(width: 7, height: 7)
         
@@ -86,55 +86,19 @@ struct Event: Identifiable, Codable, Hashable {
         
         let pixelCount = width * height
         
-        let avgRed = Double(redTotal) / Double(pixelCount) / 255.0
-        let avgGreen = Double(greenTotal) / Double(pixelCount) / 255.0
-        let avgBlue = Double(blueTotal) / Double(pixelCount) / 255.0
+        let averageRed = Double(redTotal) / Double(pixelCount) / 255.0
+        let averageGreen = Double(greenTotal) / Double(pixelCount) / 255.0
+        let averageBlue = Double(blueTotal) / Double(pixelCount) / 255.0
         
-        // Check if the colour is greyscale
-        // If colour difference is very small, treat as greyscale
+        let baseColour = Color(red: averageRed, green: averageGreen, blue: averageBlue)
         
-        let maxComponent = max(avgRed, avgGreen, avgBlue)
-        let minComponent = min(avgRed, avgGreen, avgBlue)
-        
-        let colorDifference = maxComponent - minComponent
-        
-        let isGreyscale = colorDifference < 0.01
-        
-        if isGreyscale {
-            // For greyscale emojis, use the average of RGB as a grey value
-            let greyValue = (avgRed + avgGreen + avgBlue) / 3.0
+        if baseColour.isGreyscale {
+            return baseColour.asGreyscale(brightness: brightness, opacity: opacity)
             
-            // Map brightness parameter to a min-max range
-            // brightness of 0.95 -> range [0.85, 0.98]
-            // brightness of 1.0  -> range [0.88, 1.0]
-            let minGrey = 0.3 + (brightness * 0.58)  // Maps 0.95->0.851, 1.0->0.88
-            let maxGrey = 0.93 + (brightness * 0.07)  // Maps 0.95->0.9965, 1.0->1.0
-            
-            // Apply brightness and clamp to min/max
-            let adjustedGrey = max(minGrey, min(greyValue * brightness, maxGrey))
-            let greyscaleColor = UIColor(red: CGFloat(adjustedGrey), green: CGFloat(adjustedGrey), blue: CGFloat(adjustedGrey), alpha: CGFloat(opacity))
-            
-            return Color(greyscaleColor)
+        } else {
+            return baseColour.adjusted(saturation: saturation, brightness: brightness, opacity: opacity)
             
         }
-        
-        // Adjust Saturation and Brightness for colored emojis
-        let avgColor = UIColor(red: CGFloat(avgRed), green: CGFloat(avgGreen), blue: CGFloat(avgBlue), alpha: 1.0)
-        
-        var hue: CGFloat = 0
-        var saturationValue: CGFloat = 0
-        var brightnessValue: CGFloat = 0
-        var alpha: CGFloat = 0
-        
-        avgColor.getHue(&hue, saturation: &saturationValue, brightness: &brightnessValue, alpha: &alpha)
-        
-        saturationValue = max(0, min(CGFloat(saturation), 1))
-        brightnessValue = max(0, min(CGFloat(brightness), 1))
-        
-        let adjustedColor = UIColor(hue: hue, saturation: saturationValue, brightness: brightnessValue, alpha: CGFloat(opacity))
-        
-        // Convert to SwiftUI Color
-        return Color(adjustedColor)
         
     }
     
