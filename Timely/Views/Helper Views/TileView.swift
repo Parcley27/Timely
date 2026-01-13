@@ -8,25 +8,41 @@
 import SwiftUI
 
 struct TileView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
+    var isLightMode: Bool { colorScheme == .light }
+    
     var tileColours: [Color] = []
-    let colourOpacities: [Double] = [0.45, 0.45, 0.45]
+    let saturations: [Double] = [0.7, 0.8, 0.95]
+    let brightnesses: [Double] = [1.25, 1.15, 0.95]
+    let opacities: [Double] = [0.45, 0.45, 0.45]
+    
     
     let showBorder: Bool
     let cornerRadius: CGFloat
     
-    init(inputColours: [Color] = [.blue, .red], showBorder: Bool = true, cornerRadius: CGFloat = 24) {
-        let colours = inputColours.isEmpty ? [.blue] : inputColours
+    init(inputColours: Color..., customBorder: Bool = false, cornerRadius: CGFloat = 24) {
+        let baseColours = inputColours.isEmpty ? [.blue] : inputColours
         
-        let repeatingColours = colours.count < colourOpacities.count
-            ? Array(repeating: colours[0], count: colourOpacities.count)
-            : colours
+        let colours = baseColours.count < saturations.count
+                ? Array(repeating: baseColours[0], count: saturations.count)
+                : baseColours
         
-        tileColours = zip(repeatingColours, colourOpacities)
-            .map { $0.opacity($1) }
-        
-        self.showBorder = showBorder
+        self.showBorder = customBorder
         self.cornerRadius = cornerRadius
         
+        for (index, colour) in colours.enumerated() {
+            guard index < saturations.count else { break }
+            
+            tileColours.append(
+                colour.adjusted(
+                    saturation: saturations[index],
+                    brightness: brightnesses[index] - (isLightMode ? 0 : 0.25),
+                    opacity: opacities[index]
+                    
+                )
+            )
+        }
     }
     
     var body: some View {
@@ -42,19 +58,36 @@ struct TileView: View {
                 )
             
             if showBorder {
+                let borderColour = tileColours.last!.adjusted(saturation: 0.95, brightness: brightnesses.last! - (isLightMode ? 0 : 0.25))
+                
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(tileColours.last!.opacity(0.6), lineWidth: 2)
-                    .brightness(-0.2) // -1 ... 1
-                
-
-                
+                    .stroke(
+                        LinearGradient(
+                        colors: [borderColour, Color.clear, Color.clear, Color.clear, borderColour],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                        
+                        ),
+                        
+                        lineWidth: 2
+                    )
+                    //.brightness(-0.2) // -1 ... 1
             }
         }
     }
 }
 
 #Preview {
-    TileView(inputColours: [.blue, .teal, .green], showBorder: true, cornerRadius: 24)
-        .frame(maxWidth: 200, maxHeight: 200)
+    let cornerRadius: CGFloat = 24
+    
+    ZStack {
+        //Text("asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfsadfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf")
+        TileView(inputColours: .blue, customBorder: true, cornerRadius: cornerRadius)
+            .frame(maxWidth: 300, maxHeight: 100)
+        
+        Text("Hello, TileView!")
+        
+    }
+    .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: cornerRadius))
     
 }
