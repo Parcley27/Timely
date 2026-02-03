@@ -366,7 +366,8 @@ struct EventListView: View {
                                 HStack(spacing: 12) {
                                     // Emoji icon
                                     Text(event.emoji ?? "📅")
-                                        .font(.system(size: 36))
+                                        .font(.system(size: 40))
+                                        .padding(2)
                                     
                                     VStack(alignment: .leading, spacing: 4) {
                                         // Event name
@@ -383,7 +384,7 @@ struct EventListView: View {
                                             .foregroundStyle(.secondary)
                                         
                                     }
-                                    .shadow(color: Color.black, radius: 20)
+                                    //.shadow(color: Color.black, radius: 20)
                                     
                                     Spacer()
                                     
