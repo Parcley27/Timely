@@ -16,6 +16,9 @@ struct EventDetailView: View {
     @EnvironmentObject var preferences: SettingsStore
     @EnvironmentObject var eventStore: EventStore
     
+    @Environment(\.colorScheme) var colorScheme
+    var isLightMode: Bool { colorScheme == .light }
+    
     @Binding var data: [Event]
     let eventID: UUID
     
@@ -61,156 +64,228 @@ struct EventDetailView: View {
     }
     
     var body: some View {
-        // Alternate navigation bar title
-        //let navigationTitleWrapper = (event.emoji ?? "📅") + " " + (event.name ?? "Event Name")
-        
-        
         if let event = currentEvent {
-            let navigationTitleWrapper = event.name ?? "Event Name"
+            //let navigationTitleWrapper = event.name ?? "Event Name"
             
-            List {
-                Section {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(event.name ?? "Event Name")
-                                .font(.title)
-                                .bold()
+            ZStack {
+                VStack(spacing: 0) {
+                    LinearGradient(
+                        gradient: Gradient(stops: [
+                            .init(color: .clear, location: 0.5),
+                            .init(color: event.averageColour(saturation: 0.7)!, location: 0.9)
                             
-                            Text(timeUntilEvent)
-                                .onAppear {
-                                    updateTimeUntilEvent()
-                                    
-                                }
-                                .font(.title3)
-                                .foregroundStyle(event.hasPassed ? .red : .primary)
-                                .bold(event.hasPassed)
-                            
-                        }
+                        ]),
                         
-                        Spacer()
+                        startPoint: .bottom,
+                        endPoint: .top
                         
-                        Text(event.emoji ?? "📅")
-                            .font(.system(size: 42))
-                        
-                    }
-                }
-                .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.13) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
-                
-                Section {
-                    HStack {
-                        Text(event.dateString ?? "Event date and time")
-                            .foregroundStyle(event.hasPassed ? .red : .primary)
-                            .bold(event.hasStarted)
-                        
-                    }
-                }
-                .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.11) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
-                
-                
-                if event.description != nil {
-                    Section {
-                        Text(event.description ?? "")
-                        
-                    }
-                    .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
+                    )
+                    .opacity(0.7)
+                    .ignoresSafeArea(.all)
+                    
+                    Spacer()
                     
                 }
                 
-                if event.isCopy ?? false {
-                    if let sourceEvent = data.firstIndex(where: { $0.id == event.copyOfEventWithID }) {
-                        Section {
-                            NavigationLink(destination: EventDetailView(data: $data, eventID: data[sourceEvent].id)) {
-                                Text("View Original Event")
+                EmojiSplashView(emoji: event.emoji!, colour: event.averageColour(saturation: 0.5)!, size: 50, height: 5, width: 5)
+                    .offset(y: -450)
+                
+                NoiseView()
+                
+                VStack {
+                    Rectangle()
+                        .foregroundStyle(.clear)
+                        .frame(height: 100)
+                    
+                    ScrollView(showsIndicators: false) {
+                        LazyVStack(spacing: 16) {
+                            VStack(spacing: 8) {
+                                Text(event.emoji!)
+                                    .font(.system(size: 80))
+                                
+                                Text(event.name ?? "Event Name")
+                                    .font(.largeTitle)
+                                    .bold()
+                                    .multilineTextAlignment(.center)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                
+                            )
+                            .padding(.top, 24)
+                            
+                            VStack(spacing: 4) {
+                                if !event.hasStarted {
+                                    Text("Starting in")
+                                        .font(.headline)
+                                        .foregroundStyle(.secondary)
+                                    
+                                }
+                                
+                                Text(timeUntilEvent)
+                                    .onAppear {
+                                        updateTimeUntilEvent()
+                                        
+                                    }
+                                    .font(.system(size: 32, weight: .bold))
+                                    .multilineTextAlignment(.center)
+                                
+                                if event.hasStarted {
+                                    Text(event.hasPassed ? "ago" : "remaining")
+                                        .font(.headline)
+                                        .foregroundStyle(.secondary)
+                                        
+                                }
                                 
                             }
-                            .bold()
-                            .foregroundStyle(.selection)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(
+                                TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                
+                            )
                             
-                        }
-                        .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
-                        
-                    }
-                    
-                    let totalCopies = data.filter { $0.copyOfEventWithID == event.copyOfEventWithID }
-                    
-                    Section {
-                        Text("Copy \(event.copyNumber ?? 0) of \(totalCopies.count), repeating \(NSLocalizedString(event.recurranceRate ?? "never", comment: ""))")
-                    }
-                    .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.6, brightness: 1.2, opacity: 0.25) ?? Color.white : Color(UIColor.systemGray6))
-                    
-                }
-                
-                
-                Section {
-                    Toggle("Favourite", isOn: $data[dataIndex].isFavourite)
-                        .onChange(of: data[dataIndex].isFavourite) {
-                            Task {
-                                do {
-                                    try await eventStore.save(events: data)
+                            Text(event.dateString ?? "Event date and time")
+                                .font(.system(size: 16, weight: .medium))
+                                .bold(event.hasStarted && !event.hasPassed)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                     
-                                } catch {
-                                    fatalError(error.localizedDescription)
+                                )
+                            
+                            if event.description != nil {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Notes")
+                                        .font(.headline)
+                                        .foregroundStyle(.secondary)
+                                    
+                                    Text(event.description ?? "")
+                                        .font(.body)
                                     
                                 }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding()
+                                .background(
+                                    TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                    
+                                )
+                                
                             }
-                        }
-                    
-                    Toggle("Mute", isOn: $data[dataIndex].isMuted)
-                        .onChange(of: data[dataIndex].isMuted) {
-                            Task {
-                                do {
-                                    try await eventStore.save(events: data)
-                                    
-                                } catch {
-                                    fatalError(error.localizedDescription)
-                                    
-                                }
-                            }
-                        }
-                }
-                .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.09) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
-                
-                Section {
-                    Button {
-                        showConfirmationDialog = true
-                        
-                    } label: {
-                        deleteButton
-                        
-                    }
-                    .confirmationDialog(Text("Delete \"\(event.name ?? "Event")\" ?"),
-                                        isPresented: $showConfirmationDialog,
-                                        titleVisibility: .visible,
-                                        actions: {
-                        Button("Delete", role: .destructive) {
-                            print("Delete Event")
                             
-                            data.remove(at: dataIndex)
-                            
-                            Task {
-                                do {
-                                    try await eventStore.save(events: data)
-                                    
-                                } catch {
-                                    fatalError(error.localizedDescription)
-                                    
+                            if event.isCopy ?? false {
+                                if let sourceEvent = data.firstIndex(where: { $0.id == event.copyOfEventWithID }) {
+                                    VStack {
+                                        NavigationLink(destination: EventDetailView(data: $data, eventID: data[sourceEvent].id)) {
+                                            Text("View Original Event")
+                                            
+                                        }
+                                        .bold()
+                                        .foregroundStyle(.selection)
+                                        
+                                        let totalCopies = data.filter { $0.copyOfEventWithID == event.copyOfEventWithID }
+                                        
+                                        Text("Copy \(event.copyNumber ?? 0) of \(totalCopies.count), repeating \(NSLocalizedString(event.recurranceRate ?? "never", comment: ""))")
+                                        
+                                    }
                                 }
                             }
                             
-                            presentationMode.wrappedValue.dismiss()
-                            dismiss()
+                            VStack(spacing: 12) {
+                                Toggle("Favourite", isOn: $data[dataIndex].isFavourite)
+                                    .onChange(of: data[dataIndex].isFavourite) {
+                                        Task {
+                                            do {
+                                                try await eventStore.save(events: data)
+                                                
+                                            } catch {
+                                                fatalError(error.localizedDescription)
+                                                
+                                            }
+                                        }
+                                    }
+                                
+                                Divider()
+                                
+                                Toggle("Mute", isOn: $data[dataIndex].isMuted)
+                                    .onChange(of: data[dataIndex].isMuted) {
+                                        Task {
+                                            do {
+                                                try await eventStore.save(events: data)
+                                                
+                                            } catch {
+                                                fatalError(error.localizedDescription)
+                                                
+                                            }
+                                        }
+                                    }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(
+                                TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                
+                            )
+                            
+                            Button {
+                                showConfirmationDialog = true
+                                
+                            } label: {
+                                deleteButton
+                                
+                            }
+                                .confirmationDialog(Text("Delete \"\(event.name ?? "Event")\" ?"),
+                                    isPresented: $showConfirmationDialog,
+                                    titleVisibility: .visible,
+                                    actions: {
+                                        Button("Delete", role: .destructive) {
+                                            print("Delete Event")
+                                            
+                                            data.remove(at: dataIndex)
+                                            
+                                            Task {
+                                                do {
+                                                    try await eventStore.save(events: data)
+                                                
+                                                } catch {
+                                                    fatalError(error.localizedDescription)
+                                                
+                                                }
+                                            }
+                                            
+                                            presentationMode.wrappedValue.dismiss()
+                                            dismiss()
+                                        
+                                        }
+                                    },
+                                    message: {
+                                        Text("This action cannot be undone")
+                                    
+                                    }
+                                )
+                                .padding()
+                                .background(
+                                    TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                    
+                                )
                             
                         }
-                    },
-                                        message: {
-                        Text("This action cannot be undone")
+                        .padding()
                         
                     }
+                    .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
+
+                    .background(
+                        TileView(inputColours: event.averageColour(saturation: 0.1, brightness: 1.3) ?? Color(.systemGray6), forceBackground: true, cornerRadius: 36)
+                        
                     )
+                    
+                    .padding()
+                    
                 }
-                .listRowBackground(preferences.listTinting ? event.averageColor(saturation: 0.5, brightness: 1, opacity: 0.08) ?? Color(UIColor.systemGray6) : Color(UIColor.systemGray6))
-                
-                
             }
             .background(.background)
             .scrollContentBackground(.hidden)
@@ -242,11 +317,12 @@ struct EventDetailView: View {
                     }
                 }
             }
-            .navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
+            //.navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
             .sheet(isPresented: $showEditEventSheet) {
                 EditEventSheetView(data: $data, eventID: eventID)
                 
             }
+            
         } else {
             EmptyView()
                 .onAppear {
@@ -295,3 +371,4 @@ struct EventDetailViewPreviews: PreviewProvider {
         }
     }
 }
+
