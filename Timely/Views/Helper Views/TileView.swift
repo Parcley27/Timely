@@ -5,11 +5,12 @@
 //  Created by Pierce Oxley on 9/1/26.
 //
 
+// do listtinting off ones
+
 import SwiftUI
 
 struct TileView: View {
     @Environment(\.colorScheme) var colorScheme
-    
     var isLightMode: Bool { colorScheme == .light }
     
     var tileColours: [Color] = []
@@ -17,36 +18,58 @@ struct TileView: View {
     let brightnesses: [Double] = [1.25, 1.15, 0.95]
     let opacities: [Double] = [0.45, 0.45, 0.45]
     
-    
+    let forceBackground: Bool
+    let saturationModifier: CGFloat
     let showBorder: Bool
     let cornerRadius: CGFloat
     
-    init(inputColours: Color..., customBorder: Bool = false, cornerRadius: CGFloat = 24) {
+    init(inputColours: Color..., forceBackground: Bool = false, saturationModifier: CGFloat = 1, customBorder: Bool = true, cornerRadius: CGFloat = 24) {
         let baseColours = inputColours.isEmpty ? [.blue] : inputColours
         
         let colours = baseColours.count < saturations.count
                 ? Array(repeating: baseColours[0], count: saturations.count)
                 : baseColours
         
+        self.forceBackground = forceBackground
+        self.saturationModifier = saturationModifier
         self.showBorder = customBorder
         self.cornerRadius = cornerRadius
         
         for (index, colour) in colours.enumerated() {
             guard index < saturations.count else { break }
             
-            tileColours.append(
-                colour.adjusted(
-                    saturation: saturations[index],
-                    brightness: brightnesses[index] - (isLightMode ? 0 : 0.25),
-                    opacity: opacities[index]
-                    
+            let adjustedBrightness = brightnesses[index] - (isLightMode ? 0 : 0.25)
+            
+            if colour.isGreyscale {
+                tileColours.append(
+                    colour.asGreyscale(
+                        brightness: adjustedBrightness,
+                        opacity: opacities[index] * saturationModifier
+                        
+                    )
                 )
-            )
+                
+            } else {
+                tileColours.append(
+                    colour.adjusted(
+                        saturation: saturations[index],
+                        brightness: adjustedBrightness,
+                        opacity: opacities[index] * saturationModifier
+                        
+                    )
+                )
+            }
         }
     }
     
     var body: some View {
         ZStack {
+            if forceBackground {
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .foregroundStyle(isLightMode ? .white : .black)
+                
+            }
+            
             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .foregroundStyle(
                     LinearGradient(
@@ -58,20 +81,28 @@ struct TileView: View {
                 )
             
             if showBorder {
-                let borderColour = tileColours.last!.adjusted(saturation: 0.95, brightness: brightnesses.last! - (isLightMode ? 0 : 0.25))
+                let lastTileColour = tileColours.last!
+                let borderBrightness = brightnesses.last! - (isLightMode ? 0 : 0.25)
+                let borderColour = lastTileColour.isGreyscale
+                    ? lastTileColour.asGreyscale(brightness: borderBrightness, opacity: 1.0)
+                    : lastTileColour.adjusted(saturation: 0.95, brightness: borderBrightness)
+                
+//                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+//                    .stroke(
+//                        LinearGradient(
+//                        colors: [borderColour, Color.clear, Color.clear, Color.clear, borderColour],
+//                        startPoint: .topLeading,
+//                        endPoint: .bottomTrailing
+//                        
+//                        ),
+//                        
+//                        lineWidth: 2
+//                    )
+//                    //.brightness(-0.2) // -1 ... 1
                 
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(
-                        LinearGradient(
-                        colors: [borderColour, Color.clear, Color.clear, Color.clear, borderColour],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                        
-                        ),
-                        
-                        lineWidth: 2
-                    )
-                    //.brightness(-0.2) // -1 ... 1
+                    .stroke(borderColour, lineWidth: 2)
+                
             }
         }
     }
@@ -82,7 +113,7 @@ struct TileView: View {
     
     ZStack {
         //Text("asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfsadfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf")
-        TileView(inputColours: .blue, customBorder: true, cornerRadius: cornerRadius)
+        TileView(inputColours: .white, customBorder: true, cornerRadius: cornerRadius)
             .frame(maxWidth: 300, maxHeight: 100)
         
         Text("Hello, TileView!")
