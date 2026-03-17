@@ -212,22 +212,18 @@ struct EditEventSheetView: View {
                     }
                     
                     Section(NSLocalizedString("Date and Time", comment: "")) {
-                        DatePicker(NSLocalizedString("Start Date", comment: ""), selection: $editedDateAndTime, displayedComponents: [.date])
-                            .datePickerStyle(GraphicalDatePickerStyle())
+                        DatePicker(NSLocalizedString("Start Time", comment: ""), selection: $editedDateAndTime, displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.compact)
+                            .opacity(!editedIsAllDay ? 1.0 : 0.5)
                         
-                        HStack {
-                            Text(NSLocalizedString("Start Time", comment: ""))
-                            
-                            DatePicker(" ", selection: $editedDateAndTime, displayedComponents: [.hourAndMinute])
-                                .datePickerStyle(GraphicalDatePickerStyle())
-                            
-                        }
-                        .disabled(editedIsAllDay)
-                        .opacity(!editedIsAllDay ? 1.0 : 0.5)
+                        DatePicker(NSLocalizedString("End Time", comment: ""), selection: $editedEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.compact)
+                            .opacity(!editedIsAllDay ? 1.0 : 0.5)
+                            .disabled(editedIsAllDay)
                         
                         Toggle(NSLocalizedString("All Day", comment: ""), isOn: $editedIsAllDay)
-                            .onChange(of: editedIsAllDay) {
-                                if editedIsAllDay {
+                            .onChange(of: editedIsAllDay) { _, newValue in
+                                if newValue {
                                     editedDateAndTime = setTime(for: editedDateAndTime, hour: 0, minute: 0, second: 0) ?? editedDateAndTime
                                     editedEndDateAndTime = setTime(for: editedDateAndTime, hour: 23, minute: 59, second: 59) ?? editedEndDateAndTime
                                     
@@ -235,14 +231,8 @@ struct EditEventSheetView: View {
                             }
                             .padding(.vertical, 8)
                         
-                        DatePicker(NSLocalizedString("End Time", comment: ""), selection: $editedEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
-                            .datePickerStyle(.compact)
-                            .padding(.vertical, 8)
-                            .opacity(!editedIsAllDay ? 1.0 : 0.5)
-                            .disabled(editedIsAllDay)
-                        
                     }
-                    .onChange(of: editedDateAndTime) {
+                    .onChange(of: editedDateAndTime) { _, _ in
                         if !editedIsAllDay {
                             let eventLength = editedEndDateAndTime.timeIntervalSince(dummyDateAndTime)
                             

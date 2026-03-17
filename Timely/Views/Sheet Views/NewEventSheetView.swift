@@ -341,19 +341,14 @@ struct NewEventSheetView: View {
                     }
                     
                     Section("Date and Time") {
-                        DatePicker("Start Date", selection: $formDateAndTime, in: dateRange, displayedComponents: [.date])
-                            .datePickerStyle(GraphicalDatePickerStyle())
+                        DatePicker("Start Time", selection: $formDateAndTime, in: dateRange, displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.compact)
+                            .opacity(!formIsAllDay ? 1.0 : 0.5)
                         
-                        HStack {
-                            Text("Start Time")
-                            
-                            DatePicker(" ", selection: $formDateAndTime, in: dateRange, displayedComponents: [.hourAndMinute])
-                                .datePickerStyle(GraphicalDatePickerStyle())
-                            
-                        }
-                        .disabled(formIsAllDay)
-                        .opacity(!formIsAllDay ? 1.0 : 0.5)
-                        
+                        DatePicker("End Time", selection: $formEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.compact)
+                            .opacity(!formIsAllDay ? 1.0 : 0.5)
+                            .disabled(formIsAllDay)
                         
                         Toggle("All Day", isOn: $formIsAllDay)
                             .onChange(of: formIsAllDay) { _, newValue in
@@ -364,12 +359,6 @@ struct NewEventSheetView: View {
                                 }
                             }
                             .padding(.vertical, 8)
-                        
-                        DatePicker("End Time", selection: $formEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
-                            .datePickerStyle(.compact)
-                            .padding(.vertical, 8)
-                            .opacity(!formIsAllDay ? 1.0 : 0.5)
-                            .disabled(formIsAllDay)
                         
                     }
                     .onChange(of: formDateAndTime) { _, _ in
@@ -443,7 +432,7 @@ struct NewEventSheetView: View {
                     
                     if preferences.quickAdd {
                         Section {
-                            Label("Quick Add enabled: Some fields auto-filled with defaults", systemImage: "bolt.fill")
+                            Label("**Quick Add enabled**\nSome fields auto-filled with defaults", systemImage: "bolt.fill")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
