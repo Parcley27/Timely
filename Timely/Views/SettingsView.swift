@@ -83,7 +83,7 @@ struct SettingsView: View {
                         }
                     }
                     
-                    Section("Apperance") {
+                    Section("Appearance") {
                         Toggle(isOn: $temporaryLegacyLayout) {
                             Text("Use Legacy Layout")
                             
