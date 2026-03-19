@@ -76,8 +76,8 @@ struct EditEventSheetView: View {
     }
     
     func saveEvent() {
-        let eventIndex = data.firstIndex(where: { $0.id == eventID })!
-        
+        guard let eventIndex = data.firstIndex(where: { $0.id == eventID }) else { return }
+
         data[eventIndex].name = editedName.trimmingCharacters(in: .whitespaces)
         
         if editedEmoji == "" {
@@ -183,7 +183,6 @@ struct EditEventSheetView: View {
         let eventIndex = data.firstIndex(where: { $0.id == eventID })!
         
         NavigationStack {
-            
             VStack(spacing: 0) {
                 if data[eventIndex].isCopy ?? false {
                     Text(NSLocalizedString("Note: Changes made apply only to this event", comment: ""))
@@ -425,6 +424,18 @@ struct EditEventSheetView: View {
                 
                 editedFavourite = data[eventIndex].isFavourite
                 editedMute = data[eventIndex].isMuted
+                
+            }
+        }
+        .onAppear {
+            if !data.contains(where: { $0.id == eventID }) {
+                dismiss()
+                
+            }
+        }
+        .onChange(of: data) {
+            if !data.contains(where: { $0.id == eventID }) {
+                dismiss()
                 
             }
         }
