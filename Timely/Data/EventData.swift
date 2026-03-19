@@ -229,9 +229,9 @@ struct Event: Identifiable, Codable, Hashable {
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .full
         
-        let oneDayInSeconds = 86000.0
-        let oneHourInSeconds = 3600.0
         let oneMinuteInSeconds = 60.0
+        let oneHourInSeconds = oneMinuteInSeconds * 60
+        let oneDayInSeconds = oneHourInSeconds * 24
         
         var isWithin60Sec = false
         
