@@ -32,6 +32,9 @@ struct CalendarDay: Identifiable, Hashable {
 struct CalendarView: View {
     @StateObject private var eventStore = EventStore()
     
+    @Environment(\.colorScheme) var colorScheme
+    var isLightMode: Bool { colorScheme == .light }
+    
     @Binding var data: [Event]
     
     @State var month: Int
@@ -169,13 +172,6 @@ struct CalendarView: View {
         
         if isCurrentDay(possibleDay: day) && month == currentMonth && year == currentYear {
             opacity = 1.0
-            /*
-            opacity = 0.35 + (Double(eventsOnDay(searchingDay: day).count) * multiplier)
-            if opacity > 0.75 {
-                opacity = 0.75
-                
-            }
-             */
             
         } else  {
             opacity += (Double(eventsOnDay(searchingDay: day).count) * multiplier)
@@ -193,76 +189,88 @@ struct CalendarView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                HStack {
-                    Button() {
-                        if month == 1 {
-                            month = 12
-                            year -= 1
-                            
-                        } else {
-                            month -= 1
-                            
-                        }
-                        
-                    } label: {
-                        Image(systemName: "lessthan")
-                            .font(.title)
-                        
-                    }
-                    .padding(.vertical, 4)
-                    .padding(.horizontal)
-                    //.padding(.leading)
-                    //.padding(.trailing, 10)
-                    .background(.ultraThickMaterial , in: RoundedRectangle(cornerRadius: 25.0))
-                    
-                    Button("\(monthNames[month - 1]) \(String(year))") {
-                        month = currentMonth
-                        year = currentYear
-                        
-                    }
-                    .font(.title2)
-                    .frame(width: 170)
-                    
-                    
-                    Button() {
-                        if month == 12 {
-                            month = 1
-                            year += 1
-                            
-                        } else {
-                            month += 1
-                            
-                        }
-                    } label: {
-                        Image(systemName: "greaterthan")
-                            .font(.title)
-                        
-                    }
-                    .padding(.vertical, 8)
-                    .padding(.horizontal)
-                    //.padding(.leading, 20)
-                    //.padding(.trailing, 8)
-                    .background(.ultraThickMaterial, in: RoundedRectangle(cornerRadius: 25.0))
+            ZStack {
+                if isLightMode {
+                    NoiseView()
                     
                 }
-                .background(.bar, in: RoundedRectangle(cornerRadius: 25.0))
-                .padding(.vertical, 8)
                 
                 VStack {
+                    // Month navigation bar
+                    HStack {
+                        Button {
+                            if month == 1 {
+                                month = 12
+                                year -= 1
+                                
+                            } else {
+                                month -= 1
+                                
+                            }
+                            
+                        } label: {
+                            Image(systemName: "chevron.left")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                            
+                        }
+                        .padding(.leading, 16)
+                        
+                        Spacer()
+                        
+                        Button("\(monthNames[month - 1]) \(String(year))") {
+                            month = currentMonth
+                            year = currentYear
+                            
+                        }
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        
+                        Spacer()
+                        
+                        Button {
+                            if month == 12 {
+                                month = 1
+                                year += 1
+                                
+                            } else {
+                                month += 1
+                                
+                            }
+                            
+                        } label: {
+                            Image(systemName: "chevron.right")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                            
+                        }
+                        .padding(.trailing, 16)
+                        
+                    }
+                    .padding(.vertical, 12)
+                    .background(
+                        TileView(inputColours: .accentColor, forceBackground: true, saturationModifier: 0.6, customBorder: true)
+                        
+                    )
+                    .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    
+                    // Day name headers
                     LazyVGrid(columns: columnLayout) {
                         ForEach(dayNames, id: \.self) { name in
                             Text(name)
-                                .foregroundStyle(.primary)
-                                .bold()
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.secondary)
+                            
                         }
                     }
                     .padding(.horizontal)
                     .padding(.bottom, 4)
-                    //.padding(.top)
                     
-                    //LazyVGrid(columns: columnLayout, spacing: 5) {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
+                    // Calendar grid
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
                         ForEach(daysInMonth, id: \.self) { tile in
                             NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date) {
                                 Task {
@@ -277,7 +285,6 @@ struct CalendarView: View {
                             }
                                 .task {
                                     do {
-                                        //try await eventList.load()
                                         eventStore.loadFromiCloud()
                                         print("Loading events: ")
                                         
@@ -290,78 +297,57 @@ struct CalendarView: View {
                                         
                                     }
                                 }) {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 8)
+                                    if tile.isPlaceholder {
+                                        Color.clear
                                             .aspectRatio(0.7, contentMode: .fit)
-                                            .foregroundStyle(tile.isPlaceholder ? .clear : isCurrentDay(possibleDay: tile) ? Color.accentColor : .blue)
-                                            .opacity(computedOpacity(day: tile))
-                                            .shadow(radius: isCurrentDay(possibleDay: tile) ? 8 : 0)
                                         
-                                        if !tile.isPlaceholder {
-                                            VStack(spacing: 4) {
-                                                Text(localizedNumber(tile.day!))
-                                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                                                    .font(.title3)
-                                                    .bold()
-                                                    .foregroundStyle(.white)
-                                                    .cornerRadius(8)
-                                                
-                                                let eventsOnThisDay = eventsOnDay(searchingDay: tile).count
-                                                
-                                                let capsuleHeight = 6.0
-                                                let capsuleWidth = capsuleHeight/2 + (capsuleHeight * Double(eventsOnThisDay))
-                                                
-                                                Capsule()
-                                                    .fill(.white)
-                                                    .opacity(eventsOnThisDay > 0 ? 1.0 : 0.0)
-                                                    .frame(width: capsuleWidth > 30 ? 30 : capsuleWidth, height: capsuleHeight)
-                                                
-                                                Spacer()
-                                                
-                                            }
-                                            .shadow(radius: 8)
+                                    } else {
+                                        let isCurrent = isCurrentDay(possibleDay: tile)
+                                        let dayEvents = eventsOnDay(searchingDay: tile)
+                                        let hasEvents = !dayEvents.isEmpty
+                                        
+                                        VStack(spacing: 4) {
+                                            Text(localizedNumber(tile.day!))
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                                                .font(.title3)
+                                                .bold()
+                                                .foregroundStyle(.primary)
+                                            
+                                            let capsuleHeight = 6.0
+                                            let capsuleWidth = capsuleHeight / 2 + (capsuleHeight * Double(dayEvents.count))
+                                            
+                                            Capsule()
+                                                .fill(hasEvents ? Color.accentColor : .clear)
+                                                .frame(width: min(capsuleWidth, 30), height: capsuleHeight)
+                                            
+                                            Spacer()
                                             
                                         }
+                                        .aspectRatio(0.7, contentMode: .fit)
+                                        .background(
+                                            TileView(
+                                                inputColours: isCurrent ? Color.accentColor : (hasEvents ? Color.accentColor : Color(.black)),
+                                                forceBackground: false,
+                                                saturationModifier: isCurrent ? 1.0 : (hasEvents ? 0.8 : (isLightMode ? 0.9 : 0.2)),
+                                                customBorder: false,
+                                                cornerRadius: 12
+                                            )
+                                            
+                                        )
+                                        .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 12))
+                                        .shadow(color: isCurrent ? Color.accentColor.opacity(0.4) : .clear, radius: 8)
+                                        
                                     }
                                 }
                         }
                         .padding(.vertical, 2)
                     }
                     .padding(.horizontal)
+                    
                     Spacer()
+                    
                 }
                 .toolbar {
-                    /*
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        NavigationLink(destination: EventListView(data: $data, dateToDisplay: Date()) {
-                            Task {
-                                do {
-                                    try await eventList.save(events: eventList.events)
-                                } catch {
-                                    fatalError(error.localizedDescription)
-                                }
-                            }
-                        }
-                            .task {
-                                do {
-                                    //try await eventList.load()
-                                    eventList.loadFromiCloud()
-                                    print("Loading events: ")
-                                    
-                                    for event in eventList.events {
-                                        print(event.name!, terminator: " ")
-                                        
-                                    }
-                                    
-                                    print("")
-                                    
-                                }
-                            }) {
-                                Text("Today")
-                            }
-                    }
-                     */
-                    
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button() {
                             showingSettings = true
@@ -374,7 +360,6 @@ struct CalendarView: View {
                     SettingsView()
                 }
                 .navigationBarTitle("Calendar")
-                //.navigationBarTitle("\(monthNames[month - 1]) \(String(year))")
             }
         }
     }
