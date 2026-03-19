@@ -37,7 +37,8 @@ struct Event: Identifiable, Codable, Hashable {
         let font = UIFont.systemFont(ofSize: 7)
         let attributes: [NSAttributedString.Key: Any] = [.font: font]
         
-        self.emoji!.draw(in: rect, withAttributes: attributes)
+        let emoji = self.emoji ?? "📅"
+        emoji.draw(in: rect, withAttributes: attributes)
         
         // Get image from emoji drawing
         guard let image = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
@@ -48,7 +49,10 @@ struct Event: Identifiable, Codable, Hashable {
         let width = cgImage.width
         let height = cgImage.height
         let colorSpace = CGColorSpaceCreateDeviceRGB()
+        
         let rawData = calloc(height * width * 4, MemoryLayout<CUnsignedChar>.size)
+        defer { free(rawData) }
+        
         let bytesPerPixel = 4
         let bytesPerRow = bytesPerPixel * width
         let bitsPerComponent = 8
@@ -99,7 +103,6 @@ struct Event: Identifiable, Codable, Hashable {
             return baseColour.adjusted(saturation: saturation, brightness: brightness, opacity: opacity)
             
         }
-        
     }
     
     var description: String?
