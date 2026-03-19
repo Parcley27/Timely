@@ -69,7 +69,7 @@ struct SettingsView: View {
                 List {
                     Section("App Behaviour") {
                         Toggle(isOn: $preferences.quickAdd) {
-                            Text("Enable Quick Add Events")
+                            Text("Enable Quick Add")
                             
                         }
                         
@@ -176,7 +176,7 @@ struct SettingsView: View {
                     
                     Section("Credits") {
                         Button() {
-                            openURL(URL(string: "https://github.com/Parcley27")!)
+                            openURL(URL(string: "https:pierceoxley.ca")!)
                             
                         } label: {
                             customButton(text: NSLocalizedString("Created by Pierce Nestibo-Oxley", comment: ""), icon: "person.circle")
@@ -188,9 +188,6 @@ struct SettingsView: View {
                     }
                     
                     Section("App Information") {
-                        Text("Version")
-                            .badge(Bundle.main.fullVersion)
-                        
                         Button() {
                             openURL(URL(string: "https://apps.apple.com/ca/app/timely-event-tracker/id6503667182")!)
                             
@@ -205,6 +202,10 @@ struct SettingsView: View {
                             customButton(text: NSLocalizedString("Timely GitHub", comment: ""), icon: "arrow.up.forward.app")
                             
                         }
+                        
+                        Text("Version")
+                            .badge(Bundle.main.fullVersion)
+                        
                     }
                     
                     Section("Danger Zone") {
