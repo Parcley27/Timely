@@ -461,7 +461,7 @@ struct EventListView: View {
                                     deleteEvent(with: event.id)
                                     
                                 } label: {
-                                    Label("Delete \"\(event.name!)\"", systemImage: "trash")
+                                    Label("Delete \"\(event.name ?? "Event Name")\"", systemImage: "trash")
                                     
                                 }
                             }

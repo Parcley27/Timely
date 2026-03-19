@@ -93,7 +93,7 @@ struct ContentView: View {
                                 print("Loading events: ")
                                 
                                 for event in eventStore.events {
-                                    print(event.name!, terminator: " ")
+                                    print(event.name ?? "Event Name", terminator: " ")
                                     
                                 }
                                 
@@ -131,7 +131,7 @@ struct ContentView: View {
                                 print("Loading events: ")
                                 
                                 for event in eventStore.events {
-                                    print(event.name!, terminator: " ")
+                                    print(event.name ?? "Event Name", terminator: " ")
                                     
                                 }
                                 

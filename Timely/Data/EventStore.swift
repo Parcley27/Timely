@@ -161,7 +161,7 @@ class EventStore: ObservableObject {
         removeAllNotifications()
         
         for event in events.filter({ !$0.hasStarted }) {
-            print("Writing notification for \(event.name!)")
+            print("Writing notification for \(event.name ?? "Event Name")")
             
             scheduleNotifications(for: event)
             
@@ -198,7 +198,7 @@ class EventStore: ObservableObject {
         let notificationIdentifier = "\(event.id.uuidString) \(time) minutes"
         
         let content = UNMutableNotificationContent()
-        content.title = "\(event.name!) • \(event.emoji!)"
+        content.title = "\(event.name ?? "Event Name") • \(event.emoji!)"
         content.sound = .default
         
         let eventTime = formatTimeForNotification(from: event.dateAndTime)

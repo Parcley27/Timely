@@ -304,7 +304,7 @@ struct NewEventSheetView: View {
         print("Saving event: \(newEvent)")
         
         for event in data {
-            print(event.name!, terminator: ", ")
+            print(event.name ?? "Event Name", terminator: ", ")
             print("")
             
         }
