@@ -72,7 +72,7 @@ struct EventDetailView: View {
                     LinearGradient(
                         gradient: Gradient(stops: [
                             .init(color: .clear, location: 0.5),
-                            .init(color: event.averageColour(saturation: 0.7)!, location: 0.9)
+                            .init(color: event.averageColour(saturation: 0.7) ?? Color(.blue), location: 0.9)
                             
                         ]),
                         
@@ -87,7 +87,7 @@ struct EventDetailView: View {
                     
                 }
                 
-                EmojiSplashView(emoji: event.emoji!, colour: event.averageColour(saturation: 0.5)!, size: 50, height: 5, width: 5)
+                EmojiSplashView(emoji: event.emoji ?? "📅", colour: event.averageColour(saturation: 0.5) ?? Color(.blue), size: 50, height: 5, width: 5)
                     .offset(y: -450)
                 
                 NoiseView()
@@ -100,7 +100,7 @@ struct EventDetailView: View {
                     ScrollView(showsIndicators: false) {
                         LazyVStack(spacing: 16) {
                             VStack(spacing: 8) {
-                                Text(event.emoji!)
+                                Text(event.emoji ?? "📅")
                                     .font(.system(size: 80))
                                 
                                 Text(event.name ?? "Event Name")
@@ -111,7 +111,7 @@ struct EventDetailView: View {
                             .padding()
                             .frame(maxWidth: .infinity)
                             .background(
-                                TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                 
                             )
                             .padding(.top, 24)
@@ -143,7 +143,7 @@ struct EventDetailView: View {
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(
-                                TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                 
                             )
                             
@@ -153,7 +153,7 @@ struct EventDetailView: View {
                                 .frame(maxWidth: .infinity)
                                 .padding()
                                 .background(
-                                    TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                    TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                     
                                 )
                             
@@ -170,7 +170,7 @@ struct EventDetailView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding()
                                 .background(
-                                    TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                    TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                     
                                 )
                                 
@@ -226,7 +226,7 @@ struct EventDetailView: View {
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(
-                                TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                 
                             )
                             
@@ -268,7 +268,7 @@ struct EventDetailView: View {
                                 )
                                 .padding()
                                 .background(
-                                    TileView(inputColours: event.averageColour()!, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                    TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                     
                                 )
                             

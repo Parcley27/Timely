@@ -198,7 +198,7 @@ class EventStore: ObservableObject {
         let notificationIdentifier = "\(event.id.uuidString) \(time) minutes"
         
         let content = UNMutableNotificationContent()
-        content.title = "\(event.name ?? "Event Name") • \(event.emoji!)"
+        content.title = "\(event.name ?? "Event Name") • \(event.emoji ?? "📅")"
         content.sound = .default
         
         let eventTime = formatTimeForNotification(from: event.dateAndTime)
