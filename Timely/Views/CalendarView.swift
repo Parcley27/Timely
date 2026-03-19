@@ -30,7 +30,7 @@ struct CalendarDay: Identifiable, Hashable {
 }
 
 struct CalendarView: View {
-    @StateObject private var eventStore = EventStore()
+    @EnvironmentObject var eventStore: EventStore
     
     @Environment(\.colorScheme) var colorScheme
     var isLightMode: Bool { colorScheme == .light }

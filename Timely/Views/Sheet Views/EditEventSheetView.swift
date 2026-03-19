@@ -19,7 +19,8 @@ struct EditEventSheetView: View {
     @Binding var data: [Event]
     let eventID: UUID
     
-    @StateObject private var preferences = SettingsStore()
+    @EnvironmentObject var eventStore: EventStore
+    @EnvironmentObject var preferences: SettingsStore
     
     @Environment(\.dismiss) var dismiss
     
@@ -135,7 +136,7 @@ struct EditEventSheetView: View {
         
         Task {
             do {
-                try await EventStore().save(events: data)
+                try await eventStore.save(events: data)
                 
             } catch {
                 fatalError(error.localizedDescription)
@@ -385,7 +386,7 @@ struct EditEventSheetView: View {
                                 
                                 Task {
                                     do {
-                                        try await EventStore().save(events: data)
+                                        try await eventStore.save(events: data)
                                     } catch {
                                         fatalError(error.localizedDescription)
                                     }
@@ -452,6 +453,8 @@ struct EditEventSheetViewPreviews: PreviewProvider {
         let previewEvents = Binding.constant(previewData.events)
         
         return EditEventSheetView(data: previewEvents, eventID: previewEvents[0].id)
+            .environmentObject(EventStore())
+            .environmentObject(SettingsStore())
         
     }
 }

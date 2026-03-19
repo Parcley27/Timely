@@ -9,7 +9,6 @@ import SwiftUI
 import Foundation
 
 struct NewEventSheetView: View {
-    
     init(data: Binding<[Event]>) {
         self._data = data
         
@@ -23,7 +22,9 @@ struct NewEventSheetView: View {
     }
     
     @Binding var data: [Event]
-    @StateObject private var eventStore = EventStore()
+    
+    @EnvironmentObject private var eventStore: EventStore
+    
     @StateObject private var preferences = SettingsStore()
     
     @Environment(\.dismiss) var dismiss
