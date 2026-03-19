@@ -57,18 +57,20 @@ struct ContentView: View {
     func localizedNumber(_ number: Int) -> String {
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
+        
         return formatter.string(from: NSNumber(value: number)) ?? "\(number)"
         
     }
+    
     var badgeCount: Int {
         return filterPassedEvents(events: eventStore.events)?.count ?? 0
+        
     }
     
     var shouldShowBadge: Bool {
         return preferences.showBadge && badgeCount > 0
+        
     }
-    
-
     
     var body: some View {
         ZStack {
@@ -96,12 +98,8 @@ struct ContentView: View {
                                     print(event.name ?? "Event Name", terminator: " ")
                                     
                                 }
-                                
-                                print("")
-                                
                             }
                         }
-                        
                     }
                     .badge(shouldShowBadge ? Text(localizedNumber(badgeCount)) : nil)
                     
@@ -134,21 +132,9 @@ struct ContentView: View {
                                     print(event.name ?? "Event Name", terminator: " ")
                                     
                                 }
-                                
-                                print("")
-                                
                             }
                         }
                     }
-                    
-                    //                    Tab("Noise Test", systemImage: "speaker") {
-                    //                        ZStack {
-                    //                            Color.blue
-                    //                            Text("Hello, Noise!")
-                    //                            NoiseView()
-                    //
-                    //                        }
-                    //                    }
                     
                     if !preferences.useLegacyLayout {
                         Tab("New Event", systemImage: "plus", role: .search) {
@@ -163,18 +149,18 @@ struct ContentView: View {
                 .id(preferences.useLegacyLayout) // Force to rerender when layout preference changes
                 .overlay(alignment: .bottom) {
                     GeometryReader { geometry in // New button collider
-                        Color.red
-                            .opacity(0)
+                        Color.clear
                             .contentShape(Circle())
                             .frame(width: 60, height: 60)
                             .position(x: geometry.size.width * 0.87, y: geometry.size.height * 0.98)
+                            .allowsHitTesting(true)
                             .onTapGesture {
-                                if !preferences.useLegacyLayout {
-                                    showNewSheet = true
-                                    
-                                }
+                                showNewSheet = true
+                                
                             }
                     }
+                    .allowsHitTesting(!preferences.useLegacyLayout)
+                    
                 }
                 .sheet(isPresented: $showNewSheet) {
                     NewEventSheetView(data: $eventStore.events)
@@ -199,18 +185,18 @@ struct ContentView: View {
         }
         .overlay(alignment: .bottom) { // Legacy button collider
             GeometryReader { geometry in
-                Color.red
-                    .opacity(0)
+                Color.clear
                     .contentShape(Circle())
                     .frame(width: buttonSize, height: buttonSize * 1.25)
                     .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.95)
+                    .allowsHitTesting(true)
                     .onTapGesture {
-                        if preferences.useLegacyLayout {
-                            showNewSheet = true
-                            
-                        }
+                        showNewSheet = true
+                        
                     }
             }
+            .allowsHitTesting(preferences.useLegacyLayout)
+            
         }
         .alert("Could Not Save", isPresented: Binding(
             get: { eventStore.saveError != nil },
