@@ -8,8 +8,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 @main
 struct TimelyApp: App {
     @StateObject var eventStore = EventStore()
