@@ -163,7 +163,10 @@ struct EventListView: View {
             goodEvents.append(contentsOf: filteredData.filter { $0.hasStarted && !$0.hasPassed })
             goodEvents.append(contentsOf: filteredData.filter { !$0.hasStarted && !$0.hasPassed })
             
-            let pastEvents = filteredData.filter { $0.hasPassed }.sorted(by: { $0.endDateAndTime! > $1.endDateAndTime! })
+            let pastEvents = filteredData
+                .filter { $0.hasPassed }
+                .sorted(by: { ($0.endDateAndTime ?? .distantPast) > ($1.endDateAndTime ?? .distantPast) })
+            
             goodEvents.append(contentsOf: pastEvents)
             
             agreeingEvents = Array(goodEvents.prefix(maxDisplayedEvents))
