@@ -101,7 +101,7 @@ struct TileView: View {
 //                    //.brightness(-0.2) // -1 ... 1
                 
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(borderColour, lineWidth: 2)
+                    .stroke(borderColour, lineWidth: 1)
                 
             }
         }
@@ -113,7 +113,7 @@ struct TileView: View {
     
     ZStack {
         //Text("asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfsadfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf")
-        TileView(inputColours: .white, customBorder: true, cornerRadius: cornerRadius)
+        TileView(inputColours: .black, customBorder: true, cornerRadius: cornerRadius)
             .frame(maxWidth: 300, maxHeight: 100)
         
         Text("Hello, TileView!")

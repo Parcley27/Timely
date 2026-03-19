@@ -65,7 +65,7 @@ extension Color {
         let greyValue = (Double(red) + Double(green) + Double(blue)) / 3.0
         
         // Map brightness parameter to min - max range
-        let greyLower = 0.3 + (brightness * 0.58)
+        let greyLower = 0.1 + (brightness * 0.58)
         let greyUpper = 0.93 + (brightness * 0.07)
         
         let minGrey = min(greyLower, greyUpper)
