@@ -278,7 +278,7 @@ struct CalendarView: View {
                                         try await eventStore.save(events: eventStore.events)
                                         
                                     } catch {
-                                        fatalError(error.localizedDescription)
+                                        eventStore.saveError = error
                                         
                                     }
                                 }

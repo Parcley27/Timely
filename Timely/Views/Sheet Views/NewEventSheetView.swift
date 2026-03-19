@@ -297,7 +297,7 @@ struct NewEventSheetView: View {
                 try await eventStore.save(events: data)
                 
             } catch {
-                fatalError(error.localizedDescription)
+                eventStore.saveError = error
                 
             }
         }

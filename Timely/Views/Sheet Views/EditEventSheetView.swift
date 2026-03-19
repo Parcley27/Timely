@@ -139,7 +139,7 @@ struct EditEventSheetView: View {
                 try await eventStore.save(events: data)
                 
             } catch {
-                fatalError(error.localizedDescription)
+                eventStore.saveError = error
                 
             }
         }
@@ -388,7 +388,7 @@ struct EditEventSheetView: View {
                                     do {
                                         try await eventStore.save(events: data)
                                     } catch {
-                                        fatalError(error.localizedDescription)
+                                        eventStore.saveError = error
                                     }
                                 }
                                 

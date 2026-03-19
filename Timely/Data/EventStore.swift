@@ -10,6 +10,7 @@ import SwiftUI
 
 class EventStore: ObservableObject {
     @Published var events: [Event] = []
+    @Published var saveError: Error?
     
     private static func fileURL() throws -> URL {
         try FileManager.default.url(for: .documentDirectory,
@@ -142,8 +143,10 @@ class EventStore: ObservableObject {
                 try await save(events: events)
                 
             } catch {
-                fatalError(error.localizedDescription)
-                
+                await MainActor.run {
+                    self.saveError = error
+                    
+                }
             }
         }
     }

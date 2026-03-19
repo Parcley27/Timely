@@ -202,7 +202,7 @@ struct EventDetailView: View {
                                                 try await eventStore.save(events: data)
                                                 
                                             } catch {
-                                                fatalError(error.localizedDescription)
+                                                eventStore.saveError = error
                                                 
                                             }
                                         }
@@ -217,7 +217,7 @@ struct EventDetailView: View {
                                                 try await eventStore.save(events: data)
                                                 
                                             } catch {
-                                                fatalError(error.localizedDescription)
+                                                eventStore.saveError = error
                                                 
                                             }
                                         }
@@ -251,7 +251,7 @@ struct EventDetailView: View {
                                                     try await eventStore.save(events: data)
                                                 
                                                 } catch {
-                                                    fatalError(error.localizedDescription)
+                                                    eventStore.saveError = error
                                                 
                                                 }
                                             }

@@ -80,7 +80,7 @@ struct ContentView: View {
                                 do {
                                     try await eventStore.save(events: eventStore.events)
                                 } catch {
-                                    fatalError(error.localizedDescription)
+                                    eventStore.saveError = error
                                     
                                 }
                             }
@@ -119,7 +119,7 @@ struct ContentView: View {
                                     try await eventStore.save(events: eventStore.events)
                                     
                                 } catch {
-                                    fatalError(error.localizedDescription)
+                                    eventStore.saveError = error
                                     
                                 }
                             }
@@ -141,14 +141,14 @@ struct ContentView: View {
                         }
                     }
                     
-//                    Tab("Noise Test", systemImage: "speaker") {
-//                        ZStack {
-//                            Color.blue
-//                            Text("Hello, Noise!")
-//                            NoiseView()
-//                            
-//                        }
-//                    }
+                    //                    Tab("Noise Test", systemImage: "speaker") {
+                    //                        ZStack {
+                    //                            Color.blue
+                    //                            Text("Hello, Noise!")
+                    //                            NoiseView()
+                    //
+                    //                        }
+                    //                    }
                     
                     if !preferences.useLegacyLayout {
                         Tab("New Event", systemImage: "plus", role: .search) {
@@ -211,6 +211,20 @@ struct ContentView: View {
                         }
                     }
             }
+        }
+        .alert("Could Not Save", isPresented: Binding(
+            get: { eventStore.saveError != nil },
+            set: { if !$0 { eventStore.saveError = nil } }
+            
+        )) {
+            Button("Ok") {
+                eventStore.saveError = nil
+                
+            }
+            
+        } message: {
+            Text(eventStore.saveError?.localizedDescription ?? "An unknown error occurred")
+            
         }
     }
 }
