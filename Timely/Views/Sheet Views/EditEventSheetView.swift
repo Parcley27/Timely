@@ -78,20 +78,27 @@ struct EditEventSheetView: View {
     
     func saveEvent() {
         guard let eventIndex = data.firstIndex(where: { $0.id == eventID }) else { return }
-
+        
         data[eventIndex].name = editedName.trimmingCharacters(in: .whitespaces)
         
         if editedEmoji == "" {
-            var hasFoundEmoji = false
-            
             for character in editedName {
-                let unicodeScalars = character.unicodeScalars
-                
-                for scalar in unicodeScalars {
-                    if (scalar.value >= 0x1F600 && scalar.value <= 0x1F64F) {
-                        data[eventIndex].emoji = String(character)
-                        hasFoundEmoji = true
+                if data[eventIndex].emoji == String(character) {
+                    editedEmoji = String(character)
+                    if let characterIndex = editedName.firstIndex(of: character) {
+                        editedName.remove(at: characterIndex)
                         
+                    }
+                    
+                    break
+                    
+                }
+            }
+            
+            if editedEmoji == "" {
+                for character in editedName {
+                    if character.unicodeScalars.allSatisfy({ $0.properties.isEmoji && $0.properties.isEmojiPresentation }) {
+                        editedEmoji = String(character)
                         if let characterIndex = editedName.firstIndex(of: character) {
                             editedName.remove(at: characterIndex)
                             
@@ -101,16 +108,15 @@ struct EditEventSheetView: View {
                         
                     }
                 }
+            }
+            
+            if editedEmoji == "" {
+                editedEmoji = "📅"
                 
-                if hasFoundEmoji {
-                    break
-                    
-                }
             }
             
         } else {
             editedEmoji = String(editedEmoji.prefix(1))
-            data[eventIndex].emoji = editedEmoji
             
         }
         
@@ -174,6 +180,7 @@ struct EditEventSheetView: View {
         
         if let newDate = calendar.date(byAdding: dateComponent, to: inputDate) {
             return newDate
+            
         }
         
         return inputDate
@@ -282,6 +289,7 @@ struct EditEventSheetView: View {
                                     .foregroundStyle(.quaternary)
                                     .opacity(editedDescription == "" ? 100 : 0)
                                     .padding(.leading, 4)
+                                
                                 Spacer()
                                 
                             }
