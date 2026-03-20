@@ -137,31 +137,18 @@ struct CalendarView: View {
         return days
         
     }
-    
+
     func eventsOnDay(searchingDay: CalendarDay) -> [Event] {
-        var matchingEvents = [Event(name: "")]
-        matchingEvents.removeAll()
+        let calendar = Calendar.current
+        let searchDay = calendar.startOfDay(for: searchingDay.date ?? Date())
         
-        let matchingYear = searchingDay.year
-        let matchingMonth = searchingDay.month
-        let matchingDay = searchingDay.day
-        
-        for event in data {
-            for occuringDate in event.isOnDates {
-                let eventYear = Calendar.current.component(.year, from: occuringDate)
-                let eventMonth = Calendar.current.component(.month, from: occuringDate)
-                let eventDay = Calendar.current.component(.day, from: occuringDate)
-                
-                if matchingYear == eventYear && matchingMonth == eventMonth && matchingDay == eventDay {
-                    matchingEvents.append(event)
-                    
-                    break
-                    
-                }
-            }
+        return data.filter { event in
+            let startDay = calendar.startOfDay(for: event.dateAndTime)
+            let endDay = calendar.startOfDay(for: event.endDateAndTime ?? event.dateAndTime)
+            
+            return searchDay >= startDay && searchDay <= endDay
+            
         }
-        
-        return matchingEvents
         
     }
     
