@@ -233,11 +233,6 @@ struct EventListView: View {
     }
     
     var eventsToShow: [Event] {
-        if !hasCachedEvents {
-            cacheEvents()
-            
-        }
-        
         return cachedEventsToShow
         
     }
@@ -289,15 +284,6 @@ struct EventListView: View {
     }
     
     var uniqueDates: [UniqueDate] {
-        //print("using uniqueDates precache")
-        
-        if cachedEventsToShow.isEmpty {
-            cacheEvents()
-            print("caching events")
-            
-        }
-        
-        //print(cachedEventsToShow)
         var datesSeen: [UniqueDate] = []
         
         for event in eventsToShow {
