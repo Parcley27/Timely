@@ -124,7 +124,7 @@ struct Event: Identifiable, Codable, Hashable {
         while currentDate <= endDateAndTime ?? dateAndTime {
             dates.append(currentDate)
             
-            currentDate = currentDate.addingTimeInterval(oneDayInSeconds)
+            currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate.addingTimeInterval(oneDayInSeconds)
             
         }
         
