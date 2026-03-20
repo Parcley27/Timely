@@ -14,7 +14,7 @@ struct ContentView: View {
     @State var lastTab: Int = 0
     @State private var showNewSheet: Bool = false
     
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
     
     var currentMonth = Calendar.current.component(.month, from: Date())
     var currentYear = Calendar.current.component(.year, from: Date())
