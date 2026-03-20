@@ -79,13 +79,12 @@ struct EditEventSheetView: View {
     func saveEvent() {
         guard let eventIndex = data.firstIndex(where: { $0.id == eventID }) else { return }
         
-        data[eventIndex].name = editedName.trimmingCharacters(in: .whitespaces)
-        
         if editedEmoji == "" {
             for character in editedName {
                 if data[eventIndex].emoji == String(character) {
                     editedEmoji = String(character)
-                    if let characterIndex = editedName.firstIndex(of: character) {
+                    
+                    if let characterIndex = editedName.firstIndex(of: Character(editedEmoji)) {
                         editedName.remove(at: characterIndex)
                         
                     }
@@ -99,7 +98,8 @@ struct EditEventSheetView: View {
                 for character in editedName {
                     if character.unicodeScalars.allSatisfy({ $0.properties.isEmoji && $0.properties.isEmojiPresentation }) {
                         editedEmoji = String(character)
-                        if let characterIndex = editedName.firstIndex(of: character) {
+                        
+                        if let characterIndex = editedName.firstIndex(of: Character(editedEmoji)) {
                             editedName.remove(at: characterIndex)
                             
                         }
@@ -120,8 +120,14 @@ struct EditEventSheetView: View {
             
         }
         
+        data[eventIndex].name = editedName.trimmingCharacters(in: .whitespaces)
+        data[eventIndex].emoji = editedEmoji
+        
         if editedDescription != "" {
             data[eventIndex].description = editedDescription.trimmingCharacters(in: .whitespaces)
+            
+        } else {
+            data[eventIndex].description = nil
             
         }
         
