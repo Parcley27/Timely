@@ -433,7 +433,7 @@ struct NewEventSheetView: View {
                     
                     if preferences.quickAdd {
                         Section {
-                            Label("**Quick Add enabled**\nSome fields auto-filled with defaults", systemImage: "bolt.fill")
+                            Label("**Quick Add enabled**\nSome fields have been auto-filled with defaults", systemImage: "bolt.fill")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
