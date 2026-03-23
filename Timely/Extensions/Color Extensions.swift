@@ -29,7 +29,7 @@ extension Color {
         
     }
     
-    func adjusted(saturation: Double? = nil, brightness: Double? = nil, opacity: Double? = nil) -> Color {
+    func adjusted(saturation: Double? = 1, brightness: Double? = 1, opacity: Double? = 1) -> Color {
         let uiColour = UIColor(self)
                 
         var hue: CGFloat = 0
@@ -52,7 +52,7 @@ extension Color {
         )
     }
     
-    func asGreyscale(brightness: Double, opacity: Double) -> Color {
+    func asGreyscale(brightness: Double = 1, opacity: Double = 1) -> Color {
         let uiColour = UIColor(self)
         
         var red: CGFloat = 0

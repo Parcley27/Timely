@@ -7,22 +7,36 @@
 
 import SwiftUI
 
+// Dummy data for dev purposes; not used anymore
 class EventData : ObservableObject {
     @Published var events = [
         Event(name: "Riding Lesson", emoji: "🐎"),
         Event(name: "Lazer Tag", emoji: "🔫"),
         Event(name: "Nature Walk", emoji: "🌲")
+        
     ]
 }
 
-// Seasonally every 3 months
+// Seasonally means every 3 months
 // recurringTimeOptions: [String] = ["never", "daily", "weekly", "monthly", "annualy"]
 
 struct Event: Identifiable, Codable, Hashable {
     var name: String? = "Event Name"
     var emoji: String? = "📅"
     
+    private static var colourCache: [String: Color] = [:]
+    
     func averageColour(saturation: Double = 1.0, brightness: Double = 1.0, opacity: Double = 1.0) -> Color? {
+        if let cachedColour: Color = Event.colourCache[self.emoji ?? "📅"] {
+            if cachedColour.isGreyscale {
+                return cachedColour.asGreyscale(brightness: brightness, opacity: opacity)
+                
+            } else {
+                return cachedColour.adjusted(saturation: saturation, brightness: brightness, opacity: opacity)
+                
+            }
+        }
+        
         // Render Emoji as an Image
         let size = CGSize(width: 7, height: 7)
         
@@ -92,13 +106,15 @@ struct Event: Identifiable, Codable, Hashable {
         let averageGreen = Double(greenTotal) / Double(pixelCount) / 255.0
         let averageBlue = Double(blueTotal) / Double(pixelCount) / 255.0
         
-        let baseColour = Color(red: averageRed, green: averageGreen, blue: averageBlue)
+        let averageColour = Color(red: averageRed, green: averageGreen, blue: averageBlue)
         
-        if baseColour.isGreyscale {
-            return baseColour.asGreyscale(brightness: brightness, opacity: opacity)
+        Event.colourCache[self.emoji ?? "📅"] = averageColour
+        
+        if averageColour.isGreyscale {
+            return averageColour.asGreyscale(brightness: brightness, opacity: opacity)
             
         } else {
-            return baseColour.adjusted(saturation: saturation, brightness: brightness, opacity: opacity)
+            return averageColour.adjusted(saturation: saturation, brightness: brightness, opacity: opacity)
             
         }
     }
