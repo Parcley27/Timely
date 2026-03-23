@@ -61,12 +61,11 @@ struct CalendarView: View {
         let formatter = DateFormatter()
         formatter.locale = Locale.current
         
-        if let daysOfTheWeek = formatter.shortWeekdaySymbols {
-            return daysOfTheWeek
-            
-        }
+        guard let daySymbols = formatter.shortWeekdaySymbols else { return [""] }
         
-        return [""]
+        let firstWeekday = Calendar.current.firstWeekday - 1
+        
+        return Array(daySymbols[firstWeekday...] + daySymbols[..<firstWeekday])
         
     }
     
@@ -94,10 +93,13 @@ struct CalendarView: View {
     }
     
     var firstDayOfMonth: Int {
-        let dateComponents = DateComponents(year: year, month: month)
-        guard let startDate = Calendar.current.date(from: dateComponents) else { return 1 }
+        let dateComponents: DateComponents = DateComponents(year: year, month: month)
+        guard let startDate: Date = Calendar.current.date(from: dateComponents) else { return 1 }
         
-        return Calendar.current.component(.weekday, from: startDate)
+        let weekday: Int = Calendar.current.component(.weekday, from: startDate)
+        let firstWeekday: Int = Calendar.current.firstWeekday
+        
+        return (weekday - firstWeekday + 7) % 7 + 1
         
     }
     
