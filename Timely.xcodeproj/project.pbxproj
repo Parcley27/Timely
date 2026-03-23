@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E3CACE62F7124750076E431 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E3CACE52F7124750076E431 /* WidgetKit.framework */; };
+		6E3CACE82F7124750076E431 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E3CACE72F7124750076E431 /* SwiftUI.framework */; };
+		6E3CACF92F7124770076E431 /* TimelyWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6E3CACE32F7124750076E431 /* TimelyWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6E6DCD332C0CE58200A69CC8 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6E6DCD322C0CE58200A69CC8 /* Launch Screen.storyboard */; };
 		6E818AC12E9C53000090A25D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E818AC02E9C53000090A25D /* ContentView.swift */; };
 		6E843E182B7F49D000C8761E /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E843E172B7F49D000C8761E /* EventStore.swift */; };
@@ -26,6 +29,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6E3CACF72F7124770076E431 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6EAE9FE42B018D7B0029A8D4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6E3CACE22F7124750076E431;
+			remoteInfo = TimelyWidgetExtension;
+		};
 		6EAE9FFF2B018D7C0029A8D4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6EAE9FE42B018D7B0029A8D4 /* Project object */;
@@ -42,7 +52,24 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		6E3CACFA2F7124770076E431 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				6E3CACF92F7124770076E431 /* TimelyWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		6E3CACE32F7124750076E431 /* TimelyWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TimelyWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E3CACE52F7124750076E431 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		6E3CACE72F7124750076E431 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		6E6DCD322C0CE58200A69CC8 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		6E818AC02E9C53000090A25D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6E843E172B7F49D000C8761E /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
@@ -67,9 +94,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6E3CACFE2F7124770076E431 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6E3CACE22F7124750076E431 /* TimelyWidgetExtension */;
+		};
 		6EF777192C745F7A007D65BF /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				EmojiSplashView.swift,
 				EmojiTextField.swift,
 				MailView.swift,
 				NoiseView.swift,
@@ -80,12 +115,22 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		6E3CACE92F7124750076E431 /* TimelyWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6E3CACFE2F7124770076E431 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TimelyWidget; sourceTree = "<group>"; };
 		6E818A9F2E9B8F890090A25D /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		6EA411A62E9B42050074F749 /* Sheet Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Sheet Views"; sourceTree = "<group>"; };
 		6EF777162C745F55007D65BF /* Helper Views */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6EF777192C745F7A007D65BF /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Helper Views"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6E3CACE02F7124750076E431 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6E3CACE82F7124750076E431 /* SwiftUI.framework in Frameworks */,
+				6E3CACE62F7124750076E431 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6EAE9FE92B018D7B0029A8D4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -110,12 +155,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6E3CACE42F7124750076E431 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6E3CACE52F7124750076E431 /* WidgetKit.framework */,
+				6E3CACE72F7124750076E431 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		6EAE9FE32B018D7B0029A8D4 = {
 			isa = PBXGroup;
 			children = (
 				6EAE9FEE2B018D7B0029A8D4 /* Timely */,
 				6EAEA0012B018D7C0029A8D4 /* TimelyTests */,
 				6EAEA00B2B018D7C0029A8D4 /* TimelyUITests */,
+				6E3CACE92F7124750076E431 /* TimelyWidget */,
+				6E3CACE42F7124750076E431 /* Frameworks */,
 				6EAE9FED2B018D7B0029A8D4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -126,6 +182,7 @@
 				6EAE9FEC2B018D7B0029A8D4 /* Timely.app */,
 				6EAE9FFE2B018D7C0029A8D4 /* TimelyTests.xctest */,
 				6EAEA0082B018D7C0029A8D4 /* TimelyUITests.xctest */,
+				6E3CACE32F7124750076E431 /* TimelyWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -199,6 +256,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		6E3CACE22F7124750076E431 /* TimelyWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6E3CACFD2F7124770076E431 /* Build configuration list for PBXNativeTarget "TimelyWidgetExtension" */;
+			buildPhases = (
+				6E3CACDF2F7124750076E431 /* Sources */,
+				6E3CACE02F7124750076E431 /* Frameworks */,
+				6E3CACE12F7124750076E431 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				6E3CACE92F7124750076E431 /* TimelyWidget */,
+			);
+			name = TimelyWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = TimelyWidgetExtension;
+			productReference = 6E3CACE32F7124750076E431 /* TimelyWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		6EAE9FEB2B018D7B0029A8D4 /* Timely */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6EAEA0122B018D7C0029A8D4 /* Build configuration list for PBXNativeTarget "Timely" */;
@@ -206,10 +285,12 @@
 				6EAE9FE82B018D7B0029A8D4 /* Sources */,
 				6EAE9FE92B018D7B0029A8D4 /* Frameworks */,
 				6EAE9FEA2B018D7B0029A8D4 /* Resources */,
+				6E3CACFA2F7124770076E431 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				6E3CACF82F7124770076E431 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				6E818A9F2E9B8F890090A25D /* Extensions */,
@@ -263,9 +344,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					6E3CACE22F7124750076E431 = {
+						CreatedOnToolsVersion = 26.3;
+					};
 					6EAE9FEB2B018D7B0029A8D4 = {
 						CreatedOnToolsVersion = 15.0.1;
 					};
@@ -300,11 +384,19 @@
 				6EAE9FEB2B018D7B0029A8D4 /* Timely */,
 				6EAE9FFD2B018D7C0029A8D4 /* TimelyTests */,
 				6EAEA0072B018D7C0029A8D4 /* TimelyUITests */,
+				6E3CACE22F7124750076E431 /* TimelyWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6E3CACE12F7124750076E431 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6EAE9FEA2B018D7B0029A8D4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -333,6 +425,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6E3CACDF2F7124750076E431 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6EAE9FE82B018D7B0029A8D4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -369,6 +468,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		6E3CACF82F7124770076E431 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6E3CACE22F7124750076E431 /* TimelyWidgetExtension */;
+			targetProxy = 6E3CACF72F7124770076E431 /* PBXContainerItemProxy */;
+		};
 		6EAEA0002B018D7C0029A8D4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6EAE9FEB2B018D7B0029A8D4 /* Timely */;
@@ -382,6 +486,68 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		6E3CACFB2F7124770076E431 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7WCH78FX92;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TimelyWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TimelyWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.PierceOxley.Timely.TimelyWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6E3CACFC2F7124770076E431 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7WCH78FX92;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TimelyWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TimelyWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.PierceOxley.Timely.TimelyWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		6EAEA0102B018D7C0029A8D4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -514,13 +680,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Timely/Timely.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "\"Timely/Preview Content\"";
 				DEVELOPMENT_TEAM = 7WCH78FX92;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Timely/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Timely;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -534,7 +701,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = "3.2.0 Beta";
+				MARKETING_VERSION = "4.0 Beta";
 				PRODUCT_BUNDLE_IDENTIFIER = dev.PierceOxley.Timely;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -550,13 +717,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Timely/Timely.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "\"Timely/Preview Content\"";
 				DEVELOPMENT_TEAM = 7WCH78FX92;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Timely/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Timely;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -570,7 +738,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = "3.2.0 Beta";
+				MARKETING_VERSION = "4.0 Beta";
 				PRODUCT_BUNDLE_IDENTIFIER = dev.PierceOxley.Timely;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -652,6 +820,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6E3CACFD2F7124770076E431 /* Build configuration list for PBXNativeTarget "TimelyWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6E3CACFB2F7124770076E431 /* Debug */,
+				6E3CACFC2F7124770076E431 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6EAE9FE72B018D7B0029A8D4 /* Build configuration list for PBXProject "Timely" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
