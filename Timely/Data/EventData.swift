@@ -26,23 +26,21 @@ struct Event: Identifiable, Codable, Hashable {
         // Render Emoji as an Image
         let size = CGSize(width: 7, height: 7)
         
-        UIGraphicsBeginImageContextWithOptions(size, false, 0)
-        UIColor.clear.set()
+        let renderer = UIGraphicsImageRenderer(size: size)
         
-        let rect = CGRect(origin: .zero, size: size)
-        
-        UIRectFill(rect)
-        
-        // Draw emoji
-        let font = UIFont.systemFont(ofSize: 7)
-        let attributes: [NSAttributedString.Key: Any] = [.font: font]
-        
-        let emoji = self.emoji ?? "📅"
-        emoji.draw(in: rect, withAttributes: attributes)
-        
-        // Get image from emoji drawing
-        guard let image = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
-        UIGraphicsEndImageContext()
+        let image = renderer.image { context in
+            let rect = CGRect(origin: .zero, size: size)
+            
+            UIRectFill(rect)
+            
+            // Draw emoji
+            let font = UIFont.systemFont(ofSize: 7)
+            let attributes: [NSAttributedString.Key: Any] = [.font: font]
+            
+            let emoji = self.emoji ?? "📅"
+            emoji.draw(in: rect, withAttributes: attributes)
+            
+        }
         
         // Extract Pixel Data
         guard let cgImage = image.cgImage else { return nil }
@@ -56,7 +54,7 @@ struct Event: Identifiable, Codable, Hashable {
         let bytesPerPixel = 4
         let bytesPerRow = bytesPerPixel * width
         let bitsPerComponent = 8
-        let context = CGContext(data: rawData,
+        let imageContext = CGContext(data: rawData,
                                 width: width,
                                 height: height,
                                 bitsPerComponent: bitsPerComponent,
@@ -64,10 +62,10 @@ struct Event: Identifiable, Codable, Hashable {
                                 space: colorSpace,
                                 bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
         
-        context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+        imageContext?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         
         // Calculate Average Colour
-        let data = UnsafePointer<CUnsignedChar>(context!.data!.assumingMemoryBound(to: CUnsignedChar.self))
+        let data = UnsafePointer<CUnsignedChar>(imageContext!.data!.assumingMemoryBound(to: CUnsignedChar.self))
         
         var redTotal = 0
         var greenTotal = 0
