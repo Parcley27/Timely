@@ -147,15 +147,21 @@ struct EventDetailView: View {
                                 
                             )
                             
-                            Text(event.dateString ?? "Event date and time")
-                                .font(.system(size: 16, weight: .medium))
-                                .bold(event.hasStarted && !event.hasPassed)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(
-                                    TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
-                                    
-                                )
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Date and Time")
+                                    .font(.headline)
+                                    .foregroundStyle(.secondary)
+                                
+                                Text(event.dateString ?? "Event date and time")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .bold(event.hasStarted && !event.hasPassed)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                            .background(
+                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                
+                            )
                             
                             if event.description != nil {
                                 VStack(alignment: .leading, spacing: 8) {
@@ -194,7 +200,11 @@ struct EventDetailView: View {
                                 }
                             }
                             
-                            VStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Urgency")
+                                    .font(.headline)
+                                    .foregroundStyle(.secondary)
+                                
                                 Toggle("Favourite", isOn: $data[dataIndex].isFavourite)
                                     .onChange(of: data[dataIndex].isFavourite) {
                                         Task {
@@ -233,51 +243,73 @@ struct EventDetailView: View {
                             Button {
                                 showConfirmationDialog = true
                                 
-                            } label: {
-                                deleteButton
+                                Toggle("Pin to Top", isOn: Binding(
+                                    get: { data[dataIndex].isPinned ?? false },
+                                    set: { data[dataIndex].isPinned = $0 }
+                                    
+                                ))
                                 
                             }
-                                .confirmationDialog(Text("Delete \"\(event.name ?? "Event")\" ?"),
-                                    isPresented: $showConfirmationDialog,
-                                    titleVisibility: .visible,
-                                    actions: {
-                                        Button("Delete", role: .destructive) {
-                                            print("Delete Event")
-                                            
-                                            data.remove(at: dataIndex)
-                                            
-                                            Task {
-                                                do {
-                                                    try await eventStore.save(events: data)
-                                                
-                                                } catch {
-                                                    eventStore.saveError = error
-                                                
-                                                }
-                                            }
-                                            
-                                            presentationMode.wrappedValue.dismiss()
-                                            dismiss()
-                                        
-                                        }
-                                    },
-                                    message: {
-                                        Text("This action cannot be undone")
-                                    
-                                    }
-                                )
-                                .padding()
-                                .background(
-                                    TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
-                                    
-                                )
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(
+                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                
+                            )
                             
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Danger Zone")
+                                    .font(.headline)
+                                    .foregroundStyle(.secondary)
+                                
+                                Button {
+                                    showConfirmationDialog = true
+                                    
+                                } label: {
+                                    deleteButton
+                                    
+                                }
+                                .confirmationDialog(Text("Delete \"\(event.name ?? "Event")\" ?"),
+                                                    isPresented: $showConfirmationDialog,
+                                                    titleVisibility: .visible,
+                                                    actions: {
+                                    Button("Delete", role: .destructive) {
+                                        print("Delete Event")
+                                        
+                                        data.remove(at: dataIndex)
+                                        
+                                        Task {
+                                            do {
+                                                try await eventStore.save(events: data)
+                                                
+                                            } catch {
+                                                eventStore.saveError = error
+                                                
+                                            }
+                                        }
+                                        
+                                        presentationMode.wrappedValue.dismiss()
+                                        dismiss()
+                                        
+                                    }
+                                },
+                                                    message: {
+                                    Text("This action cannot be undone")
+                                    
+                                }
+                                )
+                            }
+                            .padding()
+                            .background(
+                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                
+                            )
                         }
                         .padding()
                         
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
-
+                    
                     .background(
                         TileView(inputColours: event.averageColour(saturation: 0.1, brightness: 1.3) ?? Color(.systemGray6), forceBackground: true, cornerRadius: 36)
                         
