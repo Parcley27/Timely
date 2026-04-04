@@ -386,6 +386,8 @@ struct Event: Identifiable, Codable, Hashable {
     }
     var isMuted: Bool = false
     
+    var isPinned: Bool? = false
+    
     var id: UUID = UUID()
     
 }

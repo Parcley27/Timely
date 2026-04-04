@@ -240,8 +240,10 @@ struct EventDetailView: View {
                                 
                             )
                             
-                            Button {
-                                showConfirmationDialog = true
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Visability")
+                                    .font(.headline)
+                                    .foregroundStyle(.secondary)
                                 
                                 Toggle("Pin to Top", isOn: Binding(
                                     get: { data[dataIndex].isPinned ?? false },
