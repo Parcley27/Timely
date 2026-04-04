@@ -108,6 +108,7 @@
 				EmojiTextField.swift,
 				EventTileView.swift,
 				MailView.swift,
+				NoEventsView.swift,
 			);
 			target = 6EAE9FEB2B018D7B0029A8D4 /* Timely */;
 		};
