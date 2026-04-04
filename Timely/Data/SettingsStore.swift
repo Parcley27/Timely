@@ -17,6 +17,7 @@ class SettingsStore: ObservableObject {
         static let doiCloudSync = false
         static let useEmojiKeyboard = true
         static let useLegacyLayout = false
+        static let allowContextMenu = true
     
     }
     
@@ -78,6 +79,13 @@ class SettingsStore: ObservableObject {
         }
     }
     
+    @Published var allowContextMenu: Bool {
+        didSet {
+            UserDefaults.standard.set(allowContextMenu, forKey: "allowContextMenu")
+            
+        }
+    }
+    
     /*
     @Published var stringData: String {
         didSet {
@@ -96,6 +104,7 @@ class SettingsStore: ObservableObject {
         self.doiCloudSync = UserDefaults.standard.object(forKey: "doiCloudSync") as? Bool ?? Defaults.doiCloudSync
         self.useEmojiKeyboard = UserDefaults.standard.object(forKey: "useEmojiKeyboard") as? Bool ?? Defaults.useEmojiKeyboard
         self.useLegacyLayout = UserDefaults.standard.object(forKey: "useLegacyLayout") as? Bool ?? Defaults.useLegacyLayout
+        self.allowContextMenu = UserDefaults.standard.object(forKey: "allowContextMenu") as? Bool ?? Defaults.allowContextMenu
         
         //self.stringData = UserDefaults.standard.object(forKey: "stringData") as? String ?? ""
         
@@ -110,6 +119,7 @@ class SettingsStore: ObservableObject {
         self.doiCloudSync = Defaults.doiCloudSync
         self.useEmojiKeyboard = Defaults.useEmojiKeyboard
         self.useLegacyLayout = Defaults.useLegacyLayout
+        self.allowContextMenu = Defaults.allowContextMenu
         
     }
 }

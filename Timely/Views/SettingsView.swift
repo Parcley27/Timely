@@ -73,6 +73,11 @@ struct SettingsView: View {
                             
                         }
                         
+                        Toggle(isOn: $preferences.allowContextMenu) {
+                            Text("Allow \"Press and Hold\" Actions")
+                            
+                        }
+                        
                         Toggle(isOn: $preferences.useEmojiKeyboard) {
                             Text("Use Emoji Keyboard")
                         }
