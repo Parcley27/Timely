@@ -293,6 +293,7 @@ struct EventListView: View {
                         
                     }
                 }
+                
             } else {
                 relevantDates = [event.dateAndTime]
                 
@@ -443,6 +444,8 @@ struct EventListView: View {
                         }
                     }
                     
+                    Divider()
+                    
                     Button {
                         toggleFavourite(for: event.id)
                         
@@ -496,7 +499,7 @@ struct EventListView: View {
                 let pinnedEvents = eventsToShow.filter { $0.isPinned ?? false }
                 
                 if !pinnedEvents.isEmpty {
-                    Text("Pinned Events")
+                    Text("Pinned")
                         .font(.title3)
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
