@@ -209,18 +209,36 @@ struct EventListView: View {
         timerValue = 0
         
     }
+    
+    private func togglePin(for eventID: UUID) {
+        guard let index = data.firstIndex(where: { $0.id == eventID }) else { return }
+        
+        if data[index].isPinned != nil {
+            data[index].isPinned!.toggle()
+            
+        } else {
+            data[index].isPinned = true
+            
+        }
+        
+        saveEvents()
+        
+    }
         
     private func toggleFavourite(for eventID: UUID) {
         guard let index = data.firstIndex(where: { $0.id == eventID }) else { return }
         
         data[index].isFavourite.toggle()
+        
         saveEvents()
+        
     }
     
     private func toggleMuted(for eventID: UUID) {
         guard let index = data.firstIndex(where: { $0.id == eventID }) else { return }
         
         data[index].isMuted.toggle()
+        
         saveEvents()
         
     }
@@ -428,6 +446,19 @@ struct EventListView: View {
                             .buttonStyle(.plain)
                             .padding(.horizontal, 16)
                             .contextMenu {
+                                Button {
+                                    togglePin(for: event.id)
+                                    
+                                } label: {
+                                    if event.isPinned ?? false {
+                                        Label("Unpin", systemImage: "pin.slash")
+                                        
+                                    } else {
+                                        Label("Pin", systemImage: "pin")
+                                        
+                                    }
+                                }
+                                
                                 Button {
                                     toggleFavourite(for: event.id)
                                     
