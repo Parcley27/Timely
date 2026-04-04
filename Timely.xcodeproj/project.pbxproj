@@ -107,14 +107,13 @@
 				EmojiSplashView.swift,
 				EmojiTextField.swift,
 				MailView.swift,
-				NoiseView.swift,
-				TileView.swift,
 			);
 			target = 6EAE9FEB2B018D7B0029A8D4 /* Timely */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		6E0DD3392F818EB600010E5B /* View Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "View Components"; sourceTree = "<group>"; };
 		6E3CACE92F7124750076E431 /* TimelyWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6E3CACFE2F7124770076E431 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TimelyWidget; sourceTree = "<group>"; };
 		6E818A9F2E9B8F890090A25D /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		6EA411A62E9B42050074F749 /* Sheet Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Sheet Views"; sourceTree = "<group>"; };
@@ -242,6 +241,7 @@
 		6EFDF1DF2BD25E3000D6904F /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6E0DD3392F818EB600010E5B /* View Components */,
 				6EF777162C745F55007D65BF /* Helper Views */,
 				6EA411A62E9B42050074F749 /* Sheet Views */,
 				6E818AC02E9C53000090A25D /* ContentView.swift */,
@@ -293,6 +293,7 @@
 				6E3CACF82F7124770076E431 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				6E0DD3392F818EB600010E5B /* View Components */,
 				6E818A9F2E9B8F890090A25D /* Extensions */,
 				6EA411A62E9B42050074F749 /* Sheet Views */,
 			);
