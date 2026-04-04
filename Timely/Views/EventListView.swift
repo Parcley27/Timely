@@ -101,52 +101,6 @@ struct EventListView: View {
         
     }
     
-    @ViewBuilder
-    func pinnedStatusIcon(isPinned: Bool, _ colour: Color? = nil) -> some View {
-        if isPinned {
-            ZStack {
-                Image(systemName: "pin.fill")
-                    .foregroundStyle(colour ?? .red)
-                
-//                Image(systemName: "pin")
-//                    .foregroundStyle(.white)
-//                    .opacity(0.5)
-                
-            }
-        }
-    }
-    
-    @ViewBuilder
-    func favouriteStatusIcon(isFavourite: Bool, _ colour: Color? = nil) -> some View {
-        if isFavourite {
-            ZStack {
-                Image(systemName: "star.fill")
-                    .foregroundStyle(colour ?? .yellow)
-                
-//                Image(systemName: "star")
-//                    .foregroundStyle(.white)
-//                    .opacity(0.5)
-                
-            }
-        }
-    }
-    
-    @ViewBuilder
-    func mutedStatusIcon(isMuted: Bool, _ colour: Color? = nil) -> some View {
-        if isMuted {
-            ZStack {
-                
-                Image(systemName: "bell.slash.fill")
-                    .foregroundStyle(colour ?? .indigo)
-                
-//                Image(systemName: "bell.slash")
-//                    .foregroundStyle(.white)
-//                    .opacity(0.5)
-                
-            }
-        }
-    }
-    
     //@State private var isLoading: Bool = false  // Optional, for handling loading state
     private func invalidateCache() {
         cachedEventsToShow = []
@@ -207,47 +161,6 @@ struct EventListView: View {
         
     private func resetTimer() {
         timerValue = 0
-        
-    }
-    
-    private func togglePin(for eventID: UUID) {
-        guard let index = data.firstIndex(where: { $0.id == eventID }) else { return }
-        
-        if data[index].isPinned != nil {
-            data[index].isPinned!.toggle()
-            
-        } else {
-            data[index].isPinned = true
-            
-        }
-        
-        saveEvents()
-        
-    }
-        
-    private func toggleFavourite(for eventID: UUID) {
-        guard let index = data.firstIndex(where: { $0.id == eventID }) else { return }
-        
-        data[index].isFavourite.toggle()
-        
-        saveEvents()
-        
-    }
-    
-    private func toggleMuted(for eventID: UUID) {
-        guard let index = data.firstIndex(where: { $0.id == eventID }) else { return }
-        
-        data[index].isMuted.toggle()
-        
-        saveEvents()
-        
-    }
-    
-    private func deleteEvent(with eventID: UUID) {
-        guard let index = data.firstIndex(where: { $0.id == eventID }) else { return }
-        
-        data.remove(at: index)
-        saveEvents()
         
     }
     

@@ -18,6 +18,61 @@ struct EventTileView: View {
         
     }
     
+    private func saveEvents() { // Copied from EventListView
+        Task {
+            do {
+                try await eventStore.save(events: eventStore.events)
+                
+            } catch {
+                // TODO: Present error to user instead of crashing
+                print("Failed to save events: \(error.localizedDescription)")
+                
+            }
+        }
+    }
+    
+    private func togglePin(for eventID: UUID) {
+        guard let index = eventStore.events.firstIndex(where: { $0.id == eventID }) else { return }
+        
+        if eventStore.events[index].isPinned != nil {
+            eventStore.events[index].isPinned!.toggle()
+            
+        } else {
+            eventStore.events[index].isPinned = true
+            
+        }
+        
+        saveEvents()
+        
+    }
+        
+    private func toggleFavourite(for eventID: UUID) {
+        guard let index = eventStore.events.firstIndex(where: { $0.id == eventID }) else { return }
+        
+        eventStore.events[index].isFavourite.toggle()
+        
+        saveEvents()
+        
+    }
+    
+    private func toggleMuted(for eventID: UUID) {
+        guard let index = eventStore.events.firstIndex(where: { $0.id == eventID }) else { return }
+        
+        eventStore.events[index].isMuted.toggle()
+        
+        saveEvents()
+        
+    }
+    
+    private func deleteEvent(with eventID: UUID) {
+        guard let index = eventStore.events.firstIndex(where: { $0.id == eventID }) else { return }
+        
+        eventStore.events.remove(at: index)
+        
+        saveEvents()
+        
+    }
+    
     var body: some View {
         ZStack {
             NavigationLink(destination: EventDetailView(data: $eventStore.events, eventID: event.id)) {
