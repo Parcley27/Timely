@@ -104,11 +104,11 @@ struct EventListView: View {
     func favouriteStatusIcon(isFavourite: Bool, _ colour: Color? = nil) -> some View {
         var favouriteIcon: some View {
             if let colour = colour {
-                Image(systemName: isFavourite == true ? "star.fill" : "star.slash.fill")
-                    .foregroundStyle(isFavourite == true ? colour : Color.gray)
+                Image(systemName: isFavourite ? "star.fill" : "star.slash.fill")
+                    .foregroundStyle(isFavourite ? colour : Color.gray)
             } else {
-                Image(systemName: isFavourite == true ? "star.fill" : "star.slash.fill")
-                    .foregroundStyle(isFavourite == true ? Color.yellow : Color.gray)
+                Image(systemName: isFavourite ? "star.fill" : "star.slash.fill")
+                    .foregroundStyle(isFavourite ? Color.yellow : Color.gray)
                 
             }
         }
@@ -117,14 +117,14 @@ struct EventListView: View {
         
     }
     
-    func mutedStatusIcon(isMuted: Bool, colour : Color? = nil) -> some View {
+    func mutedStatusIcon(isMuted: Bool, colour: Color? = nil) -> some View {
         var muteIcon: some View {
             if let colour = colour {
-                Image(systemName: isMuted == true ? "bell.slash.fill" : "bell.fill")
-                    .foregroundStyle(isMuted == true ? colour : Color.gray)
+                Image(systemName: isMuted ? "bell.slash.fill" : "bell.fill")
+                    .foregroundStyle(isMuted ? colour : Color.gray)
             } else {
-                Image(systemName: isMuted == true ? "bell.slash.fill" : "bell.fill")
-                    .foregroundStyle(isMuted == true ? Color.indigo : Color.gray)
+                Image(systemName: isMuted ? "bell.slash.fill" : "bell.fill")
+                    .foregroundStyle(isMuted ? Color.indigo : Color.gray)
                 
             }
         }
@@ -486,7 +486,7 @@ struct EventListView: View {
                                     showStandard.toggle()
                                     
                                 } label: {
-                                    if showStandard == true {
+                                    if showStandard {
                                         Label("Hide Standard Events", systemImage: "diamond")
                                         
                                     } else {
@@ -500,7 +500,7 @@ struct EventListView: View {
                                     showMuted.toggle()
                                     
                                 } label: {
-                                    if showMuted == true {
+                                    if showMuted {
                                         Label("Hide Muted Events", systemImage: "bell.slash")
                                         
                                     } else {
