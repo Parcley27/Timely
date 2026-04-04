@@ -101,36 +101,50 @@ struct EventListView: View {
         
     }
     
-    func favouriteStatusIcon(isFavourite: Bool, _ colour: Color? = nil) -> some View {
-        var favouriteIcon: some View {
-            if let colour = colour {
-                Image(systemName: isFavourite ? "star.fill" : "star.slash.fill")
-                    .foregroundStyle(isFavourite ? colour : Color.gray)
-            } else {
-                Image(systemName: isFavourite ? "star.fill" : "star.slash.fill")
-                    .foregroundStyle(isFavourite ? Color.yellow : Color.gray)
+    @ViewBuilder
+    func pinnedStatusIcon(isPinned: Bool, _ colour: Color? = nil) -> some View {
+        if isPinned {
+            ZStack {
+                Image(systemName: "pin.fill")
+                    .foregroundStyle(colour ?? .red)
+                
+//                Image(systemName: "pin")
+//                    .foregroundStyle(.white)
+//                    .opacity(0.5)
                 
             }
         }
-        
-        return favouriteIcon
-        
     }
     
-    func mutedStatusIcon(isMuted: Bool, colour: Color? = nil) -> some View {
-        var muteIcon: some View {
-            if let colour = colour {
-                Image(systemName: isMuted ? "bell.slash.fill" : "bell.fill")
-                    .foregroundStyle(isMuted ? colour : Color.gray)
-            } else {
-                Image(systemName: isMuted ? "bell.slash.fill" : "bell.fill")
-                    .foregroundStyle(isMuted ? Color.indigo : Color.gray)
+    @ViewBuilder
+    func favouriteStatusIcon(isFavourite: Bool, _ colour: Color? = nil) -> some View {
+        if isFavourite {
+            ZStack {
+                Image(systemName: "star.fill")
+                    .foregroundStyle(colour ?? .yellow)
+                
+//                Image(systemName: "star")
+//                    .foregroundStyle(.white)
+//                    .opacity(0.5)
                 
             }
         }
-        
-        return muteIcon
-        
+    }
+    
+    @ViewBuilder
+    func mutedStatusIcon(isMuted: Bool, _ colour: Color? = nil) -> some View {
+        if isMuted {
+            ZStack {
+                
+                Image(systemName: "bell.slash.fill")
+                    .foregroundStyle(colour ?? .indigo)
+                
+//                Image(systemName: "bell.slash")
+//                    .foregroundStyle(.white)
+//                    .opacity(0.5)
+                
+            }
+        }
     }
     
     //@State private var isLoading: Bool = false  // Optional, for handling loading state
@@ -378,18 +392,24 @@ struct EventListView: View {
                                     Spacer()
                                     
                                     VStack(spacing: 8) {
-                                        favouriteStatusIcon(isFavourite: event.isFavourite)
+                                        pinnedStatusIcon(isPinned: event.isPinned ?? false, Color.gray)
                                             .padding(.horizontal, 4)
-                                            .padding(.top, 6)
+                                            .padding(.vertical, 2)
                                         
-                                        mutedStatusIcon(isMuted: event.isMuted)
-                                            .padding(.bottom, 6)
+                                        favouriteStatusIcon(isFavourite: event.isFavourite, Color.gray)
                                             .padding(.horizontal, 4)
+                                            .padding(.vertical, 2)
+                                        
+                                        mutedStatusIcon(isMuted: event.isMuted, Color.gray)
+                                            .padding(.horizontal, 4)
+                                            .padding(.vertical, 2)
                                         
                                     }
-                                    .font(.footnote)
-                                    .saturation(1.65)
-                                    .brightness(preferences.listTinting ? 0.15 : 0) // -1 ... 1
+                                    .padding(.vertical, 3)
+                                    .saturation(1.15)
+                                    //.font(.caption)
+                                    .font(.system(size: 13))
+                                    .brightness(preferences.listTinting ? 0.1 : 0) // -1 ... 1
                                     
                                     Image(systemName: "chevron.right")
                                         .font(.system(size: 16))
