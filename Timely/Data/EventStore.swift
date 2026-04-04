@@ -11,6 +11,7 @@ import SwiftUI
 class EventStore: ObservableObject {
     @Published var events: [Event] = []
     @Published var saveError: Error?
+    @Published var isLoading: Bool = true
     
     private static func fileURL() throws -> URL {
         try FileManager.default.url(for: .documentDirectory,
@@ -40,12 +41,17 @@ class EventStore: ObservableObject {
                 
                 DispatchQueue.main.async {
                     self.events = loadedEvents
+                    self.isLoading = false
                     
                 }
                 
             } catch {
                 print("Failed to load events from iCloud: \(error)")
                 
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    
+                }
             }
             
         } else {
@@ -57,6 +63,11 @@ class EventStore: ObservableObject {
                     
                 } catch {
                     print("Failed to load events from local storage: \(error)")
+                    
+                }
+                
+                await MainActor.run {
+                    self.isLoading = false
                     
                 }
             }
@@ -259,12 +270,13 @@ class EventStore: ObservableObject {
     }
     
     init() {
+        loadFromiCloud()
+        
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(ubiquitousKeyValueStoreDidChange),
                                                name: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
                                                object: NSUbiquitousKeyValueStore.default)
-        loadFromiCloud()
-    
+        
     }
     
     @objc private func ubiquitousKeyValueStoreDidChange(notification: NSNotification) {

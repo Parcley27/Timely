@@ -90,10 +90,6 @@ struct ContentView: View {
                         .environmentObject(preferences)
                         .task {
                             do {
-                                eventStore.loadFromiCloud()
-                                
-                                print("Loading events: ")
-                                
                                 for event in eventStore.events {
                                     print(event.name ?? "Event Name", terminator: " ")
                                     
@@ -124,10 +120,6 @@ struct ContentView: View {
                         }
                         .task {
                             do {
-                                eventStore.loadFromiCloud()
-                                
-                                print("Loading events: ")
-                                
                                 for event in eventStore.events {
                                     print(event.name ?? "Event Name", terminator: " ")
                                     

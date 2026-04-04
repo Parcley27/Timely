@@ -274,9 +274,6 @@ struct CalendarView: View {
                             }
                                 .task {
                                     do {
-                                        eventStore.loadFromiCloud()
-                                        print("Loading events: ")
-                                        
                                         for event in eventStore.events {
                                             print(event.name ?? "Event Name", terminator: " ")
                                             

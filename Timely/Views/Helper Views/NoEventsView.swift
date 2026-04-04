@@ -11,6 +11,7 @@ struct NoEventsView: View {
     var singleDayDisplay: Bool
     
     @State private var displayText = NSLocalizedString("Loading...", comment: "")
+    @State private var opacity: Double = 0.0
     
     private func startOneTimeTimer() {
         Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { _ in
@@ -33,9 +34,15 @@ struct NoEventsView: View {
                 
             }
         }
+        .opacity(opacity)
         .onAppear {
             startOneTimeTimer()
             
+            // Fade in after 1 second, taking 2 seconds to complete
+            withAnimation(.easeIn(duration: 2.0).delay(1.0)) {
+                opacity = 1.0
+                
+            }
         }
     }
 }
