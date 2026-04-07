@@ -75,11 +75,10 @@ struct EventDetailView: View {
                             .scaledToFit()
                             .scaleEffect(1.1)
                             //.saturation(0.0)
-                            .blur(radius: 20)
                             .mask(
                                 LinearGradient(
                                     gradient: Gradient(stops: [
-                                        .init(color: .black, location: 0.6),
+                                        .init(color: .black, location: 0.7),
                                         .init(color: .clear, location: 1)
                                         
                                     ]),
@@ -88,6 +87,7 @@ struct EventDetailView: View {
                                     
                                 )
                             )
+                            .blur(radius: 10)
                             .ignoresSafeArea(SafeAreaRegions.all)
 //                            //.offset(y: -50)
                         
@@ -100,8 +100,8 @@ struct EventDetailView: View {
                             .mask(
                                 LinearGradient(
                                     gradient: Gradient(stops: [
-                                        .init(color: .black, location: 0.6),
-                                        .init(color: .clear, location: 1.0)
+                                        .init(color: .black, location: 0.4),
+                                        .init(color: .clear, location: 0.7)
                                         
                                     ]),
                                     startPoint: .top,
@@ -110,6 +110,7 @@ struct EventDetailView: View {
                                 )
                             )
                             .ignoresSafeArea(SafeAreaRegions.all)
+                            //.opacity(0.0)
                         
                     }
                 } else {
