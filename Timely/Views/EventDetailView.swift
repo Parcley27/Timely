@@ -67,37 +67,88 @@ struct EventDetailView: View {
         if let event = currentEvent {
             //let navigationTitleWrapper = event.name ?? "Event Name"
             
-            ZStack {
-                VStack(spacing: 0) {
-                    LinearGradient(
-                        gradient: Gradient(stops: [
-                            .init(color: .clear, location: 0.5),
-                            .init(color: event.averageColour(saturation: 0.7) ?? Color(.blue), location: 0.9)
+            ZStack(alignment: .top) {
+                if let filename = event.imageFilename, let uiImage = eventStore.loadImage(filename: filename) {
+                    ZStack {
+                        Image(uiImage: uiImage) // blurred
+                            .resizable()
+                            .scaledToFit()
+                            .scaleEffect(1.1)
+                            //.saturation(0.0)
+                            .blur(radius: 20)
+                            .mask(
+                                LinearGradient(
+                                    gradient: Gradient(stops: [
+                                        .init(color: .black, location: 0.6),
+                                        .init(color: .clear, location: 1)
+                                        
+                                    ]),
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                    
+                                )
+                            )
+                            .ignoresSafeArea(SafeAreaRegions.all)
+//                            //.offset(y: -50)
+                        
+                        Image(uiImage: uiImage) // regular
+                            .resizable()
+                            .scaledToFit()
+                            .scaleEffect(1.1)
+                            //.saturation(0.0)
+                            //.blur(radius: 20)
+                            .mask(
+                                LinearGradient(
+                                    gradient: Gradient(stops: [
+                                        .init(color: .black, location: 0.6),
+                                        .init(color: .clear, location: 1.0)
+                                        
+                                    ]),
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                    
+                                )
+                            )
+                            .ignoresSafeArea(SafeAreaRegions.all)
+                        
+                    }
+                } else {
+                    VStack(spacing: 0) {
+                        LinearGradient(
+                            gradient: Gradient(stops: [
+                                .init(color: .clear, location: 0.5),
+                                .init(color: event.averageColour(saturation: 0.7) ?? Color(.blue), location: 0.9)
+                                
+                            ]),
                             
-                        ]),
+                            startPoint: .bottom,
+                            endPoint: .top
+                            
+                        )
+                        .opacity(0.7)
+                        .ignoresSafeArea(.all)
                         
-                        startPoint: .bottom,
-                        endPoint: .top
+                        Spacer()
                         
-                    )
-                    .opacity(0.7)
-                    .ignoresSafeArea(.all)
+                    }
                     
-                    Spacer()
+                    EmojiSplashView(emoji: event.emoji ?? "📅", colour: event.averageColour(saturation: 0.5) ?? Color(.blue), size: 50, height: 5, width: 5)
+                        .offset(y: -300)
                     
                 }
-                
-                EmojiSplashView(emoji: event.emoji ?? "📅", colour: event.averageColour(saturation: 0.5) ?? Color(.blue), size: 50, height: 5, width: 5)
-                    .offset(y: -450)
                 
                 NoiseView()
                 
                 VStack {
                     Rectangle()
                         .foregroundStyle(.clear)
-                        .frame(height: 100)
+                        .frame(height: 50)
                     
                     ScrollView(showsIndicators: false) {
+                        Rectangle()
+                            .foregroundStyle(.clear)
+                            .frame(height: 50)
+                        
                         LazyVStack(spacing: 16) {
                             VStack(spacing: 8) {
                                 Text(event.emoji ?? "📅")
@@ -308,16 +359,29 @@ struct EventDetailView: View {
                             )
                         }
                         .padding()
+                        .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
+                        
+//                        .background(
+//                            TileView(inputColours: event.averageColour(saturation: 0.1, brightness: 1.3) ?? Color(.systemGray6), forceBackground: true, cornerRadius: 36)
+//                            
+//                        )
+                        
+                        .padding()
                         
                     }
-                    .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
-                    
-                    .background(
-                        TileView(inputColours: event.averageColour(saturation: 0.1, brightness: 1.3) ?? Color(.systemGray6), forceBackground: true, cornerRadius: 36)
-                        
+                    .mask(
+                        LinearGradient(
+                            gradient: Gradient(stops: [
+                                .init(color: .clear, location: 0),
+                                .init(color: .black, location: 0.05),
+                                .init(color: .black, location: 0.9),
+                                .init(color: .clear, location: 1.0)
+                            ]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
                     )
                     
-                    .padding()
                     
                 }
             }
@@ -352,7 +416,7 @@ struct EventDetailView: View {
                 }
             }
             //.navigationBarTitle(navigationTitleWrapper, displayMode: .inline)
-            .sheet(isPresented: $showEditEventSheet) {
+            .navigationDestination(isPresented: $showEditEventSheet) {
                 EditEventSheetView(data: $data, eventID: eventID)
                 
             }

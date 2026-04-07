@@ -24,6 +24,8 @@ struct Event: Identifiable, Codable, Hashable {
     var name: String? = "Event Name"
     var emoji: String? = "📅"
     
+    var imageFilename: String? = nil
+    
     private static var colourCache: [String: Color] = [:]
     
     func averageColour(saturation: Double = 1.0, brightness: Double = 1.0, opacity: Double = 1.0) -> Color? {

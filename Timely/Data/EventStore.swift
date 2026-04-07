@@ -162,6 +162,66 @@ class EventStore: ObservableObject {
         }
     }
     
+    // Images
+    private static func imageDirectoryURL() throws -> URL {
+        let documents = try FileManager.default.url(
+            for: .documentDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: false
+        )
+        
+        let imageDir = documents.appendingPathComponent("EventImages", isDirectory: true)
+        
+        if !FileManager.default.fileExists(atPath: imageDir.path) {
+            try FileManager.default.createDirectory(at: imageDir, withIntermediateDirectories: true)
+            
+        }
+        
+        return imageDir
+        
+    }
+    
+    func saveImage(_ uiImage: UIImage, for eventID: UUID) -> String? {
+        guard let data = uiImage.jpegData(compressionQuality: 0.8),
+              let dir = try? Self.imageDirectoryURL() else {
+            return nil
+            
+        }
+        
+        let filename = "\(eventID.uuidString).jpg"
+        let fileURL = dir.appendingPathComponent(filename)
+        
+        do {
+            try data.write(to: fileURL)
+            
+            return filename
+            
+        } catch {
+            print("Failed to save image: \(error)")
+            
+            return nil
+            
+        }
+    }
+    
+    func loadImage(filename: String) -> UIImage? {
+        guard let dir = try? Self.imageDirectoryURL() else { return nil }
+        
+        let fileURL = dir.appendingPathComponent(filename)
+        return UIImage(contentsOfFile: fileURL.path)
+        
+    }
+    
+    func deleteImage(filename: String) {
+        guard let dir = try? Self.imageDirectoryURL() else { return }
+        
+        let fileURL = dir.appendingPathComponent(filename)
+        
+        try? FileManager.default.removeItem(at: fileURL)
+        
+    }
+    
     func formatTimeForNotification(from date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .none

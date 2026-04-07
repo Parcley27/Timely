@@ -867,6 +867,9 @@
         }
       }
     },
+    "Change Photo" : {
+
+    },
     "Check that email is set up on your device" : {
       "localizations" : {
         "en" : {
@@ -906,6 +909,9 @@
           }
         }
       }
+    },
+    "Choose Photo" : {
+
     },
     "Contact" : {
       "localizations" : {
@@ -1151,6 +1157,9 @@
           }
         }
       }
+    },
+    "Customization" : {
+
     },
     "Danger Zone" : {
       "localizations" : {
@@ -3108,6 +3117,9 @@
       }
     },
     "remaining" : {
+
+    },
+    "Remove Photo" : {
 
     },
     "Repeating" : {
