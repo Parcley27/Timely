@@ -227,7 +227,7 @@ struct EditEventSheetView: View {
                 
             }
             
-            Form {
+            List {
                 Section(NSLocalizedString("About", comment: "")) {
                     TextField(data[eventIndex].name ?? NSLocalizedString("Name", comment: ""), text: $editedName)
                         .textInputAutocapitalization(.words)
@@ -419,6 +419,8 @@ struct EditEventSheetView: View {
                 
             }
             .scrollDismissesKeyboard(.interactively)
+            .scrollContentBackground(.hidden)
+            .background(NoiseView())
             
         }
         .toolbar {

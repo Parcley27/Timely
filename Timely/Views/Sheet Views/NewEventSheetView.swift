@@ -439,9 +439,10 @@ struct NewEventSheetView: View {
                         }
                     }
                 }
-                .scrollDismissesKeyboard(.interactively)
-                
             }
+            .scrollDismissesKeyboard(.interactively)
+            .scrollContentBackground(.hidden)
+            .background(NoiseView())
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {

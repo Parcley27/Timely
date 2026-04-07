@@ -246,6 +246,8 @@ struct SettingsView: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(NoiseView())
             .sheet(isPresented: $showGetSupport) {
                 if MFMailComposeViewController.canSendMail() {
                     MailView(result: self.$result, subject: NSLocalizedString("App Support", comment: ""))
