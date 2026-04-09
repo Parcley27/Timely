@@ -369,9 +369,7 @@ struct EventDetailView: View {
 //                            TileView(inputColours: event.averageColour(saturation: 0.1, brightness: 1.3) ?? Color(.systemGray6), forceBackground: true, cornerRadius: 36)
 //
 //                        )
-                    
-                    .padding()
-                    
+                                        
                 }
 //                    .mask(
 //                        LinearGradient(
