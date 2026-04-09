@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Foundation
+import PhotosUI
 
 struct NewEventSheetView: View {
     init(data: Binding<[Event]>) {
@@ -39,6 +40,10 @@ struct NewEventSheetView: View {
     
     @State private var formName: String = ""
     @State private var formEmoji: String = ""
+    
+    @State private var selectedPhotoItem: PhotosPickerItem? = nil
+    @State private var isLoadingImage: Bool = false
+    @State private var imageData: Data? = nil
     
     @State private var formDescription: String = ""
     
@@ -237,7 +242,7 @@ struct NewEventSheetView: View {
             
         }
         
-        let newEvent = Event (
+        var newEvent = Event (
             name: formName.trimmingCharacters(in: .whitespaces),
             emoji: formEmoji,
             
@@ -255,6 +260,12 @@ struct NewEventSheetView: View {
             isMuted: formMuted
             
         )
+        
+        // Save image if one was selected
+        if let uiImage = imageData.flatMap({ UIImage(data: $0) }) {
+            newEvent.imageFilename = eventStore.saveImage(uiImage, for: newEvent.id)
+            
+        }
                 
         data.append(newEvent)
         data.sort(by: { $0.dateAndTime < $1.dateAndTime })
@@ -429,6 +440,66 @@ struct NewEventSheetView: View {
                         Toggle("Favourite", isOn: $formFavourited)
                         Toggle("Muted", isOn: $formMuted)
                         
+                    }
+                    
+                    if !preferences.quickAdd {
+                        Section("Customization") {
+                            PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                                HStack {
+                                    Text(imageData != nil ? "Change Photo" : "Choose Photo")
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "photo")
+                                    
+                                }
+                            }
+                            
+                            if let imageData, let uiImage = UIImage(data: imageData) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(maxHeight: 200)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    .listRowInsets(EdgeInsets())
+                                    .padding()
+                                
+                            }
+                            
+                            if imageData != nil {
+                                Button(role: .destructive) {
+                                    imageData = nil
+                                    selectedPhotoItem = nil
+                                    
+                                } label : {
+                                    HStack {
+                                        Text("Remove Photo")
+                                        
+                                        Spacer()
+                                        
+                                        Image(systemName: "trash")
+                                        
+                                    }
+                                }
+                            }
+                        }
+                        .onChange(of: selectedPhotoItem) {
+                            guard let selectedPhotoItem else { return }
+                            
+                            isLoadingImage = true
+                            
+                            Task {
+                                if let newImageData = try? await selectedPhotoItem.loadTransferable(type: Data.self) {
+                                    imageData = newImageData
+                                    
+                                }
+                                
+                                await MainActor.run {
+                                    isLoadingImage = false
+                                    
+                                }
+                            }
+                        }
                     }
                     
                     if preferences.quickAdd {
