@@ -140,73 +140,88 @@ struct EventDetailView: View {
                 
                 NoiseView()
                 
-                VStack {
-                    Rectangle()
-                        .foregroundStyle(.clear)
-                        .frame(height: 50)
-                    
-                    ScrollView(showsIndicators: false) {
+                ScrollView(showsIndicators: false) {
+                    LazyVStack(spacing: 16) {
                         Rectangle()
                             .foregroundStyle(.clear)
-                            .frame(height: 50)
+                            .frame(height: 100)
                         
-                        LazyVStack(spacing: 16) {
-                            VStack(spacing: 8) {
-                                Text(event.emoji ?? "📅")
-                                    .font(.system(size: 80))
-                                
-                                Text(event.name ?? "Event Name")
-                                    .font(.largeTitle)
-                                    .bold()
-                                    .multilineTextAlignment(.center)
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(
-                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
-                                
-                            )
-                            .padding(.top, 24)
+                        VStack(spacing: 8) {
+                            Text(event.emoji ?? "📅")
+                                .font(.system(size: 80))
                             
-                            VStack(spacing: 4) {
-                                if !event.hasStarted {
-                                    Text("Starting in")
-                                        .font(.headline)
-                                        .foregroundStyle(.secondary)
-                                    
-                                }
-                                
-                                Text(timeUntilEvent)
-                                    .onAppear {
-                                        updateTimeUntilEvent()
-                                        
-                                    }
-                                    .font(.system(size: 32, weight: .bold))
-                                    .multilineTextAlignment(.center)
-                                
-                                if event.hasStarted {
-                                    Text(event.hasPassed ? "ago" : "remaining")
-                                        .font(.headline)
-                                        .foregroundStyle(.secondary)
-                                        
-                                }
-                                
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(
-                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
-                                
-                            )
+                            Text(event.name ?? "Event Name")
+                                .font(.largeTitle)
+                                .bold()
+                                .multilineTextAlignment(.center)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
                             
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Date and Time")
+                        )
+                        .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                        .padding(.top, 24)
+                        
+                        VStack(spacing: 4) {
+                            if !event.hasStarted {
+                                Text("Starting in")
                                     .font(.headline)
                                     .foregroundStyle(.secondary)
                                 
-                                Text(event.dateString ?? "Event date and time")
-                                    .font(.system(size: 16, weight: .medium))
-                                    .bold(event.hasStarted && !event.hasPassed)
+                            }
+                            
+                            Text(timeUntilEvent)
+                                .onAppear {
+                                    updateTimeUntilEvent()
+                                    
+                                }
+                                .font(.system(size: 32, weight: .bold))
+                                .multilineTextAlignment(.center)
+                            
+                            if event.hasStarted {
+                                Text(event.hasPassed ? "ago" : "remaining")
+                                    .font(.headline)
+                                    .foregroundStyle(.secondary)
+                                    
+                            }
+                            
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(
+                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            
+                        )
+                        .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Date and Time")
+                                .font(.headline)
+                                .foregroundStyle(.secondary)
+                            
+                            Text(event.dateString ?? "Event date and time")
+                                .font(.system(size: 16, weight: .medium))
+                                .bold(event.hasStarted && !event.hasPassed)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                        .background(
+                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            
+                        )
+                        .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                        
+                        if event.description != nil {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Notes")
+                                    .font(.headline)
+                                    .foregroundStyle(.secondary)
+                                
+                                Text(event.description ?? "")
+                                    .font(.body)
+                                
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
@@ -214,177 +229,163 @@ struct EventDetailView: View {
                                 TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                 
                             )
+                            .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
                             
-                            if event.description != nil {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Notes")
-                                        .font(.headline)
-                                        .foregroundStyle(.secondary)
+                        }
+                        
+                        if event.isCopy ?? false {
+                            if let sourceEvent = data.firstIndex(where: { $0.id == event.copyOfEventWithID }) {
+                                VStack {
+                                    NavigationLink(destination: EventDetailView(data: $data, eventID: data[sourceEvent].id)) {
+                                        Text("View Original Event")
+                                        
+                                    }
+                                    .bold()
+                                    .foregroundStyle(.selection)
                                     
-                                    Text(event.description ?? "")
-                                        .font(.body)
+                                    let totalCopies = data.filter { $0.copyOfEventWithID == event.copyOfEventWithID }
+                                    
+                                    Text("Copy \(event.copyNumber ?? 0) of \(totalCopies.count), repeating \(NSLocalizedString(event.recurranceRate ?? "never", comment: ""))")
                                     
                                 }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding()
-                                .background(
-                                    TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
-                                    
-                                )
-                                
                             }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Urgency")
+                                .font(.headline)
+                                .foregroundStyle(.secondary)
                             
-                            if event.isCopy ?? false {
-                                if let sourceEvent = data.firstIndex(where: { $0.id == event.copyOfEventWithID }) {
-                                    VStack {
-                                        NavigationLink(destination: EventDetailView(data: $data, eventID: data[sourceEvent].id)) {
-                                            Text("View Original Event")
+                            Toggle("Favourite", isOn: $data[dataIndex].isFavourite)
+                                .onChange(of: data[dataIndex].isFavourite) {
+                                    Task {
+                                        do {
+                                            try await eventStore.save(events: data)
+                                            
+                                        } catch {
+                                            eventStore.saveError = error
                                             
                                         }
-                                        .bold()
-                                        .foregroundStyle(.selection)
-                                        
-                                        let totalCopies = data.filter { $0.copyOfEventWithID == event.copyOfEventWithID }
-                                        
-                                        Text("Copy \(event.copyNumber ?? 0) of \(totalCopies.count), repeating \(NSLocalizedString(event.recurranceRate ?? "never", comment: ""))")
-                                        
                                     }
                                 }
-                            }
                             
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Urgency")
-                                    .font(.headline)
-                                    .foregroundStyle(.secondary)
-                                
-                                Toggle("Favourite", isOn: $data[dataIndex].isFavourite)
-                                    .onChange(of: data[dataIndex].isFavourite) {
-                                        Task {
-                                            do {
-                                                try await eventStore.save(events: data)
-                                                
-                                            } catch {
-                                                eventStore.saveError = error
-                                                
-                                            }
+                            Divider()
+                            
+                            Toggle("Mute", isOn: $data[dataIndex].isMuted)
+                                .onChange(of: data[dataIndex].isMuted) {
+                                    Task {
+                                        do {
+                                            try await eventStore.save(events: data)
+                                            
+                                        } catch {
+                                            eventStore.saveError = error
+                                            
                                         }
                                     }
+                                }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(
+                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            
+                        )
+                        .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Visability")
+                                .font(.headline)
+                                .foregroundStyle(.secondary)
+                            
+                            Toggle("Pin to Top", isOn: Binding(
+                                get: { data[dataIndex].isPinned ?? false },
+                                set: { data[dataIndex].isPinned = $0 }
                                 
-                                Divider()
+                            ))
+                            
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(
+                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            
+                        )
+                        .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Danger Zone")
+                                .font(.headline)
+                                .foregroundStyle(.secondary)
+                            
+                            Button {
+                                showConfirmationDialog = true
                                 
-                                Toggle("Mute", isOn: $data[dataIndex].isMuted)
-                                    .onChange(of: data[dataIndex].isMuted) {
-                                        Task {
-                                            do {
-                                                try await eventStore.save(events: data)
-                                                
-                                            } catch {
-                                                eventStore.saveError = error
-                                                
-                                            }
+                            } label: {
+                                deleteButton
+                                
+                            }
+                            .confirmationDialog(Text("Delete \"\(event.name ?? "Event")\" ?"),
+                                                isPresented: $showConfirmationDialog,
+                                                titleVisibility: .visible,
+                                                actions: {
+                                Button("Delete", role: .destructive) {
+                                    print("Delete Event")
+                                    
+                                    data.remove(at: dataIndex)
+                                    
+                                    Task {
+                                        do {
+                                            try await eventStore.save(events: data)
+                                            
+                                        } catch {
+                                            eventStore.saveError = error
+                                            
                                         }
                                     }
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(
-                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
-                                
-                            )
-                            
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Visability")
-                                    .font(.headline)
-                                    .foregroundStyle(.secondary)
-                                
-                                Toggle("Pin to Top", isOn: Binding(
-                                    get: { data[dataIndex].isPinned ?? false },
-                                    set: { data[dataIndex].isPinned = $0 }
                                     
-                                ))
-                                
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(
-                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
-                                
-                            )
-                            
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Danger Zone")
-                                    .font(.headline)
-                                    .foregroundStyle(.secondary)
-                                
-                                Button {
-                                    showConfirmationDialog = true
-                                    
-                                } label: {
-                                    deleteButton
+                                    presentationMode.wrappedValue.dismiss()
+                                    dismiss()
                                     
                                 }
-                                .confirmationDialog(Text("Delete \"\(event.name ?? "Event")\" ?"),
-                                                    isPresented: $showConfirmationDialog,
-                                                    titleVisibility: .visible,
-                                                    actions: {
-                                    Button("Delete", role: .destructive) {
-                                        print("Delete Event")
-                                        
-                                        data.remove(at: dataIndex)
-                                        
-                                        Task {
-                                            do {
-                                                try await eventStore.save(events: data)
-                                                
-                                            } catch {
-                                                eventStore.saveError = error
-                                                
-                                            }
-                                        }
-                                        
-                                        presentationMode.wrappedValue.dismiss()
-                                        dismiss()
-                                        
-                                    }
-                                },
-                                                    message: {
-                                    Text("This action cannot be undone")
-                                    
-                                }
-                                )
-                            }
-                            .padding()
-                            .background(
-                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            },
+                                                message: {
+                                Text("This action cannot be undone")
                                 
+                            }
                             )
                         }
                         .padding()
-                        .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
-                        
+                        .background(
+                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            
+                        )
+                        .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+
+                    }
+                    .padding()
+                    .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
+                    
 //                        .background(
 //                            TileView(inputColours: event.averageColour(saturation: 0.1, brightness: 1.3) ?? Color(.systemGray6), forceBackground: true, cornerRadius: 36)
-//                            
+//
 //                        )
-                        
-                        .padding()
-                        
-                    }
-                    .mask(
-                        LinearGradient(
-                            gradient: Gradient(stops: [
-                                .init(color: .clear, location: 0),
-                                .init(color: .black, location: 0.05),
-                                .init(color: .black, location: 0.9),
-                                .init(color: .clear, location: 1.0)
-                            ]),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
                     
+                    .padding()
                     
                 }
+//                    .mask(
+//                        LinearGradient(
+//                            gradient: Gradient(stops: [
+//                                .init(color: .clear, location: 0),
+//                                .init(color: .black, location: 0.05),
+//                                .init(color: .black, location: 0.9),
+//                                .init(color: .clear, location: 1.0)
+//                            ]),
+//                            startPoint: .top,
+//                            endPoint: .bottom
+//                        )
+//                    )
+                
             }
             .background(.background)
             .scrollContentBackground(.hidden)
