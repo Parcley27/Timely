@@ -249,7 +249,7 @@ struct EventListView: View {
             LazyVStack(spacing: 12) {
                 let pinnedEvents = eventsToShow.filter { $0.isPinned ?? false }
                 
-                if !pinnedEvents.isEmpty {
+                if !pinnedEvents.isEmpty && dateToDisplay == nil {
                     Text("Pinned")
                         .font(.title3)
                         .bold()
