@@ -994,6 +994,7 @@
       }
     },
     "Copy %lld of %lld, repeating %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1029,6 +1030,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "影印 %1$lld 份（共 %2$lld 份），%3$@重複"
+          }
+        }
+      }
+    },
+    "Copy %lld of %lld, Repeating %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Copy %1$lld of %2$lld, Repeating %3$@"
           }
         }
       }
@@ -2837,33 +2848,39 @@
     },
     "Never" : {
       "localizations" : {
-        "es" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Never"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Nunca"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Jamais"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Jamais"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "从不"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "從不"
           }
         }
@@ -3201,6 +3218,9 @@
           }
         }
       }
+    },
+    "Repetition" : {
+
     },
     "Report an Issue" : {
       "extractionState" : "manual",

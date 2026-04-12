@@ -235,19 +235,37 @@ struct EventDetailView: View {
                         
                         if event.isCopy ?? false {
                             if let sourceEvent = data.firstIndex(where: { $0.id == event.copyOfEventWithID }) {
-                                VStack {
-                                    NavigationLink(destination: EventDetailView(data: $data, eventID: data[sourceEvent].id)) {
-                                        Text("View Original Event")
-                                        
-                                    }
-                                    .bold()
-                                    .foregroundStyle(.selection)
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Repetition")
+                                        .font(.headline)
+                                        .foregroundStyle(.secondary)
                                     
                                     let totalCopies = data.filter { $0.copyOfEventWithID == event.copyOfEventWithID }
                                     
-                                    Text("Copy \(event.copyNumber ?? 0) of \(totalCopies.count), repeating \(NSLocalizedString(event.recurranceRate ?? "never", comment: ""))")
+                                    Text("Copy \(event.copyNumber ?? 0) of \(totalCopies.count), Repeating \(NSLocalizedString(event.recurranceRate ?? "Never", comment: ""))")
+                                    
+                                    Divider()
+                                    
+                                    NavigationLink(destination: EventDetailView(data: $data, eventID: data[sourceEvent].id)) {
+                                        HStack {
+                                            Text("View Original Event")
+                                            
+                                            Spacer()
+                                            
+                                            Image(systemName: "arrow.uturn.left")
+                                            
+                                        }
+                                    }
+                                    //.bold()
+                                    //.foregroundStyle(.selection)
                                     
                                 }
+                                .padding()
+                                .background(
+                                    TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                    
+                                )
+                                .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
                             }
                         }
                         
@@ -360,7 +378,7 @@ struct EventDetailView: View {
                             
                         )
                         .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
-
+                        
                     }
                     .padding()
                     .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
