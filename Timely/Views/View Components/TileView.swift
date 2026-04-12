@@ -79,6 +79,7 @@ struct TileView: View {
                         
                     )
                 )
+                .brightness(tileColours[0].isGreyscale && !isLightMode ? -0.6 : 0)
             
             if showBorder {
                 let lastTileColour = tileColours.last!

@@ -136,7 +136,7 @@ struct EventTileView: View {
                 }
                 .padding(16)
                 .background(
-                    TileView(inputColours: event.averageColour() ?? Color(.systemGray6))
+                    TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black)
                     
                 )
                 
