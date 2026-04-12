@@ -139,7 +139,7 @@ struct CalendarView: View {
         return days
         
     }
-
+    
     func eventsOnDay(searchingDay: CalendarDay) -> [Event] {
         let calendar = Calendar.current
         let searchDay = calendar.startOfDay(for: searchingDay.date ?? Date())
@@ -148,7 +148,8 @@ struct CalendarView: View {
             let startDay = calendar.startOfDay(for: event.dateAndTime)
             let endDay = calendar.startOfDay(for: event.endDateAndTime ?? event.dateAndTime)
             
-            return searchDay >= startDay && searchDay <= endDay
+            return (searchDay >= startDay && searchDay <= endDay) || (event.isAllDay ?? false && calendar.isDate(event.dateAndTime, equalTo: searchingDay.date!, toGranularity: .day))
+
             
         }
         
