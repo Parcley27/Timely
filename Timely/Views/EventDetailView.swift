@@ -32,7 +32,7 @@ struct EventDetailView: View {
     @State private var showConfirmationDialog: Bool = false
     
     @State private var timeUntilEvent: String = ""
-    
+        
     init(data: Binding<[Event]>, eventID: UUID, showEditEventSheet: Bool = false, showConfirmationDialog: Bool = false, timeUntilEvent: String = "") {
         self._data = data
         self.eventID = eventID
@@ -158,7 +158,7 @@ struct EventDetailView: View {
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(
-                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                             
                         )
                         .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
@@ -191,7 +191,7 @@ struct EventDetailView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(
-                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                             
                         )
                         .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
@@ -208,7 +208,7 @@ struct EventDetailView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding()
                         .background(
-                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                             
                         )
                         .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
@@ -226,7 +226,7 @@ struct EventDetailView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
                             .background(
-                                TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
@@ -287,7 +287,7 @@ struct EventDetailView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(
-                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                             
                         )
                         .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
@@ -307,7 +307,7 @@ struct EventDetailView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(
-                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                             
                         )
                         .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
@@ -356,7 +356,7 @@ struct EventDetailView: View {
                         }
                         .padding()
                         .background(
-                            TileView(inputColours: event.averageColour() ?? Color(.blue), forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                            TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                             
                         )
                         .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
