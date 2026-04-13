@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import WidgetKit
 
 class EventStore: ObservableObject {
     @Published var events: [Event] = []
@@ -44,6 +45,10 @@ class EventStore: ObservableObject {
                     self.isLoading = false
                     
                 }
+                
+                // Mirror to shared store for widgets
+                SharedEventStore.save(events: events)
+                WidgetCenter.shared.reloadAllTimelines()
                 
             } catch {
                 print("Failed to load events from iCloud: \(error)")
@@ -95,6 +100,9 @@ class EventStore: ObservableObject {
             // Store the encoded data in iCloud
             store.set(data, forKey: "events")
             store.synchronize()
+            
+            // Mirror to shared store for widgets
+            SharedEventStore.save(events: events)
             
         } catch {
             print("Failed to save events to iCloud: \(error.localizedDescription)")

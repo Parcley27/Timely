@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E11A7A72F8C3C0C00CEC061 /* SharedEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E11A7A62F8C3C0C00CEC061 /* SharedEventStore.swift */; };
+		6E11A7A82F8C3C1300CEC061 /* SharedEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E11A7A62F8C3C0C00CEC061 /* SharedEventStore.swift */; };
+		6E11A7AA2F8C410A00CEC061 /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0212B0196A90029A8D4 /* EventData.swift */; };
 		6E3CACE62F7124750076E431 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E3CACE52F7124750076E431 /* WidgetKit.framework */; };
 		6E3CACE82F7124750076E431 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E3CACE72F7124750076E431 /* SwiftUI.framework */; };
 		6E3CACF92F7124770076E431 /* TimelyWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6E3CACE32F7124750076E431 /* TimelyWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -67,6 +70,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6E11A7A62F8C3C0C00CEC061 /* SharedEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedEventStore.swift; sourceTree = "<group>"; };
+		6E11A7B32F8C523E00CEC061 /* TimelyWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TimelyWidgetExtension.entitlements; sourceTree = "<group>"; };
 		6E3CACE32F7124750076E431 /* TimelyWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TimelyWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E3CACE52F7124750076E431 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		6E3CACE72F7124750076E431 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -94,6 +99,29 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6E11A7AC2F8C417200CEC061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Color Extensions.swift",
+				"Comparable Extensions.swift",
+			);
+			target = 6E3CACE22F7124750076E431 /* TimelyWidgetExtension */;
+		};
+		6E11A7AF2F8C440B00CEC061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				NoiseView.swift,
+				TileView.swift,
+			);
+			target = 6E3CACE22F7124750076E431 /* TimelyWidgetExtension */;
+		};
+		6E11A7B12F8C463900CEC061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				EmojiSplashView.swift,
+			);
+			target = 6E3CACE22F7124750076E431 /* TimelyWidgetExtension */;
+		};
 		6E3CACFE2F7124770076E431 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -115,11 +143,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6E0DD3392F818EB600010E5B /* View Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "View Components"; sourceTree = "<group>"; };
+		6E0DD3392F818EB600010E5B /* View Components */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6E11A7AF2F8C440B00CEC061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "View Components"; sourceTree = "<group>"; };
 		6E3CACE92F7124750076E431 /* TimelyWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6E3CACFE2F7124770076E431 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TimelyWidget; sourceTree = "<group>"; };
-		6E818A9F2E9B8F890090A25D /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
+		6E818A9F2E9B8F890090A25D /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6E11A7AC2F8C417200CEC061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		6EA411A62E9B42050074F749 /* Sheet Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Sheet Views"; sourceTree = "<group>"; };
-		6EF777162C745F55007D65BF /* Helper Views */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6EF777192C745F7A007D65BF /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Helper Views"; sourceTree = "<group>"; };
+		6EF777162C745F55007D65BF /* Helper Views */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6EF777192C745F7A007D65BF /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 6E11A7B12F8C463900CEC061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Helper Views"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +196,7 @@
 		6EAE9FE32B018D7B0029A8D4 = {
 			isa = PBXGroup;
 			children = (
+				6E11A7B32F8C523E00CEC061 /* TimelyWidgetExtension.entitlements */,
 				6EAE9FEE2B018D7B0029A8D4 /* Timely */,
 				6EAEA0012B018D7C0029A8D4 /* TimelyTests */,
 				6EAEA00B2B018D7C0029A8D4 /* TimelyUITests */,
@@ -235,6 +264,7 @@
 			children = (
 				6EAEA0212B0196A90029A8D4 /* EventData.swift */,
 				6E843E172B7F49D000C8761E /* EventStore.swift */,
+				6E11A7A62F8C3C0C00CEC061 /* SharedEventStore.swift */,
 				6EA0FCA32BFB0EA000981724 /* SettingsStore.swift */,
 			);
 			path = Data;
@@ -432,6 +462,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E11A7A82F8C3C1300CEC061 /* SharedEventStore.swift in Sources */,
+				6E11A7AA2F8C410A00CEC061 /* EventData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +471,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E11A7A72F8C3C0C00CEC061 /* SharedEventStore.swift in Sources */,
 				6EF4F6CD2BB292C000288AE3 /* CalendarView.swift in Sources */,
 				6EA0FCA42BFB0EA000981724 /* SettingsStore.swift in Sources */,
 				6EAEA0222B0196A90029A8D4 /* EventData.swift in Sources */,
@@ -494,6 +527,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TimelyWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = 7WCH78FX92;
@@ -525,6 +559,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TimelyWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = 7WCH78FX92;

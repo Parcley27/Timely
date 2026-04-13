@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 // Dummy data for dev purposes; not used anymore
 class EventData : ObservableObject {
