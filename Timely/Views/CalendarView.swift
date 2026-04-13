@@ -239,7 +239,7 @@ struct CalendarView: View {
                     }
                     .padding(.vertical, 12)
                     .background(
-                        TileView(inputColours: .accentColor, forceBackground: true, saturationModifier: 0.6, customBorder: true)
+                        TileView(inputColours: .accentColor, forceBackground: true, saturationModifier: 0.6, customBorder: true, isLightMode: isLightMode)
                         
                     )
                     .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))

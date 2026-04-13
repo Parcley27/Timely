@@ -10,8 +10,9 @@
 import SwiftUI
 
 struct TileView: View {
-    @Environment(\.colorScheme) var colorScheme
-    var isLightMode: Bool { colorScheme == .light }
+    //@Environment(\.colorScheme) var colorScheme
+    //var isLightMode: Bool { colorScheme == .light }
+    @State private var isLightMode: Bool
     
     var tileColours: [Color] = []
     let saturations: [Double] = [0.7, 0.8, 0.95]
@@ -23,7 +24,7 @@ struct TileView: View {
     let showBorder: Bool
     let cornerRadius: CGFloat
     
-    init(inputColours: Color..., forceBackground: Bool = false, saturationModifier: CGFloat = 1, customBorder: Bool = true, cornerRadius: CGFloat = 24) {
+    init(inputColours: Color..., forceBackground: Bool = false, saturationModifier: CGFloat = 1, customBorder: Bool = true, cornerRadius: CGFloat = 24, isLightMode: Bool = true) {
         let baseColours = inputColours.isEmpty ? [.blue] : inputColours
         
         let colours = baseColours.count < saturations.count
@@ -34,6 +35,8 @@ struct TileView: View {
         self.saturationModifier = saturationModifier
         self.showBorder = customBorder
         self.cornerRadius = cornerRadius
+        
+        self.isLightMode = isLightMode
         
         for (index, colour) in colours.enumerated() {
             guard index < saturations.count else { break }

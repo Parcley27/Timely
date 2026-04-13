@@ -51,6 +51,6 @@ struct EmojiSplashView: View {
 }
 
 #Preview {
-    EmojiSplashView()
+    EmojiSplashView(emoji: "🌈", colour: .red)
     
 }

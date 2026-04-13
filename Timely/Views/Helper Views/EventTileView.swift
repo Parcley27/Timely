@@ -13,6 +13,9 @@ struct EventTileView: View {
     
     var event: Event
     
+    @Environment(\.colorScheme) var colorScheme
+    var isLightMode: Bool { colorScheme == .light }
+    
     init(for event: Event) {
         self.event = event
         
@@ -136,7 +139,7 @@ struct EventTileView: View {
                 }
                 .padding(16)
                 .background(
-                    TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black)
+                    TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, isLightMode: isLightMode)
                     
                 )
                 
