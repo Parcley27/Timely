@@ -47,7 +47,7 @@ class EventStore: ObservableObject {
                 }
                 
                 // Mirror to shared store for widgets
-                SharedEventStore.save(events: events)
+                SharedEventStore.save(events: loadedEvents)
                 WidgetCenter.shared.reloadAllTimelines()
                 
             } catch {
