@@ -28,6 +28,7 @@
 		6EAEA0262B0196E50029A8D4 /* EventListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0252B0196E50029A8D4 /* EventListView.swift */; };
 		6EAEA02C2B0197270029A8D4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA02B2B0197270029A8D4 /* SettingsView.swift */; };
 		6EAEA6172C462DBF00B602CF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6EAEA6162C462DBF00B602CF /* Localizable.xcstrings */; };
+		6EF4E5AF2FD8D5ED00B1D195 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 6EF4E5AE2FD8D5E800B1D195 /* .gitignore */; };
 		6EF4F6CD2BB292C000288AE3 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */; };
 /* End PBXBuildFile section */
 
@@ -95,6 +96,7 @@
 		6EAEA02B2B0197270029A8D4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		6EAEA6162C462DBF00B602CF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6EC062972D335FFA006D07B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6EF4E5AE2FD8D5E800B1D195 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -203,6 +205,7 @@
 				6E3CACE92F7124750076E431 /* TimelyWidget */,
 				6E3CACE42F7124750076E431 /* Frameworks */,
 				6EAE9FED2B018D7B0029A8D4 /* Products */,
+				6EF4E5AE2FD8D5E800B1D195 /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
@@ -427,6 +430,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6EF4E5AF2FD8D5ED00B1D195 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
