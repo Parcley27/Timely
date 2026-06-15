@@ -83,13 +83,9 @@ struct EventListView: View {
         var agreeingEvents: [Event] = []
         
         if let date = dateToDisplay {
-            agreeingEvents = data.filter { $0.dateAndTime.isSameDay(as: date) }
-            
-            for event in data {
-                if event.isOnDates.contains(where: { $0.isSameDay(as: date) }) {
-                    agreeingEvents.append(event)
-                    
-                }
+            agreeingEvents = data.filter { event in
+                event.isOnDates.contains(where: { $0.isSameDay(as: date) })
+                
             }
             
         } else {
