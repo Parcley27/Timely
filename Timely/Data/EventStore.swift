@@ -149,6 +149,29 @@ class EventStore: ObservableObject {
         
     }
     
+    func deleteAllEvents() {
+        for event in events {
+            if let filename = event.imageFilename {
+                deleteImage(filename: filename)
+                
+            }
+        }
+        
+        events.removeAll()
+        
+        Task {
+            do {
+                try await save(events: events)
+                
+            } catch {
+                await MainActor.run {
+                    self.saveError = error
+                    
+                }
+            }
+        }
+    }
+    
     func deleteExpiredEvents() {
         //let oneHourInSeconds = 60 * 60
         

@@ -19,7 +19,9 @@ struct NoMailView: View {
 }
 
 struct SettingsView: View {
+    @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var preferences: SettingsStore
+    
     @State var editedAutoDelete: Bool = false
     
     @State private var result: Result<MFMailComposeResult, Error>? = nil
@@ -241,6 +243,34 @@ struct SettingsView: View {
                                     preferences.resetToDefaults()
                                     temporaryLegacyLayout = SettingsStore.Defaults.useLegacyLayout
                                     
+                                }
+                            },
+                            message: {
+                                Text("This action cannot be undone")
+                            
+                            }
+                        )
+                        
+                        Button () {
+                            showSettingsResetConfirmation = true
+                            
+                        } label: {
+                            HStack {
+                                Text("Delete All Events")
+                                Spacer()
+                                Image(systemName: "trash")
+                                
+                            }
+                            .foregroundStyle(.red)
+                            
+                        }
+                        .confirmationDialog(
+                            Text("Delete All Events?"),
+                            isPresented: $showSettingsResetConfirmation,
+                            titleVisibility: .visible,
+                            actions: {
+                                Button("Reset", role: .destructive) {
+                                    eventStore.deleteAllEvents()
                                 }
                             },
                             message: {
