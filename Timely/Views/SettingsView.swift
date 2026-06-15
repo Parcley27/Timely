@@ -35,6 +35,7 @@ struct SettingsView: View {
     
     @State private var showArchiveDisableConfirmation: Bool = false
     @State private var showSettingsResetConfirmation: Bool = false
+    @State private var showDeleteEventsConfirmation: Bool = false
     
     @State private var temporaryToggleState: Bool = false
     @State private var temporaryLegacyLayout: Bool = false
@@ -266,11 +267,12 @@ struct SettingsView: View {
                         }
                         .confirmationDialog(
                             Text("Delete All Events?"),
-                            isPresented: $showSettingsResetConfirmation,
+                            isPresented: $showDeleteEventsConfirmation,
                             titleVisibility: .visible,
                             actions: {
                                 Button("Reset", role: .destructive) {
                                     eventStore.deleteAllEvents()
+                                    
                                 }
                             },
                             message: {
