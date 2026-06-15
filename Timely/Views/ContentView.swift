@@ -104,6 +104,15 @@ struct ContentView: View {
                             
                         }
                         .disabled(true)
+                        
+                    } else {
+                        Tab("New", systemImage: "plus") {
+                            Color.clear
+                                .onAppear {
+                                    showNewSheet = true
+                                    
+                                }
+                        }
                     }
                     
                     Tab("Calendar", systemImage: "calendar") {
@@ -127,24 +136,14 @@ struct ContentView: View {
                             }
                         }
                     }
-                    
-                    if !preferences.useLegacyLayout {
-                        Tab("New Event", systemImage: "plus", role: .search) {
-                            Color.clear
-                                .onAppear {
-                                    showNewSheet = true
-                                    
-                                }
-                        }
-                    }
                 }
                 .id(preferences.useLegacyLayout) // Force to rerender when layout preference changes
                 .overlay(alignment: .bottom) {
                     GeometryReader { geometry in // New button collider
                         Color.clear
                             .contentShape(Circle())
-                            .frame(width: 60, height: 60)
-                            .position(x: geometry.size.width * 0.87, y: geometry.size.height * 0.98)
+                            .frame(width: geometry.size.width * 0.2, height: 60)
+                            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.977)
                             .allowsHitTesting(true)
                             .onTapGesture {
                                 showNewSheet = true
