@@ -151,7 +151,7 @@ struct EventTileView: View {
             .contextMenu() {
                 if preferences.allowContextMenu {
                     Button {
-                        //togglePin(for: event.id)
+                        togglePin(for: event.id)
                         
                     } label: {
                         if event.isPinned ?? false {
@@ -166,7 +166,7 @@ struct EventTileView: View {
                     Divider()
                     
                     Button {
-                        //toggleFavourite(for: event.id)
+                        toggleFavourite(for: event.id)
                         
                     } label: {
                         if event.isFavourite {
@@ -179,7 +179,7 @@ struct EventTileView: View {
                     }
                     
                     Button {
-                        //toggleMuted(for: event.id)
+                        toggleMuted(for: event.id)
                         
                     } label: {
                         if event.isMuted {
@@ -201,7 +201,7 @@ struct EventTileView: View {
                     Divider()
                     
                     Button(role: .destructive) {
-                        //deleteEvent(with: event.id)
+                        deleteEvent(with: event.id)
                         
                     } label: {
                         Label("Delete \"\(event.name ?? "Event Name")\"", systemImage: "trash")
