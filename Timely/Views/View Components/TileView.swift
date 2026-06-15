@@ -25,7 +25,7 @@ struct TileView: View {
     let cornerRadius: CGFloat
     
     init(inputColours: Color..., forceBackground: Bool = false, saturationModifier: CGFloat = 1, customBorder: Bool = true, cornerRadius: CGFloat = 24, isLightMode: Bool = true) {
-        let baseColours = inputColours.isEmpty ? [.accent] : inputColours
+        let baseColours = inputColours.isEmpty ? [.accentColor] : inputColours
         
         let colours = baseColours.count < saturations.count
                 ? Array(repeating: baseColours[0], count: saturations.count)

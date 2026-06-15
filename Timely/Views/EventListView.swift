@@ -302,7 +302,7 @@ struct EventListView: View {
                         
                     } else {
                         ZStack{
-                            if isLightMode {
+                            if isLightMode && preferences.showFilmGrain {
                                 NoiseView()
                                 
                             }

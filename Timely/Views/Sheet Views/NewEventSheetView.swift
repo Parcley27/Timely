@@ -513,7 +513,12 @@ struct NewEventSheetView: View {
             }
             .scrollDismissesKeyboard(.interactively)
             .scrollContentBackground(.hidden)
-            .background(NoiseView())
+            .background {
+                if preferences.showFilmGrain {
+                    NoiseView()
+                    
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {

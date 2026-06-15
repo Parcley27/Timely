@@ -138,7 +138,10 @@ struct EventDetailView: View {
                     
                 }
                 
-                NoiseView()
+                if preferences.showFilmGrain {
+                    NoiseView()
+                    
+                }
                 
                 ScrollView(showsIndicators: false) {
                     LazyVStack(spacing: 16) {

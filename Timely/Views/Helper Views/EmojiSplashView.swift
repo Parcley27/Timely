@@ -18,7 +18,7 @@ struct EmojiSplashView: View {
     let height: Int
     let width: Int
     
-    init(emoji: String = "➡️", colour: Color = Color.accent, size: CGFloat = 75, angle: Double = 10, height: Int = 10, width: Int = 8) {
+    init(emoji: String = "➡️", colour: Color = Color.accentColor, size: CGFloat = 75, angle: Double = 10, height: Int = 10, width: Int = 8) {
         self.emoji = emoji
         self.colour = colour
         

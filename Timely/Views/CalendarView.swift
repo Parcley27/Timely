@@ -31,6 +31,7 @@ struct CalendarDay: Identifiable, Hashable {
 
 struct CalendarView: View {
     @EnvironmentObject var eventStore: EventStore
+    @EnvironmentObject var preferences: SettingsStore
     
     @Environment(\.colorScheme) var colorScheme
     var isLightMode: Bool { colorScheme == .light }
@@ -180,7 +181,7 @@ struct CalendarView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                if isLightMode {
+                if isLightMode && preferences.showFilmGrain {
                     NoiseView()
                     
                 }

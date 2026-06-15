@@ -84,8 +84,6 @@ struct TimelyWidgetEntryView : View {
                     .scaleEffect(0.5)
                     .offset(x: -10, y: -170)
                 
-                NoiseView()
-                
                 VStack(alignment: .leading, spacing: 4) {
                     Text(event.name ?? "Event")
                         .font(.headline)

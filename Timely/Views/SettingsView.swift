@@ -99,6 +99,10 @@ struct SettingsView: View {
                             Text("List Tinting")
                             
                         }
+                        
+                        Toggle(isOn: $preferences.showFilmGrain) {
+                            Text("Display \"Film Grain\" Effects")
+                        }
                     }
                     
                     Section("Event Storage") {
@@ -247,8 +251,13 @@ struct SettingsView: View {
                     }
                 }
             }
-            .scrollContentBackground(.hidden)
-            .background(NoiseView())
+            .scrollContentBackground(preferences.showFilmGrain ? .hidden : .visible)
+            .background {
+                if preferences.showFilmGrain {
+                    NoiseView()
+                    
+                }
+            }
             .sheet(isPresented: $showGetSupport) {
                 if MFMailComposeViewController.canSendMail() {
                     MailView(result: self.$result, subject: NSLocalizedString("App Support", comment: ""))

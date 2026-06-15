@@ -18,6 +18,7 @@ class SettingsStore: ObservableObject {
         static let useEmojiKeyboard = true
         static let useLegacyLayout = false
         static let allowContextMenu = true
+        static let showFilmGrain = false
     
     }
     
@@ -86,6 +87,13 @@ class SettingsStore: ObservableObject {
         }
     }
     
+    @Published var showFilmGrain: Bool {
+        didSet {
+            UserDefaults.standard.set(showFilmGrain, forKey: "showFilmGrain")
+            
+        }
+    }
+    
     /*
     @Published var stringData: String {
         didSet {
@@ -105,6 +113,8 @@ class SettingsStore: ObservableObject {
         self.useEmojiKeyboard = UserDefaults.standard.object(forKey: "useEmojiKeyboard") as? Bool ?? Defaults.useEmojiKeyboard
         self.useLegacyLayout = UserDefaults.standard.object(forKey: "useLegacyLayout") as? Bool ?? Defaults.useLegacyLayout
         self.allowContextMenu = UserDefaults.standard.object(forKey: "allowContextMenu") as? Bool ?? Defaults.allowContextMenu
+        self.showFilmGrain = UserDefaults.standard.object(forKey: "showFilmGrain") as? Bool ?? Defaults.showFilmGrain
+        
         
         //self.stringData = UserDefaults.standard.object(forKey: "stringData") as? String ?? ""
         
@@ -120,6 +130,7 @@ class SettingsStore: ObservableObject {
         self.useEmojiKeyboard = Defaults.useEmojiKeyboard
         self.useLegacyLayout = Defaults.useLegacyLayout
         self.allowContextMenu = Defaults.allowContextMenu
+        self.showFilmGrain = Defaults.showFilmGrain
         
     }
 }
