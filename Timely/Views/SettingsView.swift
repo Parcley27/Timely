@@ -44,7 +44,8 @@ struct SettingsView: View {
             Image(systemName: "arrow.up.forward.app")
             
         }
-        .foregroundStyle(.blue)
+        .foregroundStyle(.accent)
+        
     }
     
     func customButton(text: String, icon: String) -> some View {
@@ -59,7 +60,7 @@ struct SettingsView: View {
                 
             }
         }
-        .foregroundStyle(.blue)
+        .foregroundStyle(.accent)
         
     }
     

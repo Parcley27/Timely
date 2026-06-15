@@ -24,11 +24,11 @@ struct ContentView: View {
     var plusButton: some View {
         ZStack {
             Circle()
-                .strokeBorder(Color.blue, lineWidth: buttonSize * 0.075)
+                .strokeBorder(Color.accent, lineWidth: buttonSize * 0.075)
                 .frame(width: buttonSize, height: buttonSize)
             
             Image(systemName: "plus")
-                .foregroundStyle(Color.blue)
+                .foregroundStyle(Color.accent)
                 .font(.system(size: buttonSize * 0.75))
             
         }

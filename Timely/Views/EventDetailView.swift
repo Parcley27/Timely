@@ -118,7 +118,7 @@ struct EventDetailView: View {
                         LinearGradient(
                             gradient: Gradient(stops: [
                                 .init(color: .clear, location: 0.5),
-                                .init(color: event.averageColour(saturation: 0.7) ?? Color(.blue), location: 0.9)
+                                .init(color: event.averageColour(saturation: 0.7) ?? Color(.accent), location: 0.9)
                                 
                             ]),
                             
@@ -133,7 +133,7 @@ struct EventDetailView: View {
                         
                     }
                     
-                    EmojiSplashView(emoji: event.emoji ?? "📅", colour: event.averageColour(saturation: 0.5) ?? Color(.blue), size: 50, height: 5, width: 5)
+                    EmojiSplashView(emoji: event.emoji ?? "📅", colour: event.averageColour(saturation: 0.5) ?? Color(.accent), size: 50, height: 5, width: 5)
                         .offset(y: -300)
                     
                 }

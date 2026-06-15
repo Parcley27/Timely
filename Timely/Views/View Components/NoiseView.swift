@@ -71,7 +71,7 @@ class NoiseTextureGenerator {
 #Preview {
     ZStack {
         Text("hi")
-        Color.blue
+        Color.accent
         Text("hello")
         NoiseView()
         
