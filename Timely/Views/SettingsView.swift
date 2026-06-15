@@ -253,7 +253,7 @@ struct SettingsView: View {
                         )
                         
                         Button () {
-                            showSettingsResetConfirmation = true
+                            showDeleteEventsConfirmation = true
                             
                         } label: {
                             HStack {
