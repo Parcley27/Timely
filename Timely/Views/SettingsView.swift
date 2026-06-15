@@ -188,7 +188,7 @@ struct SettingsView: View {
                     
                     Section("Credits") {
                         Button() {
-                            openURL(URL(string: "https:pierceoxley.ca")!)
+                            openURL(URL(string: "https://pierceoxley.ca")!)
                             
                         } label: {
                             customButton(text: NSLocalizedString("Created by Pierce Nestibo-Oxley", comment: ""), icon: "person.circle")

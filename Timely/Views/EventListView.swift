@@ -24,7 +24,7 @@ struct EventListView: View {
     
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.colorScheme) var colorScheme
-
+    
     var isLightMode: Bool {
         colorScheme == .light
         
