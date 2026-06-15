@@ -30,6 +30,8 @@ struct EventListView: View {
         
     }
     
+    @State private var saveError: String? = nil
+    
     @State private var editMode = EditMode.inactive
     
     @State private var showingSheet = false
@@ -137,8 +139,7 @@ struct EventListView: View {
                 try await eventStore.save(events: data)
                 
             } catch {
-                // TODO: Present error to user instead of crashing
-                print("Failed to save events: \(error.localizedDescription)")
+                saveError = error.localizedDescription
                 
             }
         }
@@ -395,6 +396,13 @@ struct EventListView: View {
                         rebuildEventsByDate()
                         
                     }
+                }
+                .alert("Failed to Save", isPresented: Binding(get: { saveError != nil }, set: { if !$0 { saveError = nil } })) {
+                    Button("OK", role: .cancel) {}
+                    
+                } message: {
+                    Text(saveError ?? "")
+                    
                 }
             }
         }

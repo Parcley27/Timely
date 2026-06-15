@@ -16,6 +16,8 @@ struct EventTileView: View {
     @Environment(\.colorScheme) var colorScheme
     var isLightMode: Bool { colorScheme == .light }
     
+    @State private var saveError: String? = nil
+    
     init(for event: Event) {
         self.event = event
         
@@ -27,8 +29,7 @@ struct EventTileView: View {
                 try await eventStore.save(events: eventStore.events)
                 
             } catch {
-                // TODO: Present error to user instead of crashing
-                print("Failed to save events: \(error.localizedDescription)")
+                saveError = error.localizedDescription
                 
             }
         }
@@ -208,6 +209,13 @@ struct EventTileView: View {
                     }
                 }
             }
+        }
+        .alert("Failed to Save", isPresented: Binding(get: { saveError != nil }, set: { if !$0 { saveError = nil } })) {
+            Button("OK", role: .cancel) {}
+            
+        } message: {
+            Text(saveError ?? "")
+            
         }
     }
 }
