@@ -419,7 +419,7 @@ struct EditEventSheetView: View {
                 
             }
             .scrollDismissesKeyboard(.interactively)
-            .scrollContentBackground(.hidden)
+            .scrollContentBackground(preferences.showFilmGrain ? .hidden : .visible)
             .background {
                 if preferences.showFilmGrain {
                     NoiseView()

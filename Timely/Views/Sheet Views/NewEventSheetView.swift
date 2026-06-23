@@ -111,7 +111,7 @@ struct NewEventSheetView: View {
         
         //return currentDate.addingTimeInterval(oneDayInSeconds)
         return currentDate.addingTimeInterval(oneHourInSeconds)
-
+        
     }()
     
     @State private var formIsAllDay: Bool = false
@@ -166,7 +166,7 @@ struct NewEventSheetView: View {
         }
         
         return inputDate
-            
+        
     }
     
     let dateRange: ClosedRange<Date> = {
@@ -512,7 +512,7 @@ struct NewEventSheetView: View {
                 }
             }
             .scrollDismissesKeyboard(.interactively)
-            .scrollContentBackground(.hidden)
+            .scrollContentBackground(preferences.showFilmGrain ? .hidden : .visible)
             .background {
                 if preferences.showFilmGrain {
                     NoiseView()
