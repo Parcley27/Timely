@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 328.44 513">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+      }
+    </style>
+  </defs>
+  <g id="Sand">
+    <path id="Sand_B" data-name="Sand B" class="cls-1" d="M327.05,512.5H.5c0-116.74,94.49-154,163.27-154s163.27,37.26,163.27,154Z"/>
+    <path id="Sand_T" data-name="Sand T" class="cls-1" d="M327.94.5H1.39c0,116.74,94.49,154,163.27,154S327.94,117.24,327.94.5Z"/>
+  </g>
+</svg>

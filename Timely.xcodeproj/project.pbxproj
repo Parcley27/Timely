@@ -30,6 +30,10 @@
 		6EAEA6172C462DBF00B602CF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6EAEA6162C462DBF00B602CF /* Localizable.xcstrings */; };
 		6EF4E5AF2FD8D5ED00B1D195 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 6EF4E5AE2FD8D5E800B1D195 /* .gitignore */; };
 		6EF4F6CD2BB292C000288AE3 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */; };
+		BE097BD82FECD87D00237040 /* Timely Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = BE097BD72FECD87D00237040 /* Timely Icon.icon */; };
+		BE097BD92FECD88F00237040 /* Timely Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = BE097BD72FECD87D00237040 /* Timely Icon.icon */; };
+		BE097BDA2FECD88F00237040 /* Timely Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = BE097BD72FECD87D00237040 /* Timely Icon.icon */; };
+		BE097BDB2FECD88F00237040 /* Timely Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = BE097BD72FECD87D00237040 /* Timely Icon.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +102,7 @@
 		6EC062972D335FFA006D07B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6EF4E5AE2FD8D5E800B1D195 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		6EF4F6CC2BB292C000288AE3 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		BE097BD72FECD87D00237040 /* Timely Icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Timely Icon.icon"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -206,6 +211,7 @@
 				6E3CACE42F7124750076E431 /* Frameworks */,
 				6EAE9FED2B018D7B0029A8D4 /* Products */,
 				6EF4E5AE2FD8D5E800B1D195 /* .gitignore */,
+				BE097BD72FECD87D00237040 /* Timely Icon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -431,6 +437,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6EF4E5AF2FD8D5ED00B1D195 /* .gitignore in Resources */,
+				BE097BD82FECD87D00237040 /* Timely Icon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,6 +448,7 @@
 				6E6DCD332C0CE58200A69CC8 /* Launch Screen.storyboard in Resources */,
 				6EAE9FF92B018D7C0029A8D4 /* Preview Assets.xcassets in Resources */,
 				6EAEA6172C462DBF00B602CF /* Localizable.xcstrings in Resources */,
+				BE097BD92FECD88F00237040 /* Timely Icon.icon in Resources */,
 				6EAE9FF62B018D7C0029A8D4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -449,6 +457,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE097BDA2FECD88F00237040 /* Timely Icon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +465,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE097BDB2FECD88F00237040 /* Timely Icon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -718,7 +728,7 @@
 		6EAEA0132B018D7C0029A8D4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Timely Icon";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Timely/Timely.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -755,7 +765,7 @@
 		6EAEA0142B018D7C0029A8D4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Timely Icon";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Timely/Timely.entitlements;
 				CODE_SIGN_STYLE = Automatic;
