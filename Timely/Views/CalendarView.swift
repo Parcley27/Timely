@@ -43,7 +43,7 @@ struct CalendarView: View {
     
     let saveAction: () -> Void
     
-    @State private var showingSettings = false
+    @State private var showingSettings: Bool = false
     
     let columnLayout = Array(repeating: GridItem(spacing: 5, alignment: .center), count: 7)
     
@@ -51,9 +51,13 @@ struct CalendarView: View {
     var currentMonth = Calendar.current.component(.month, from: Date())
     var currentYear = Calendar.current.component(.year, from: Date())
     
+    @State private var swipeDistance: CGSize = CGSize.zero
+    
     func localizedNumber(_ number: Int) -> String {
         let formatter = NumberFormatter()
+        
         formatter.locale = Locale.current
+        
         return formatter.string(from: NSNumber(value: number)) ?? "\(number)"
         
     }
@@ -106,6 +110,7 @@ struct CalendarView: View {
     
     var totalDaysInMonth: Int {
         let dateComponents = DateComponents(year: year, month: month)
+        
         guard let startDate = Calendar.current.date(from: dateComponents),
             let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
                 return 30
@@ -119,7 +124,9 @@ struct CalendarView: View {
     var daysInMonth: [CalendarDay] {
         var days: [CalendarDay] = []
         let placeholderDays = Array(repeating: CalendarDay(id: 0, isPlaceholder: true), count: firstDayOfMonth - 1)
+        
         days.append(contentsOf: placeholderDays)
+        
         for day in 1...totalDaysInMonth {
             
             var components = DateComponents()
@@ -335,6 +342,39 @@ struct CalendarView: View {
                     Spacer()
                     
                 }
+                .gesture(
+                    DragGesture()
+                        .onChanged { gesture in
+                            swipeDistance = gesture.translation
+                            
+                        }
+                        .onEnded { _ in
+                            if swipeDistance.width > 100 {
+                                if month == 1 {
+                                    month = 12
+                                    year -= 1
+                                    
+                                } else {
+                                    month -= 1
+                                    
+                                }
+                                
+                            } else if swipeDistance.width < -100 {
+                                if month == 12 {
+                                    month = 1
+                                    year += 1
+                                    
+                                } else {
+                                    month += 1
+                                    
+                                }
+                                
+                            } else {
+                                swipeDistance = .zero
+                                
+                            }
+                        }
+                )
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button() {
@@ -354,6 +394,8 @@ struct CalendarView: View {
 }
 
 #Preview {
+    let previewPreferences = SettingsStore()
+    
     let previewData = EventData()
     previewData.events = [
         Event(name: "Sample Event 1", dateAndTime: Date()),
@@ -368,5 +410,7 @@ struct CalendarView: View {
     let currentYear = Calendar.current.component(.year, from: Date())
     
     return CalendarView(data: previewEvents, month: currentMonth, year: currentYear, saveAction: {})
+        .environmentObject(previewPreferences)
+    
     
 }
