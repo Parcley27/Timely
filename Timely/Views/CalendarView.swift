@@ -45,6 +45,8 @@ struct CalendarView: View {
     
     @State private var showingSettings: Bool = false
     
+    @State private var viewWidth: CGFloat = 0.0
+    
     let columnLayout = Array(repeating: GridItem(spacing: 5, alignment: .center), count: 7)
     
     var currentDay = Calendar.current.component(.day, from: Date())
@@ -129,7 +131,7 @@ struct CalendarView: View {
         
         days.append(contentsOf: placeholderDays)
         
-        for day in 1 ... totalDaysInMonth(month: displayMonth, year: displayYear) {
+        for day in 1 ... totalDaysInMonth(month: month, year: year) {
             var components = DateComponents()
             
             components.day = day
@@ -183,6 +185,79 @@ struct CalendarView: View {
         
         return opacity
         
+    }
+    
+    func MonthGridView(month: Int, year: Int) -> some View {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
+            ForEach(daysInMonth(month: month, year: year), id: \.self) { tile in
+                NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date) {
+                    Task {
+                        do {
+                            try await eventStore.save(events: eventStore.events)
+                            
+                        } catch {
+                            eventStore.saveError = error
+                            
+                        }
+                    }
+                }
+                    .task {
+                        do {
+                            for event in eventStore.events {
+                                print(event.name ?? "Event Name", terminator: " ")
+                                
+                            }
+                            
+                            print("")
+                            
+                        }
+                    }) {
+                        if tile.isPlaceholder {
+                            Color.clear
+                                .aspectRatio(0.7, contentMode: .fit)
+                            
+                        } else {
+                            let isCurrent = isCurrentDay(possibleDay: tile)
+                            let dayEvents = eventsOnDay(searchingDay: tile)
+                            let hasEvents = !dayEvents.isEmpty
+                            
+                            VStack(spacing: 4) {
+                                Text(localizedNumber(tile.day!))
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                                    .font(.title3)
+                                    .bold()
+                                    .foregroundStyle(.primary)
+                                
+                                let capsuleHeight = 6.0
+                                let capsuleWidth = capsuleHeight / 2 + (capsuleHeight * Double(dayEvents.count))
+                                
+                                Capsule()
+                                    .fill(hasEvents ? Color.accentColor : .clear)
+                                    .frame(width: min(capsuleWidth, 30), height: capsuleHeight)
+                                
+                                Spacer()
+                                
+                            }
+                            .aspectRatio(0.7, contentMode: .fit)
+                            .background(
+                                TileView(
+                                    inputColours: isCurrent ? Color.accentColor : (hasEvents ? Color.accentColor : Color(.black)),
+                                    forceBackground: false,
+                                    saturationModifier: isCurrent ? 1.0 : (hasEvents ? 0.8 : (isLightMode ? 0.9 : 0.2)),
+                                    customBorder: false,
+                                    cornerRadius: 12
+                                )
+                                
+                            )
+                            .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 12))
+                            .shadow(color: isCurrent ? Color.accentColor.opacity(0.4) : .clear, radius: 8)
+                            
+                        }
+                    }
+            }
+            .padding(.vertical, 2)
+            
+        }
     }
     
     var body: some View {
@@ -268,74 +343,46 @@ struct CalendarView: View {
                     .padding(.bottom, 4)
                     
                     // Calendar grid
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
-                        ForEach(daysInMonth(month: displayMonth, year: displayYear), id: \.self) { tile in
-                            NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date) {
-                                Task {
-                                    do {
-                                        try await eventStore.save(events: eventStore.events)
-                                        
-                                    } catch {
-                                        eventStore.saveError = error
-                                        
-                                    }
-                                }
-                            }
-                                .task {
-                                    do {
-                                        for event in eventStore.events {
-                                            print(event.name ?? "Event Name", terminator: " ")
-                                            
-                                        }
-                                        
-                                        print("")
-                                        
-                                    }
-                                }) {
-                                    if tile.isPlaceholder {
-                                        Color.clear
-                                            .aspectRatio(0.7, contentMode: .fit)
-                                        
-                                    } else {
-                                        let isCurrent = isCurrentDay(possibleDay: tile)
-                                        let dayEvents = eventsOnDay(searchingDay: tile)
-                                        let hasEvents = !dayEvents.isEmpty
-                                        
-                                        VStack(spacing: 4) {
-                                            Text(localizedNumber(tile.day!))
-                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                                                .font(.title3)
-                                                .bold()
-                                                .foregroundStyle(.primary)
-                                            
-                                            let capsuleHeight = 6.0
-                                            let capsuleWidth = capsuleHeight / 2 + (capsuleHeight * Double(dayEvents.count))
-                                            
-                                            Capsule()
-                                                .fill(hasEvents ? Color.accentColor : .clear)
-                                                .frame(width: min(capsuleWidth, 30), height: capsuleHeight)
-                                            
-                                            Spacer()
-                                            
-                                        }
-                                        .aspectRatio(0.7, contentMode: .fit)
-                                        .background(
-                                            TileView(
-                                                inputColours: isCurrent ? Color.accentColor : (hasEvents ? Color.accentColor : Color(.black)),
-                                                forceBackground: false,
-                                                saturationModifier: isCurrent ? 1.0 : (hasEvents ? 0.8 : (isLightMode ? 0.9 : 0.2)),
-                                                customBorder: false,
-                                                cornerRadius: 12
-                                            )
-                                            
-                                        )
-                                        .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 12))
-                                        .shadow(color: isCurrent ? Color.accentColor.opacity(0.4) : .clear, radius: 8)
-                                        
-                                    }
-                                }
+                    let months: [Int] = {
+                        var monthArray: [Int] = [displayMonth - 1, displayMonth, displayMonth + 1]
+                        
+                        if displayMonth == 1 {
+                            monthArray[0] = 12
+                            
+                        } else if displayMonth == 12 {
+                            monthArray[2] = 1
+                            
                         }
-                        .padding(.vertical, 2)
+                        
+                        return monthArray
+                        
+                    }()
+                    
+                    let years: [Int] = {
+                        var yearArray = [Int](repeating: displayYear, count: 3)
+                        
+                        if displayMonth == 1 {
+                            yearArray[0] -= 1
+                            
+                        } else if displayMonth == 12 {
+                            yearArray[2] += 1
+                            
+                        }
+                        
+                        return yearArray
+                        
+                    }()
+                    
+                    ZStack {
+                        MonthGridView(month: months[0], year: years[0])
+                            .offset(x: swipeDistance.width - viewWidth)
+                        
+                        MonthGridView(month: months[1], year: years[1])
+                            .offset(x: swipeDistance.width)
+                        
+                        MonthGridView(month: months[2], year: years[2])
+                            .offset(x: swipeDistance.width + viewWidth)
+                        
                     }
                     .padding(.horizontal)
                     
@@ -350,28 +397,46 @@ struct CalendarView: View {
                         }
                         .onEnded { _ in
                             if swipeDistance.width > 100 {
-                                if displayMonth == 1 {
-                                    displayMonth = 12
-                                    displayYear -= 1
+                                withAnimation(.easeOut(duration: 0.2)) {
+                                    swipeDistance.width = viewWidth
                                     
-                                } else {
-                                    displayMonth -= 1
+                                } completion: {
+                                    if displayMonth == 1 {
+                                        displayMonth = 12
+                                        displayYear -= 1
+                                        
+                                    } else {
+                                        displayMonth -= 1
+                                        
+                                    }
+                                    
+                                    swipeDistance = .zero
                                     
                                 }
                                 
                             } else if swipeDistance.width < -100 {
-                                if displayMonth == 12 {
-                                    displayMonth = 1
-                                    displayYear += 1
+                                withAnimation(.easeOut(duration: 0.2)) {
+                                    swipeDistance.width = -viewWidth
                                     
-                                } else {
-                                    displayMonth += 1
+                                } completion: {
+                                    if displayMonth == 12 {
+                                        displayMonth = 1
+                                        displayYear += 1
+                                        
+                                    } else {
+                                        displayMonth += 1
+                                        
+                                    }
+                                    
+                                    swipeDistance = .zero
                                     
                                 }
                                 
                             } else {
-                                swipeDistance = .zero
-                                
+                                withAnimation(.spring(duration: 0.3)) {
+                                    swipeDistance = .zero
+                                    
+                                }
                             }
                         }
                 )
@@ -379,8 +444,10 @@ struct CalendarView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button() {
                             showingSettings = true
+                            
                         } label: {
                             Image(systemName: "gearshape")
+                            
                         }
                     }
                 }
@@ -388,6 +455,13 @@ struct CalendarView: View {
                     SettingsView()
                 }
                 .navigationBarTitle("Calendar")
+            }
+            .onGeometryChange(for: CGFloat.self) { proxy in
+                proxy.size.width
+                
+            } action: { newValue in
+                viewWidth = newValue
+                
             }
         }
     }
