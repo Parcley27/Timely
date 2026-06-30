@@ -38,8 +38,8 @@ struct CalendarView: View {
     
     @Binding var data: [Event]
     
-    @State var month: Int
-    @State var year: Int
+    @State var displayMonth: Int
+    @State var displayYear: Int
     
     let saveAction: () -> Void
     
@@ -97,8 +97,9 @@ struct CalendarView: View {
         
     }
     
-    var firstDayOfMonth: Int {
+    func firstDayOfMonth(month: Int, year: Int) -> Int {
         let dateComponents: DateComponents = DateComponents(year: year, month: month)
+        
         guard let startDate: Date = Calendar.current.date(from: dateComponents) else { return 1 }
         
         let weekday: Int = Calendar.current.component(.weekday, from: startDate)
@@ -108,27 +109,27 @@ struct CalendarView: View {
         
     }
     
-    var totalDaysInMonth: Int {
+    func totalDaysInMonth(month: Int, year: Int) -> Int {
         let dateComponents = DateComponents(year: year, month: month)
         
         guard let startDate = Calendar.current.date(from: dateComponents),
-            let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
-                return 30
+              let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
+            return 30
             
-            }
+        }
         
         return range.count
         
     }
     
-    var daysInMonth: [CalendarDay] {
+    func daysInMonth(month: Int, year: Int) -> [CalendarDay] {
         var days: [CalendarDay] = []
-        let placeholderDays = Array(repeating: CalendarDay(id: 0, isPlaceholder: true), count: firstDayOfMonth - 1)
+        
+        let placeholderDays = Array(repeating: CalendarDay(id: 0, isPlaceholder: true), count: firstDayOfMonth(month: month, year: year) - 1)
         
         days.append(contentsOf: placeholderDays)
         
-        for day in 1...totalDaysInMonth {
-            
+        for day in 1 ... totalDaysInMonth(month: displayMonth, year: displayYear) {
             var components = DateComponents()
             
             components.day = day
@@ -157,7 +158,6 @@ struct CalendarView: View {
             let endDay = calendar.startOfDay(for: event.endDateAndTime ?? event.dateAndTime)
             
             return (searchDay >= startDay && searchDay <= endDay) || (event.isAllDay ?? false && calendar.isDate(event.dateAndTime, equalTo: searchingDay.date!, toGranularity: .day))
-
             
         }
         
@@ -168,7 +168,7 @@ struct CalendarView: View {
         
         let multiplier = 0.2
         
-        if isCurrentDay(possibleDay: day) && month == currentMonth && year == currentYear {
+        if isCurrentDay(possibleDay: day) && displayMonth == currentMonth && displayYear == currentYear {
             opacity = 1.0
             
         } else  {
@@ -197,12 +197,12 @@ struct CalendarView: View {
                     // Month navigation bar
                     HStack {
                         Button {
-                            if month == 1 {
-                                month = 12
-                                year -= 1
+                            if displayMonth == 1 {
+                                displayMonth = 12
+                                displayYear -= 1
                                 
                             } else {
-                                month -= 1
+                                displayMonth -= 1
                                 
                             }
                             
@@ -216,9 +216,9 @@ struct CalendarView: View {
                         
                         Spacer()
                         
-                        Button("\(monthNames[month - 1]) \(String(year))") {
-                            month = currentMonth
-                            year = currentYear
+                        Button("\(monthNames[displayMonth - 1]) \(String(displayYear))") {
+                            displayMonth = currentMonth
+                            displayYear = currentYear
                             
                         }
                         .font(.title2)
@@ -227,12 +227,12 @@ struct CalendarView: View {
                         Spacer()
                         
                         Button {
-                            if month == 12 {
-                                month = 1
-                                year += 1
+                            if displayMonth == 12 {
+                                displayMonth = 1
+                                displayYear += 1
                                 
                             } else {
-                                month += 1
+                                displayMonth += 1
                                 
                             }
                             
@@ -269,7 +269,7 @@ struct CalendarView: View {
                     
                     // Calendar grid
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
-                        ForEach(daysInMonth, id: \.self) { tile in
+                        ForEach(daysInMonth(month: displayMonth, year: displayYear), id: \.self) { tile in
                             NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date) {
                                 Task {
                                     do {
@@ -350,22 +350,22 @@ struct CalendarView: View {
                         }
                         .onEnded { _ in
                             if swipeDistance.width > 100 {
-                                if month == 1 {
-                                    month = 12
-                                    year -= 1
+                                if displayMonth == 1 {
+                                    displayMonth = 12
+                                    displayYear -= 1
                                     
                                 } else {
-                                    month -= 1
+                                    displayMonth -= 1
                                     
                                 }
                                 
                             } else if swipeDistance.width < -100 {
-                                if month == 12 {
-                                    month = 1
-                                    year += 1
+                                if displayMonth == 12 {
+                                    displayMonth = 1
+                                    displayYear += 1
                                     
                                 } else {
-                                    month += 1
+                                    displayMonth += 1
                                     
                                 }
                                 
@@ -409,7 +409,7 @@ struct CalendarView: View {
     let currentMonth = Calendar.current.component(.month, from: Date())
     let currentYear = Calendar.current.component(.year, from: Date())
     
-    return CalendarView(data: previewEvents, month: currentMonth, year: currentYear, saveAction: {})
+    return CalendarView(data: previewEvents, displayMonth: currentMonth, displayYear: currentYear, saveAction: {})
         .environmentObject(previewPreferences)
     
     

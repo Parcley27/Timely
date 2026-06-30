@@ -117,7 +117,7 @@ struct ContentView: View {
                     }
                     
                     Tab("Calendar", systemImage: "calendar") {
-                        CalendarView(data: $eventStore.events, month: currentMonth, year: currentYear) {
+                        CalendarView(data: $eventStore.events, displayMonth: currentMonth, displayYear: currentYear) {
                             Task {
                                 do {
                                     try await eventStore.save(events: eventStore.events)
