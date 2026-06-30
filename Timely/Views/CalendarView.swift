@@ -384,19 +384,20 @@ struct CalendarView: View {
                             .offset(x: swipeDistance.width + viewWidth)
                         
                     }
+                    //.clipped()
                     .padding(.horizontal)
                     
                     Spacer()
                     
                 }
-                .gesture(
+                .simultaneousGesture(
                     DragGesture()
                         .onChanged { gesture in
-                            swipeDistance = gesture.translation
+                            swipeDistance.width = gesture.translation.width
                             
                         }
                         .onEnded { _ in
-                            if swipeDistance.width > 100 {
+                            if swipeDistance.width > 50 {
                                 withAnimation(.easeOut(duration: 0.2)) {
                                     swipeDistance.width = viewWidth
                                     
@@ -414,7 +415,7 @@ struct CalendarView: View {
                                     
                                 }
                                 
-                            } else if swipeDistance.width < -100 {
+                            } else if swipeDistance.width < -50 {
                                 withAnimation(.easeOut(duration: 0.2)) {
                                     swipeDistance.width = -viewWidth
                                     
