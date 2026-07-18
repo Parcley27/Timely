@@ -7,26 +7,96 @@
 
 import SwiftUI
 
-struct CalendarDay: Identifiable, Hashable {
-    let id: Int
-    let isPlaceholder: Bool
+struct SlidingMonthContainer: View {
+    @Binding var displayMonth: Int
+    @Binding var displayYear: Int
+    @Binding var data: [Event]
     
-    let date: Date?
+    let isLightMode: Bool
+    let saveAction: () -> Void
     
-    let year: Int?
-    let month: Int?
-    let day: Int?
+    @State private var offset: CGFloat = 0
+    @State private var containerWidth: CGFloat = 0
     
-    init(id: Int, isPlaceholder: Bool, date: Date? = nil) {
-            self.id = id
-            self.isPlaceholder = isPlaceholder
-            self.date = date
+    var minDistance = CGFloat(100)
+    
+    private var prevMonth: Int { displayMonth == 1 ? 12 : displayMonth - 1 }
+    private var prevYear: Int { displayMonth == 1 ? displayYear - 1 : displayYear }
+    private var nextMonth: Int { displayMonth == 12 ? 1 : displayMonth + 1 }
+    private var nextYear: Int { displayMonth == 12 ? displayYear + 1 : displayYear }
+    
+    var body: some View {
+        ZStack {
+            MonthGridView(month: prevMonth, year: prevYear, data: $data, isLightMode: isLightMode, saveAction: saveAction)
+                .offset(x: offset - containerWidth)
             
-            self.year = date != nil ? Calendar.current.component(.year, from: date!) : nil
-            self.month = date != nil ? Calendar.current.component(.month, from: date!) : nil
-            self.day = date != nil ? Calendar.current.component(.day, from: date!) : nil
-        
+            MonthGridView(month: displayMonth, year: displayYear, data: $data, isLightMode: isLightMode, saveAction: saveAction)
+                .offset(x: offset)
+            
+            MonthGridView(month: nextMonth, year: nextYear, data: $data, isLightMode: isLightMode, saveAction: saveAction)
+                .offset(x: offset + containerWidth)
+            
         }
+        .clipped()
+        .simultaneousGesture(
+            DragGesture()
+                .onChanged { gesture in
+                    offset = gesture.translation.width
+                    
+                }
+                .onEnded { _ in
+                    if offset > minDistance {
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            offset = containerWidth
+                            
+                        } completion: {
+                            if displayMonth == 1 {
+                                displayMonth = 12
+                                displayYear -= 1
+                                
+                            } else {
+                                displayMonth -= 1
+                                
+                            }
+                            
+                            offset = 0
+                            
+                        }
+                        
+                    } else if offset < -minDistance {
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            offset = -containerWidth
+                            
+                        } completion: {
+                            if displayMonth == 12 {
+                                displayMonth = 1
+                                displayYear += 1
+                                
+                            } else {
+                                displayMonth += 1
+                                
+                            }
+                            
+                            offset = 0
+                            
+                        }
+                        
+                    } else {
+                        withAnimation(.spring(duration: 0.3)) {
+                            offset = 0
+                            
+                        }
+                    }
+                }
+        )
+        .onGeometryChange(for: CGFloat.self) { proxy in
+            proxy.size.width
+            
+        } action: { newValue in
+            containerWidth = newValue
+            
+        }
+    }
 }
 
 struct CalendarView: View {
@@ -45,24 +115,10 @@ struct CalendarView: View {
     
     @State private var showingSettings: Bool = false
     
-    @State private var viewWidth: CGFloat = 0.0
-    
     let columnLayout = Array(repeating: GridItem(spacing: 5, alignment: .center), count: 7)
     
-    var currentDay = Calendar.current.component(.day, from: Date())
     var currentMonth = Calendar.current.component(.month, from: Date())
     var currentYear = Calendar.current.component(.year, from: Date())
-    
-    @State private var swipeDistance: CGSize = CGSize.zero
-    
-    func localizedNumber(_ number: Int) -> String {
-        let formatter = NumberFormatter()
-        
-        formatter.locale = Locale.current
-        
-        return formatter.string(from: NSNumber(value: number)) ?? "\(number)"
-        
-    }
     
     var dayNames: [String] {
         let formatter = DateFormatter()
@@ -87,177 +143,6 @@ struct CalendarView: View {
         
         return [""]
         
-    }
-    
-    func isCurrentDay(possibleDay: CalendarDay) -> Bool {
-        if possibleDay.day == currentDay && possibleDay.month == currentMonth && possibleDay.year == currentYear {
-            return true
-            
-        }
-        
-        return false
-        
-    }
-    
-    func firstDayOfMonth(month: Int, year: Int) -> Int {
-        let dateComponents: DateComponents = DateComponents(year: year, month: month)
-        
-        guard let startDate: Date = Calendar.current.date(from: dateComponents) else { return 1 }
-        
-        let weekday: Int = Calendar.current.component(.weekday, from: startDate)
-        let firstWeekday: Int = Calendar.current.firstWeekday
-        
-        return (weekday - firstWeekday + 7) % 7 + 1
-        
-    }
-    
-    func totalDaysInMonth(month: Int, year: Int) -> Int {
-        let dateComponents = DateComponents(year: year, month: month)
-        
-        guard let startDate = Calendar.current.date(from: dateComponents),
-              let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
-            return 30
-            
-        }
-        
-        return range.count
-        
-    }
-    
-    func daysInMonth(month: Int, year: Int) -> [CalendarDay] {
-        var days: [CalendarDay] = []
-        
-        let placeholderDays = Array(repeating: CalendarDay(id: 0, isPlaceholder: true), count: firstDayOfMonth(month: month, year: year) - 1)
-        
-        days.append(contentsOf: placeholderDays)
-        
-        for day in 1 ... totalDaysInMonth(month: month, year: year) {
-            var components = DateComponents()
-            
-            components.day = day
-            components.month = month
-            components.year = year
-            
-            if let date = Calendar.current.date(from: components) {
-                days.append(CalendarDay(id: day, isPlaceholder: false, date: date))
-                
-            } else {
-                print("Invalid date components")
-                
-            }
-        }
-        
-        return days
-        
-    }
-    
-    func eventsOnDay(searchingDay: CalendarDay) -> [Event] {
-        let calendar = Calendar.current
-        let searchDay = calendar.startOfDay(for: searchingDay.date ?? Date())
-        
-        return data.filter { event in
-            let startDay = calendar.startOfDay(for: event.dateAndTime)
-            let endDay = calendar.startOfDay(for: event.endDateAndTime ?? event.dateAndTime)
-            
-            return (searchDay >= startDay && searchDay <= endDay) || (event.isAllDay ?? false && calendar.isDate(event.dateAndTime, equalTo: searchingDay.date!, toGranularity: .day))
-            
-        }
-        
-    }
-    
-    func computedOpacity(day: CalendarDay) -> Double {
-        var opacity = 0.4
-        
-        let multiplier = 0.2
-        
-        if isCurrentDay(possibleDay: day) && displayMonth == currentMonth && displayYear == currentYear {
-            opacity = 1.0
-            
-        } else  {
-            opacity += (Double(eventsOnDay(searchingDay: day).count) * multiplier)
-            
-            if opacity > 0.75 {
-                opacity = 0.75
-                
-            }
-            
-        }
-        
-        return opacity
-        
-    }
-    
-    func MonthGridView(month: Int, year: Int) -> some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
-            ForEach(daysInMonth(month: month, year: year), id: \.self) { tile in
-                NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date) {
-                    Task {
-                        do {
-                            try await eventStore.save(events: eventStore.events)
-                            
-                        } catch {
-                            eventStore.saveError = error
-                            
-                        }
-                    }
-                }
-                    .task {
-                        do {
-                            for event in eventStore.events {
-                                print(event.name ?? "Event Name", terminator: " ")
-                                
-                            }
-                            
-                            print("")
-                            
-                        }
-                    }) {
-                        if tile.isPlaceholder {
-                            Color.clear
-                                .aspectRatio(0.7, contentMode: .fit)
-                            
-                        } else {
-                            let isCurrent = isCurrentDay(possibleDay: tile)
-                            let dayEvents = eventsOnDay(searchingDay: tile)
-                            let hasEvents = !dayEvents.isEmpty
-                            
-                            VStack(spacing: 4) {
-                                Text(localizedNumber(tile.day!))
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                                    .font(.title3)
-                                    .bold()
-                                    .foregroundStyle(.primary)
-                                
-                                let capsuleHeight = 6.0
-                                let capsuleWidth = capsuleHeight / 2 + (capsuleHeight * Double(dayEvents.count))
-                                
-                                Capsule()
-                                    .fill(hasEvents ? Color.accentColor : .clear)
-                                    .frame(width: min(capsuleWidth, 30), height: capsuleHeight)
-                                
-                                Spacer()
-                                
-                            }
-                            .aspectRatio(0.7, contentMode: .fit)
-                            .background(
-                                TileView(
-                                    inputColours: isCurrent ? Color.accentColor : (hasEvents ? Color.accentColor : Color(.black)),
-                                    forceBackground: false,
-                                    saturationModifier: isCurrent ? 1.0 : (hasEvents ? 0.8 : (isLightMode ? 0.9 : 0.2)),
-                                    customBorder: false,
-                                    cornerRadius: 12
-                                )
-                                
-                            )
-                            .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 12))
-                            .shadow(color: isCurrent ? Color.accentColor.opacity(0.4) : .clear, radius: 8)
-                            
-                        }
-                    }
-            }
-            .padding(.vertical, 2)
-            
-        }
     }
     
     var body: some View {
@@ -343,107 +228,31 @@ struct CalendarView: View {
                     .padding(.bottom, 4)
                     
                     // Calendar grid
-                    let months: [Int] = {
-                        var monthArray: [Int] = [displayMonth - 1, displayMonth, displayMonth + 1]
-                        
-                        if displayMonth == 1 {
-                            monthArray[0] = 12
-                            
-                        } else if displayMonth == 12 {
-                            monthArray[2] = 1
-                            
+                    SlidingMonthContainer(
+                        displayMonth: $displayMonth,
+                        displayYear: $displayYear,
+                        data: $data,
+                        isLightMode: isLightMode,
+                        saveAction: {
+                            Task {
+                                do {
+                                    try await eventStore.save(events: eventStore.events)
+                                    
+                                } catch {
+                                    eventStore.saveError = error
+                                    
+                                }
+                            }
                         }
-                        
-                        return monthArray
-                        
-                    }()
-                    
-                    let years: [Int] = {
-                        var yearArray = [Int](repeating: displayYear, count: 3)
-                        
-                        if displayMonth == 1 {
-                            yearArray[0] -= 1
-                            
-                        } else if displayMonth == 12 {
-                            yearArray[2] += 1
-                            
-                        }
-                        
-                        return yearArray
-                        
-                    }()
-                    
-                    ZStack {
-                        MonthGridView(month: months[0], year: years[0])
-                            .offset(x: swipeDistance.width - viewWidth)
-                        
-                        MonthGridView(month: months[1], year: years[1])
-                            .offset(x: swipeDistance.width)
-                        
-                        MonthGridView(month: months[2], year: years[2])
-                            .offset(x: swipeDistance.width + viewWidth)
-                        
-                    }
-                    //.clipped()
+                    )
                     .padding(.horizontal)
                     
                     Spacer()
                     
                 }
-                .simultaneousGesture(
-                    DragGesture()
-                        .onChanged { gesture in
-                            swipeDistance.width = gesture.translation.width
-                            
-                        }
-                        .onEnded { _ in
-                            if swipeDistance.width > 50 {
-                                withAnimation(.easeOut(duration: 0.2)) {
-                                    swipeDistance.width = viewWidth
-                                    
-                                } completion: {
-                                    if displayMonth == 1 {
-                                        displayMonth = 12
-                                        displayYear -= 1
-                                        
-                                    } else {
-                                        displayMonth -= 1
-                                        
-                                    }
-                                    
-                                    swipeDistance = .zero
-                                    
-                                }
-                                
-                            } else if swipeDistance.width < -50 {
-                                withAnimation(.easeOut(duration: 0.2)) {
-                                    swipeDistance.width = -viewWidth
-                                    
-                                } completion: {
-                                    if displayMonth == 12 {
-                                        displayMonth = 1
-                                        displayYear += 1
-                                        
-                                    } else {
-                                        displayMonth += 1
-                                        
-                                    }
-                                    
-                                    swipeDistance = .zero
-                                    
-                                }
-                                
-                            } else {
-                                withAnimation(.spring(duration: 0.3)) {
-                                    swipeDistance = .zero
-                                    
-                                }
-                            }
-                        }
-                )
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button() {
+                        Button {
                             showingSettings = true
                             
                         } label: {
@@ -454,14 +263,9 @@ struct CalendarView: View {
                 }
                 .sheet(isPresented: $showingSettings) {
                     SettingsView()
+                    
                 }
                 .navigationBarTitle("Calendar")
-            }
-            .onGeometryChange(for: CGFloat.self) { proxy in
-                proxy.size.width
-                
-            } action: { newValue in
-                viewWidth = newValue
                 
             }
         }
@@ -470,13 +274,13 @@ struct CalendarView: View {
 
 #Preview {
     let previewPreferences = SettingsStore()
-    
+
     let previewData = EventData()
     previewData.events = [
         Event(name: "Sample Event 1", dateAndTime: Date()),
         Event(name: "Sample Event 2", isMuted: true),
         Event(name: "Sample Event 3", isFavourite: true)
-        // Add more sample events if needed
+        
     ]
     
     let previewEvents = Binding.constant(previewData.events)
@@ -486,6 +290,5 @@ struct CalendarView: View {
     
     return CalendarView(data: previewEvents, displayMonth: currentMonth, displayYear: currentYear, saveAction: {})
         .environmentObject(previewPreferences)
-    
     
 }

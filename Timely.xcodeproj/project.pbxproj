@@ -139,6 +139,7 @@
 		6EF777192C745F7A007D65BF /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				CalendarGridView.swift,
 				EmojiSplashView.swift,
 				EmojiTextField.swift,
 				EventTileView.swift,
