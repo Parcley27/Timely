@@ -209,24 +209,15 @@ struct NewEventSheetView: View {
             var hasFoundEmoji = false
             
             for character in formName {
-                let unicodeScalars = character.unicodeScalars
-                
-                for scalar in unicodeScalars {
-                    if (scalar.value >= 0x1F600 && scalar.value <= 0x1F64F) {
-                        formEmoji = String(character)
-                        hasFoundEmoji = true
-                        
-                        if let characterIndex = formName.firstIndex(of: character) {
-                            formName.remove(at: characterIndex)
-                            
-                        }
-                        
-                        break
+                if character.unicodeScalars.allSatisfy({ $0.properties.isEmoji && $0.properties.isEmojiPresentation }) {
+                    formEmoji = String(character)
+                    hasFoundEmoji = true
+                    
+                    if let characterIndex = formName.firstIndex(of: character) {
+                        formName.remove(at: characterIndex)
                         
                     }
-                }
-                
-                if hasFoundEmoji {
+                    
                     break
                     
                 }
