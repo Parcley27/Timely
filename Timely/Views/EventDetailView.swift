@@ -176,10 +176,6 @@ struct EventDetailView: View {
                             }
                             
                             Text(timeUntilEvent)
-                                .onAppear {
-                                    updateTimeUntilEvent()
-                                    
-                                }
                                 .font(.system(size: 32, weight: .bold))
                                 .multilineTextAlignment(.center)
                             
@@ -413,6 +409,13 @@ struct EventDetailView: View {
                     dataIndex = index
                     
                 }
+                
+                updateTimeUntilEvent()
+                
+            }
+            .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
+                updateTimeUntilEvent()
+                
             }
             .onChange(of: data) {
                 if let index = data.firstIndex(where: { $0.id == eventID }) {
@@ -459,11 +462,6 @@ struct EventDetailView: View {
         }
         
         timeUntilEvent = calculateTime(event: data[eventIndex])
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.updateTimeUntilEvent()
-            
-        }
     }
 }
 
