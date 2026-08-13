@@ -314,7 +314,7 @@ struct EventDetailView: View {
                         .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
                         
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Visability")
+                            Text("Visibility")
                                 .font(.headline)
                                 .foregroundStyle(.secondary)
                             
