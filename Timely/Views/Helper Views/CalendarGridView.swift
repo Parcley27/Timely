@@ -36,6 +36,7 @@ struct MonthGridView: View {
     @Binding var data: [Event]
     
     let isLightMode: Bool
+    let isDragging: Bool
     let saveAction: () -> Void
     
     private let currentDay = Calendar.current.component(.day, from: Date())
@@ -166,6 +167,8 @@ struct MonthGridView: View {
             .padding(.vertical, 2)
             
         }
+        .allowsHitTesting(!isDragging)
+        
     }
 }
 

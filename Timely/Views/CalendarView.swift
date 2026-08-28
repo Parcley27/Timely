@@ -17,6 +17,7 @@ struct SlidingMonthContainer: View {
     
     @State private var offset: CGFloat = 0
     @State private var containerWidth: CGFloat = 0
+    @State private var isDragging = false
     
     var minDistance = CGFloat(100)
     
@@ -27,24 +28,27 @@ struct SlidingMonthContainer: View {
     
     var body: some View {
         ZStack {
-            MonthGridView(month: prevMonth, year: prevYear, data: $data, isLightMode: isLightMode, saveAction: saveAction)
+            MonthGridView(month: prevMonth, year: prevYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
                 .offset(x: offset - containerWidth)
             
-            MonthGridView(month: displayMonth, year: displayYear, data: $data, isLightMode: isLightMode, saveAction: saveAction)
+            MonthGridView(month: displayMonth, year: displayYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
                 .offset(x: offset)
             
-            MonthGridView(month: nextMonth, year: nextYear, data: $data, isLightMode: isLightMode, saveAction: saveAction)
+            MonthGridView(month: nextMonth, year: nextYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
                 .offset(x: offset + containerWidth)
             
         }
         .clipped()
         .simultaneousGesture(
-            DragGesture()
+            DragGesture(minimumDistance: 1)
                 .onChanged { gesture in
                     offset = gesture.translation.width
+                    isDragging = true
                     
                 }
                 .onEnded { _ in
+                    isDragging = false
+                    
                     if offset > minDistance {
                         withAnimation(.easeOut(duration: 0.2)) {
                             offset = containerWidth
