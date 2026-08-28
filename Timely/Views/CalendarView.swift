@@ -27,79 +27,19 @@ struct SlidingMonthContainer: View {
     private var nextYear: Int { displayMonth == 12 ? displayYear + 1 : displayYear }
     
     var body: some View {
-        ZStack {
+        TabView(selection: $displayMonth) {
             MonthGridView(month: prevMonth, year: prevYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
-                .offset(x: offset - containerWidth)
+                .tag(prevMonth)
             
-            MonthGridView(month: displayMonth, year: displayYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
-                .offset(x: offset)
+            MonthGridView(month: displayMonth, year: prevYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
+                .tag(displayMonth)
             
             MonthGridView(month: nextMonth, year: nextYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
-                .offset(x: offset + containerWidth)
+                .tag(nextMonth)
             
         }
-        .clipped()
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 1)
-                .onChanged { gesture in
-                    offset = gesture.translation.width
-                    isDragging = true
-                    
-                }
-                .onEnded { _ in
-                    isDragging = false
-                    
-                    if offset > minDistance {
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            offset = containerWidth
-                            
-                        } completion: {
-                            if displayMonth == 1 {
-                                displayMonth = 12
-                                displayYear -= 1
-                                
-                            } else {
-                                displayMonth -= 1
-                                
-                            }
-                            
-                            offset = 0
-                            
-                        }
-                        
-                    } else if offset < -minDistance {
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            offset = -containerWidth
-                            
-                        } completion: {
-                            if displayMonth == 12 {
-                                displayMonth = 1
-                                displayYear += 1
-                                
-                            } else {
-                                displayMonth += 1
-                                
-                            }
-                            
-                            offset = 0
-                            
-                        }
-                        
-                    } else {
-                        withAnimation(.spring(duration: 0.3)) {
-                            offset = 0
-                            
-                        }
-                    }
-                }
-        )
-        .onGeometryChange(for: CGFloat.self) { proxy in
-            proxy.size.width
-            
-        } action: { newValue in
-            containerWidth = newValue
-            
-        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        
     }
 }
 
