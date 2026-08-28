@@ -16,6 +16,18 @@ struct EventTileView: View {
     @Environment(\.colorScheme) var colorScheme
     var isLightMode: Bool { colorScheme == .light }
     
+    private var displayColour: Color {
+        let colour = event.averageColour() ?? .white
+        
+        if colour.isGreyscale && !isLightMode {
+            return .white
+            
+        }
+        
+        return colour
+        
+    }
+    
     @State private var saveError: String? = nil
     
     init(for event: Event) {
@@ -140,9 +152,10 @@ struct EventTileView: View {
                 }
                 .padding(16)
                 .background(
-                    TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, isLightMode: isLightMode)
+                    TileView(inputColours: preferences.listTinting ? displayColour : .black, forceBackground: true, isLightMode: isLightMode)
                     
                 )
+                .id(String(describing: isLightMode) + String(describing: event.id))
                 
             }
             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))

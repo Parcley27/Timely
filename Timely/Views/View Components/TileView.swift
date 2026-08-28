@@ -68,8 +68,15 @@ struct TileView: View {
     var body: some View {
         ZStack {
             if forceBackground {
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .foregroundStyle(isLightMode ? .white : .black)
+                if tileColours[0].isGreyscale {
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .foregroundStyle(Color(.systemGray5))
+                    
+                } else {
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .foregroundStyle(isLightMode ? .white : .black)
+                    
+                }
                 
             }
             
@@ -117,7 +124,7 @@ struct TileView: View {
     
     ZStack {
         //Text("asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfsadfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf")
-        TileView(inputColours: .black, customBorder: true, cornerRadius: cornerRadius)
+        TileView(inputColours: .white, forceBackground: true, customBorder: true, cornerRadius: cornerRadius, isLightMode: false)
             .frame(maxWidth: 300, maxHeight: 100)
         
         Text("Hello, TileView!")
