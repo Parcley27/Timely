@@ -38,13 +38,13 @@ struct MonthGridView: View {
     let isLightMode: Bool
     let saveAction: () -> Void
     
+    let formatter = NumberFormatter()
+    
     private let currentDay = Calendar.current.component(.day, from: Date())
     private let currentMonth = Calendar.current.component(.month, from: Date())
     private let currentYear = Calendar.current.component(.year, from: Date())
     
     private func localizedNumber(_ number: Int) -> String {
-        let formatter = NumberFormatter()
-        
         formatter.locale = Locale.current
         
         return formatter.string(from: NSNumber(value: number)) ?? "\(number)"
