@@ -21,17 +21,17 @@ struct SlidingMonthContainer: View {
     
     var minDistance = CGFloat(100)
     
-    private var prevMonth: Int { displayMonth == 1 ? 12 : displayMonth - 1 }
-    private var prevYear: Int { displayMonth == 1 ? displayYear - 1 : displayYear }
+    private var previousMonth: Int { displayMonth == 1 ? 12 : displayMonth - 1 }
+    private var previousYear: Int { displayMonth == 1 ? displayYear - 1 : displayYear }
     private var nextMonth: Int { displayMonth == 12 ? 1 : displayMonth + 1 }
     private var nextYear: Int { displayMonth == 12 ? displayYear + 1 : displayYear }
     
     var body: some View {
         TabView(selection: $displayMonth) {
-            MonthGridView(month: prevMonth, year: prevYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
-                .tag(prevMonth)
+            MonthGridView(month: previousMonth, year: previousYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
+                .tag(previousMonth)
             
-            MonthGridView(month: displayMonth, year: prevYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
+            MonthGridView(month: displayMonth, year: displayYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
                 .tag(displayMonth)
             
             MonthGridView(month: nextMonth, year: nextYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
