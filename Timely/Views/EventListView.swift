@@ -294,7 +294,13 @@ struct EventListView: View {
             NavigationStack {
                 VStack {
                     if eventsToShow.isEmpty {
-                        NoEventsView(singleDayDisplay: dateToDisplay != nil ? true : false)
+//                        NoEventsView(singleDayDisplay: dateToDisplay != nil ? true : false)
+                        ContentUnavailableView(
+                            "No Events Saved",
+                            systemImage: "nosign.badge.clock",
+                            description: Text("Tap below to add a new event")
+                            
+                        )
                         //listDisplay
                         
                     } else {
