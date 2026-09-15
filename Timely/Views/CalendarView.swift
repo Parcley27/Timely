@@ -26,15 +26,31 @@ struct SlidingMonthContainer: View {
     private var nextMonth: Int { displayMonth == 12 ? 1 : displayMonth + 1 }
     private var nextYear: Int { displayMonth == 12 ? displayYear + 1 : displayYear }
     
+    private func eventsForMonth(month: Int, year: Int) -> [Event] {
+        let calendar = Calendar.current
+        guard let monthStart = calendar.date(from: DateComponents(year: year, month: month)),
+              let monthEnd = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: monthStart) else {
+            return data
+        }
+        let monthStartDay = calendar.startOfDay(for: monthStart)
+        let monthEndDay = calendar.startOfDay(for: monthEnd)
+        
+        return data.filter { event in
+            let eventStart = calendar.startOfDay(for: event.dateAndTime)
+            let eventEnd = calendar.startOfDay(for: event.endDateAndTime ?? event.dateAndTime)
+            return eventStart <= monthEndDay && eventEnd >= monthStartDay
+        }
+    }
+    
     var body: some View {
         TabView(selection: $displayMonth) {
-            MonthGridView(month: previousMonth, year: previousYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
+            MonthGridView(month: previousMonth, year: previousYear, data: $data, monthData: eventsForMonth(month: previousMonth, year: previousYear), isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
                 .tag(previousMonth)
             
-            MonthGridView(month: displayMonth, year: displayYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
+            MonthGridView(month: displayMonth, year: displayYear, data: $data, monthData: eventsForMonth(month: displayMonth, year: displayYear), isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
                 .tag(displayMonth)
             
-            MonthGridView(month: nextMonth, year: nextYear, data: $data, isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
+            MonthGridView(month: nextMonth, year: nextYear, data: $data, monthData: eventsForMonth(month: nextMonth, year: nextYear), isLightMode: isLightMode, isDragging: isDragging, saveAction: saveAction)
                 .tag(nextMonth)
             
         }

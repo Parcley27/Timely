@@ -34,20 +34,25 @@ struct MonthGridView: View {
     let year: Int
     
     @Binding var data: [Event]
+    let monthData: [Event]
     
     let isLightMode: Bool
+    let isDragging: Bool
     let saveAction: () -> Void
     
-    let formatter = NumberFormatter()
+    private static let formatter: NumberFormatter = {
+        let f = NumberFormatter()
+        f.locale = Locale.current
+        return f
+        
+    }()
     
     private let currentDay = Calendar.current.component(.day, from: Date())
     private let currentMonth = Calendar.current.component(.month, from: Date())
     private let currentYear = Calendar.current.component(.year, from: Date())
     
     private func localizedNumber(_ number: Int) -> String {
-        formatter.locale = Locale.current
-        
-        return formatter.string(from: NSNumber(value: number)) ?? "\(number)"
+        Self.formatter.string(from: NSNumber(value: number)) ?? "\(number)"
         
     }
     
@@ -100,31 +105,35 @@ struct MonthGridView: View {
         
     }
     
-    private func eventsOnDay(_ day: CalendarDay) -> [Event] {
+    var body: some View {
         let calendar = Calendar.current
-        let searchDay = calendar.startOfDay(for: day.date ?? Date())
-        return data.filter { event in
+        let eventsPerDay: [Date: [Event]] = monthData.reduce(into: [:]) { result, event in
             let startDay = calendar.startOfDay(for: event.dateAndTime)
             let endDay = calendar.startOfDay(for: event.endDateAndTime ?? event.dateAndTime)
             
-            return (searchDay >= startDay && searchDay <= endDay) ||
-                   (event.isAllDay ?? false && calendar.isDate(event.dateAndTime, equalTo: day.date!, toGranularity: .day))
+            var current = startDay
             
+            while current <= endDay {
+                result[current, default: []].append(event)
+                guard let next = calendar.date(byAdding: .day, value: 1, to: current) else { break }
+                current = next
+                
+            }
         }
-    }
-    
-    var body: some View {
+        
         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
             ForEach(days, id: \.self) { tile in
                 NavigationLink(destination: EventListView(data: $data, dateToDisplay: tile.date) {
                     saveAction()
+                    
                 }) {
                     if tile.isPlaceholder {
                         Color.clear
                             .aspectRatio(0.7, contentMode: .fit)
+                        
                     } else {
                         let isCurrent = isCurrentDay(tile)
-                        let dayEvents = eventsOnDay(tile)
+                        let dayEvents = tile.date.flatMap { eventsPerDay[calendar.startOfDay(for: $0)] } ?? []
                         let hasEvents = !dayEvents.isEmpty
                         
                         VStack(spacing: 4) {
@@ -165,32 +174,30 @@ struct MonthGridView: View {
             .padding(.vertical, 2)
             
         }
+        .allowsHitTesting(!isDragging)
+        
     }
 }
 
 #Preview {
     let previewPreferences = SettingsStore()
     
-    let previewData = EventData()
-    previewData.events = [
+    let previewEvents: [Event] = [
         Event(name: "Sample Event 1", dateAndTime: Date()),
         Event(name: "Sample Event 2", isMuted: true),
         Event(name: "Sample Event 3", isFavourite: true)
         
     ]
     
-    let previewEvents = Binding.constant(previewData.events)
-    
+    let eventsBinding = Binding.constant(previewEvents)
     let currentMonth = Calendar.current.component(.month, from: Date())
     let currentYear = Calendar.current.component(.year, from: Date())
     
     NavigationStack {
-        MonthGridView(month: currentMonth, year: currentYear, data: previewEvents, isLightMode: false, saveAction: {})
+        MonthGridView(month: currentMonth, year: currentYear, data: eventsBinding, monthData: previewEvents, isLightMode: false, isDragging: false, saveAction: {})
             .padding()
         
     }
-    
     .environmentObject(previewPreferences)
     
 }
-
