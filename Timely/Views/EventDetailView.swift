@@ -166,6 +166,7 @@ struct EventDetailView: View {
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                            .id("headerCard" + String(describing: isLightMode))
                             .padding(.top, 24)
                             
                             VStack(spacing: 4) {
@@ -195,6 +196,7 @@ struct EventDetailView: View {
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                            .id("countdownCard" + String(describing: isLightMode))
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Date and Time")
@@ -212,6 +214,7 @@ struct EventDetailView: View {
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                            .id("dateTimeCard" + String(describing: isLightMode))
                             
                             if event.description != nil {
                                 VStack(alignment: .leading, spacing: 8) {
@@ -230,6 +233,7 @@ struct EventDetailView: View {
                                     
                                 )
                                 .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                                .id("notesCard" + String(describing: isLightMode))
                                 
                             }
                             
@@ -266,6 +270,7 @@ struct EventDetailView: View {
                                         
                                     )
                                     .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                                    .id("repetitionCard" + String(describing: isLightMode))
                                 }
                             }
                             
@@ -309,6 +314,7 @@ struct EventDetailView: View {
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                            .id("urgencyCard" + String(describing: isLightMode))
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Visibility")
@@ -329,6 +335,7 @@ struct EventDetailView: View {
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                            .id("visibilityCard" + String(describing: isLightMode))
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Danger Zone")
@@ -378,6 +385,7 @@ struct EventDetailView: View {
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
+                            .id("dangerZoneCard" + String(describing: isLightMode))
                             
                         }
                         .padding()

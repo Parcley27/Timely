@@ -51,10 +51,12 @@ struct EventListView: View {
         
         if displayDate == nil {
             titleText = NSLocalizedString("My Events", comment: "")
+            
             return titleText
             
         } else {
             titleText = displayDate!.formattedDate(.long)
+            
             return titleText
             
         }

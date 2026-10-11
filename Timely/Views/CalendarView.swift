@@ -31,14 +31,18 @@ struct SlidingMonthContainer: View {
         guard let monthStart = calendar.date(from: DateComponents(year: year, month: month)),
               let monthEnd = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: monthStart) else {
             return data
+            
         }
+        
         let monthStartDay = calendar.startOfDay(for: monthStart)
         let monthEndDay = calendar.startOfDay(for: monthEnd)
         
         return data.filter { event in
             let eventStart = calendar.startOfDay(for: event.dateAndTime)
             let eventEnd = calendar.startOfDay(for: event.endDateAndTime ?? event.dateAndTime)
+            
             return eventStart <= monthEndDay && eventEnd >= monthStartDay
+            
         }
     }
     
@@ -173,6 +177,7 @@ struct CalendarView: View {
                     .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
+                    .id(String(describing: isLightMode))
                     
                     // Day name headers
                     LazyVGrid(columns: columnLayout) {
