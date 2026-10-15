@@ -10,11 +10,10 @@
 import SwiftUI
 
 struct TileView: View {
-    //@Environment(\.colorScheme) var colorScheme
-    //var isLightMode: Bool { colorScheme == .light }
-    @State private var isLightMode: Bool
+    @Environment(\.colorScheme) private var colorScheme
+    private var isLightMode: Bool { colorScheme == .light }
     
-    var tileColours: [Color] = []
+    private let inputColours: [Color]
     let saturations: [Double] = [0.7, 0.8, 0.95]
     let brightnesses: [Double] = [1.25, 1.15, 0.95]
     let opacities: [Double] = [0.45, 0.45, 0.45]
@@ -24,44 +23,27 @@ struct TileView: View {
     let showBorder: Bool
     let cornerRadius: CGFloat
     
-    init(inputColours: Color..., forceBackground: Bool = false, saturationModifier: CGFloat = 1, customBorder: Bool = true, cornerRadius: CGFloat = 24, isLightMode: Bool = true) {
+    init(inputColours: Color..., forceBackground: Bool = false, saturationModifier: CGFloat = 1, customBorder: Bool = true, cornerRadius: CGFloat = 24) {
         let baseColours = inputColours.isEmpty ? [.accentColor] : inputColours
         
-        let colours = baseColours.count < saturations.count
-                ? Array(repeating: baseColours[0], count: saturations.count)
-                : baseColours
+        self.inputColours = baseColours.count < saturations.count
+            ? Array(repeating: baseColours[0], count: saturations.count)
+            : baseColours
         
         self.forceBackground = forceBackground
         self.saturationModifier = saturationModifier
         self.showBorder = customBorder
         self.cornerRadius = cornerRadius
-        
-        self.isLightMode = isLightMode
-        
-        for (index, colour) in colours.enumerated() {
-            guard index < saturations.count else { break }
-            
+    }
+    
+    // Depends on the environment's colour scheme, so it updates automatically when the mode changes
+    private var tileColours: [Color] {
+        inputColours.prefix(saturations.count).enumerated().map { index, colour in
             let adjustedBrightness = brightnesses[index] - (isLightMode ? 0 : 0.25)
             
-            if colour.isGreyscale {
-                tileColours.append(
-                    colour.asGreyscale(
-                        brightness: adjustedBrightness,
-                        opacity: opacities[index] * saturationModifier
-                        
-                    )
-                )
-                
-            } else {
-                tileColours.append(
-                    colour.adjusted(
-                        saturation: saturations[index],
-                        brightness: adjustedBrightness,
-                        opacity: opacities[index] * saturationModifier
-                        
-                    )
-                )
-            }
+            return colour.isGreyscale
+                ? colour.asGreyscale(brightness: adjustedBrightness, opacity: opacities[index] * saturationModifier)
+                : colour.adjusted(saturation: saturations[index], brightness: adjustedBrightness, opacity: opacities[index] * saturationModifier)
         }
     }
     
@@ -124,8 +106,9 @@ struct TileView: View {
     
     ZStack {
         //Text("asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfsadfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf")
-        TileView(inputColours: .white, forceBackground: true, customBorder: true, cornerRadius: cornerRadius, isLightMode: false)
+        TileView(inputColours: .white, forceBackground: true, customBorder: true, cornerRadius: cornerRadius)
             .frame(maxWidth: 300, maxHeight: 100)
+            .environment(\.colorScheme, .dark)
         
         Text("Hello, TileView!")
         

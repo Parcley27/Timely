@@ -171,13 +171,12 @@ struct CalendarView: View {
                     }
                     .padding(.vertical, 12)
                     .background(
-                        TileView(inputColours: .accentColor, forceBackground: true, saturationModifier: 0.6, customBorder: true, isLightMode: isLightMode)
+                        TileView(inputColours: .accentColor, forceBackground: true, saturationModifier: 0.6, customBorder: true)
                         
                     )
                     .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
-                    .id(String(describing: isLightMode))
                     
                     // Day name headers
                     LazyVGrid(columns: columnLayout) {

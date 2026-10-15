@@ -162,11 +162,10 @@ struct EventDetailView: View {
                             .padding()
                             .frame(maxWidth: .infinity)
                             .background(
-                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false, isLightMode: isLightMode)
+                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
-                            .id("headerCard" + String(describing: isLightMode))
                             .padding(.top, 24)
                             
                             VStack(spacing: 4) {
@@ -192,11 +191,10 @@ struct EventDetailView: View {
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(
-                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false, isLightMode: isLightMode)
+                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
-                            .id("countdownCard" + String(describing: isLightMode))
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Date and Time")
@@ -210,11 +208,10 @@ struct EventDetailView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
                             .background(
-                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false, isLightMode: isLightMode)
+                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
-                            .id("dateTimeCard" + String(describing: isLightMode))
                             
                             if event.description != nil {
                                 VStack(alignment: .leading, spacing: 8) {
@@ -229,11 +226,10 @@ struct EventDetailView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding()
                                 .background(
-                                    TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false, isLightMode: isLightMode)
+                                    TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                     
                                 )
                                 .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
-                                .id("notesCard" + String(describing: isLightMode))
                                 
                             }
                             
@@ -266,11 +262,10 @@ struct EventDetailView: View {
                                     }
                                     .padding()
                                     .background(
-                                        TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false, isLightMode: isLightMode)
+                                        TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                         
                                     )
                                     .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
-                                    .id("repetitionCard" + String(describing: isLightMode))
                                 }
                             }
                             
@@ -310,11 +305,10 @@ struct EventDetailView: View {
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(
-                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false, isLightMode: isLightMode)
+                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
-                            .id("urgencyCard" + String(describing: isLightMode))
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Visibility")
@@ -331,11 +325,10 @@ struct EventDetailView: View {
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(
-                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false, isLightMode: isLightMode)
+                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
-                            .id("visibilityCard" + String(describing: isLightMode))
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Danger Zone")
@@ -381,11 +374,10 @@ struct EventDetailView: View {
                             }
                             .padding()
                             .background(
-                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false, isLightMode: isLightMode)
+                                TileView(inputColours: preferences.listTinting ? event.averageColour() ?? .black : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                                 
                             )
                             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
-                            .id("dangerZoneCard" + String(describing: isLightMode))
                             
                         }
                         .padding()

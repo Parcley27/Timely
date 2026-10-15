@@ -152,10 +152,10 @@ struct EventTileView: View {
                 }
                 .padding(16)
                 .background(
-                    TileView(inputColours: preferences.listTinting ? displayColour : .black, forceBackground: true, isLightMode: isLightMode)
+                    TileView(inputColours: preferences.listTinting ? displayColour : .black, forceBackground: true)
                     
                 )
-                .id(String(describing: isLightMode) + String(describing: event.id))
+                .id(String(describing: event.id))
                 
             }
             .glassEffect(.regular.tint(.clear).interactive(), in: .rect(cornerRadius: 24))
