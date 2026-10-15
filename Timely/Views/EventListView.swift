@@ -55,7 +55,7 @@ struct EventListView: View {
             return titleText
             
         } else {
-            titleText = displayDate!.formattedDate(.long)
+            titleText = displayDate != nil ? displayDate!.formattedDate(.long) : "My Events"
             
             return titleText
             

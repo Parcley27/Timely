@@ -82,7 +82,8 @@ struct Event: Identifiable, Codable, Hashable {
         imageContext?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         
         // Calculate Average Colour
-        let data = UnsafePointer<CUnsignedChar>(imageContext!.data!.assumingMemoryBound(to: CUnsignedChar.self))
+        guard let pixelData = imageContext?.data else { return nil }
+        let data = pixelData.assumingMemoryBound(to: UInt8.self)
         
         var redTotal = 0
         var greenTotal = 0

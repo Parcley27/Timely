@@ -50,13 +50,7 @@ struct EventTileView: View {
     private func togglePin(for eventID: UUID) {
         guard let index = eventStore.events.firstIndex(where: { $0.id == eventID }) else { return }
         
-        if eventStore.events[index].isPinned != nil {
-            eventStore.events[index].isPinned!.toggle()
-            
-        } else {
-            eventStore.events[index].isPinned = true
-            
-        }
+        eventStore.events[index].isPinned = !(eventStore.events[index].isPinned ?? false)
         
         saveEvents()
         

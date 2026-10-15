@@ -74,8 +74,8 @@ struct TileView: View {
                 .brightness(tileColours[0].isGreyscale && !isLightMode ? -0.6 : 0)
             
             if showBorder {
-                let lastTileColour = tileColours.last!
-                let borderBrightness = brightnesses.last! - (isLightMode ? 0 : 0.25)
+                let lastTileColour = tileColours.last ?? Color(.magenta)
+                let borderBrightness = (brightnesses.last ?? 1) - (isLightMode ? 0 : 0.25)
                 let borderColour = lastTileColour.isGreyscale
                     ? lastTileColour.asGreyscale(brightness: borderBrightness, opacity: 1.0)
                     : lastTileColour.adjusted(saturation: 0.95, brightness: borderBrightness)
