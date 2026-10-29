@@ -18,7 +18,7 @@ struct StatusIconView: View {
     let icons: [IconType: String] = [
         .pinned: "pin.fill",
         .favourite: "star.fill",
-        .muted: "bell.fill"
+        .muted: "bell.slash.fill"
     
     ]
     

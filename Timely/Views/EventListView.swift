@@ -176,6 +176,7 @@ struct EventListView: View {
                 grouped[day, default: []].append(event)
                 
             }
+        }
         
         eventsByDate = grouped
         
