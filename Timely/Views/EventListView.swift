@@ -151,45 +151,31 @@ struct EventListView: View {
     private func rebuildEventsByDate() {
         var grouped: [Date: [Event]] = [:]
         
+        let calendar = Calendar.current
+        
         for event in eventsToShow {
-            guard (showMuted || !event.isMuted),
-                  (showStandard || !event.isStandard) else {
+            guard (showMuted || !event.isMuted), (showStandard || !event.isStandard) else {
                 continue
                 
             }
             
             var relevantDates: [Date] = []
             
-            if dateToDisplay == nil || event.dateAndTime.isSameDay(as: dateToDisplay!) {
-                relevantDates.append(event.dateAndTime)
-                
-            }
-            
-            if let dateToDisplay = dateToDisplay {
-                for recurringDate in event.isOnDates {
-                    if recurringDate.isSameDay(as: dateToDisplay) {
-                        relevantDates.append(recurringDate)
-                        
-                    }
-                }
-                
-            } else {
-                relevantDates = [event.dateAndTime]
-                
-            }
-            
-            for date in relevantDates {
-                let normalizedDate = Calendar.current.startOfDay(for: date)
-                
-                if grouped[normalizedDate] == nil {
-                    grouped[normalizedDate] = []
+            if let dateToDisplay {
+                if event.isOnDates.contains(where: { $0.isSameDay(as: dateToDisplay) }) {
+                    relevantDates.append(calendar.startOfDay(for: event.isOnDates.filter({ $0.isSameDay(as: dateToDisplay) }).first ?? event.dateAndTime))
                     
                 }
                 
-                grouped[normalizedDate]?.append(event)
+            } else {
+                relevantDates.append(calendar.startOfDay(for: event.dateAndTime))
                 
             }
-        }
+            
+            for day in relevantDates {
+                grouped[day, default: []].append(event)
+                
+            }
         
         eventsByDate = grouped
         
