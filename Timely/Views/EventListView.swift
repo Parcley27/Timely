@@ -100,7 +100,7 @@ struct EventListView: View {
             
             let pastEvents = filteredData
                 .filter { $0.hasPassed }
-                .sorted(by: { ($0.endDateAndTime ?? .distantPast) > ($1.endDateAndTime ?? .distantPast) })
+                .sorted(by: { ($0.endDateAndTime ?? $0.dateAndTime) > ($1.endDateAndTime ?? $1.dateAndTime) })
             
             goodEvents.append(contentsOf: pastEvents)
             
@@ -205,8 +205,8 @@ struct EventListView: View {
                     
                 }
                 
-                // If dateAndTime is not unique or doesn't match then check event.isOnDates
-                if dateToAdd == nil {
+                // If dateAndTime is not unique or doesn't match then check event.isOnDates for given day
+                if dateToAdd == nil && dateToDisplay != nil {
                     for date in event.isOnDates {
                         if !datesSeen.contains(where: {
                             date.isSameDay(as: $0.id)
@@ -233,7 +233,7 @@ struct EventListView: View {
     var listDisplay: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                let pinnedEvents = eventsToShow.filter { $0.isPinned ?? false }
+                let pinnedEvents = eventsToShow.filter { $0.isPinned }
                 
                 if !pinnedEvents.isEmpty && dateToDisplay == nil {
                     Text("Pinned")

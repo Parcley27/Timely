@@ -16,7 +16,8 @@ extension Event {
         case description
         case dateAndTime
         case endDateAndTime
-        case isAllDay
+        case timing
+        case isAllDay // read only, for data saved before timing existed
         case isRecurring
         case recurranceRate
         case recurringTimes
@@ -41,7 +42,21 @@ extension Event {
         
         dateAndTime = try container.decode(Date.self, forKey: .dateAndTime)
         endDateAndTime = try container.decodeIfPresent(Date.self, forKey: .endDateAndTime)
-        isAllDay = try container.decodeIfPresent(Bool.self, forKey: .isAllDay)
+        
+        // translate old timings to new recurrance rules
+        if let decodedTiming = try? container.decodeIfPresent(EventTiming.self, forKey: .timing) {
+            timing = decodedTiming
+            
+        } else if try container.decodeIfPresent(Bool.self, forKey: .isAllDay) ?? false {
+            timing = .allDay
+            
+        } else if endDateAndTime == nil || dateAndTime == endDateAndTime {
+            timing = .moment
+            
+        } else {
+            timing = .timed
+            
+        }
         
         isRecurring = try container.decodeIfPresent(Bool.self, forKey: .isRecurring)
         recurranceRate = try container.decodeIfPresent(String.self, forKey: .recurranceRate)
@@ -54,7 +69,7 @@ extension Event {
         isFavourite = try container.decodeIfPresent(Bool.self, forKey: .isFavourite) ?? false
         isMuted = try container.decodeIfPresent(Bool.self, forKey: .isMuted) ?? false
         
-        isPinned = try container.decodeIfPresent(Bool.self, forKey: .isPinned)
+        isPinned = try container.decodeIfPresent(Bool.self, forKey: .isPinned) ?? false
         
         id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
         
@@ -70,7 +85,7 @@ extension Event {
         
         try container.encode(dateAndTime, forKey: .dateAndTime)
         try container.encodeIfPresent(endDateAndTime, forKey: .endDateAndTime)
-        try container.encodeIfPresent(isAllDay, forKey: .isAllDay)
+        try container.encode(timing, forKey: .timing)
         
         try container.encodeIfPresent(isRecurring, forKey: .isRecurring)
         try container.encodeIfPresent(recurranceRate, forKey: .recurranceRate)
@@ -83,7 +98,7 @@ extension Event {
         try container.encode(isFavourite, forKey: .isFavourite)
         try container.encode(isMuted, forKey: .isMuted)
         
-        try container.encodeIfPresent(isPinned, forKey: .isPinned)
+        try container.encode(isPinned, forKey: .isPinned)
         
         try container.encode(id, forKey: .id)
         

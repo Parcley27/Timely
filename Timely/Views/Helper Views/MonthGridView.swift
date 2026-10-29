@@ -108,15 +108,8 @@ struct MonthGridView: View {
     var body: some View {
         let calendar = Calendar.current
         let eventsPerDay: [Date: [Event]] = monthData.reduce(into: [:]) { result, event in
-            let startDay = calendar.startOfDay(for: event.dateAndTime)
-            let endDay = calendar.startOfDay(for: event.endDateAndTime ?? event.dateAndTime)
-            
-            var current = startDay
-            
-            while current <= endDay {
-                result[current, default: []].append(event)
-                guard let next = calendar.date(byAdding: .day, value: 1, to: current) else { break }
-                current = next
+            for day in event.isOnDates {
+                result[day, default: []].append(event)
                 
             }
         }

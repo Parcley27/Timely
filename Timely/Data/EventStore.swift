@@ -282,7 +282,7 @@ class EventStore: ObservableObject {
         let allDayTime: Int = 360
         
         if !event.isMuted {
-            if event.isAllDay ?? false {
+            if event.isAllDay {
                 addNotification(for: event, time: allDayTime)
                 
             } else {

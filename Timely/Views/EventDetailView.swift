@@ -170,7 +170,7 @@ struct EventDetailView: View {
                             
                             VStack(spacing: 4) {
                                 if !event.hasStarted {
-                                    Text("Starting in")
+                                    Text(event.isPointEvent ? LocalizedStringKey("Happening in") : LocalizedStringKey("Starting in"))
                                         .font(.headline)
                                         .foregroundStyle(.secondary)
                                     
@@ -315,11 +315,7 @@ struct EventDetailView: View {
                                     .font(.headline)
                                     .foregroundStyle(.secondary)
                                 
-                                Toggle("Pin to Top", isOn: Binding(
-                                    get: { data[dataIndex].isPinned ?? false },
-                                    set: { data[dataIndex].isPinned = $0 }
-                                    
-                                ))
+                                Toggle("Pin to Top", isOn: $data[dataIndex].isPinned)
                                 
                             }
                             .frame(maxWidth: .infinity)

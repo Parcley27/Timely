@@ -50,7 +50,7 @@ struct EventTileView: View {
     private func togglePin(for eventID: UUID) {
         guard let index = eventStore.events.firstIndex(where: { $0.id == eventID }) else { return }
         
-        eventStore.events[index].isPinned = !(eventStore.events[index].isPinned ?? false)
+        eventStore.events[index].isPinned.toggle()
         
         saveEvents()
         
@@ -112,7 +112,7 @@ struct EventTileView: View {
                     Spacer()
                     
                     VStack(spacing: 8) {
-                        if event.isPinned ?? false {
+                        if event.isPinned {
                             StatusIconView(.pinned, Color.gray)
                                 .padding(.horizontal, 4)
                                 .padding(.vertical, 2)
@@ -161,7 +161,7 @@ struct EventTileView: View {
                         togglePin(for: event.id)
                         
                     } label: {
-                        if event.isPinned ?? false {
+                        if event.isPinned {
                             Label("Unpin", systemImage: "pin.slash")
                             
                         } else {

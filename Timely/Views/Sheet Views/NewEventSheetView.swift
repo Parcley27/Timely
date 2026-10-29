@@ -20,6 +20,12 @@ struct NewEventSheetView: View {
             UIDatePicker.appearance().minuteInterval = 5
             
         }
+        
+        let start = Self.defaultStart(from: Date(), minuteInterval: SettingsStore().quickAdd ? 15 : 5)
+        self._formDateAndTime = State(initialValue: start)
+        self._formEndDateAndTime = State(initialValue: start.addingTimeInterval(60 * 60))
+        self._dummyDateAndTime = State(initialValue: start)
+        
     }
     
     @Binding var data: [Event]
@@ -47,74 +53,27 @@ struct NewEventSheetView: View {
     
     @State private var formDescription: String = ""
     
-    @State private var formDateAndTime: Date = {
-        let currentDate = Date()
-        let calendar = Calendar.current
-        let oneHourInSeconds: TimeInterval = 60 * 60
-        
-        // Round to nearest 5 minutes if quick add is enabled
-        if SettingsStore().quickAdd {
-            let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: currentDate)
-            let minute = components.minute ?? 0
-            let roundedMinute = Int(ceil(Double(minute) / 5.0) * 5.0)
-            
-            var newComponents = components
-            newComponents.minute = roundedMinute % 60
-            
-            if roundedMinute >= 60 {
-                newComponents.hour = (components.hour ?? 0) + 1
-            }
-            
-            if let roundedDate = calendar.date(from: newComponents) {
-                return roundedDate.addingTimeInterval(oneHourInSeconds)
-                
-            }
-        }
-        
-        return currentDate.addingTimeInterval(oneHourInSeconds)
-        
-    }()
-
-    @State private var formEndDateAndTime: Date = {
-        let currentDate = Date()
-        let calendar = Calendar.current
-        let twoHoursInSeconds: TimeInterval = 2 * 60 * 60
-        
-        // Round to nearest 5 minutes if quick add is enabled
-        if SettingsStore().quickAdd {
-            let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: currentDate)
-            let minute = components.minute ?? 0
-            let roundedMinute = Int(ceil(Double(minute) / 5.0) * 5.0)
-            
-            var newComponents = components
-            newComponents.minute = roundedMinute % 60
-            
-            if roundedMinute >= 60 {
-                newComponents.hour = (components.hour ?? 0) + 1
-                
-            }
-            
-            if let roundedDate = calendar.date(from: newComponents) {
-                return roundedDate.addingTimeInterval(twoHoursInSeconds)
-                
-            }
-        }
-        
-        return currentDate.addingTimeInterval(twoHoursInSeconds)
-        
-    }()
+    // Start, end and dummy are all derived from one base date in init so the default event length is exactly one hour
+    @State private var formDateAndTime: Date
+    @State private var formEndDateAndTime: Date
+    @State private var dummyDateAndTime: Date
     
-    @State private var dummyDateAndTime: Date = {
-        let currentDate = Date()
-        let oneDayInSeconds: TimeInterval = 24 * 60 * 60
-        let oneHourInSeconds: TimeInterval = 60 * 60
+    // The date pickers snap to this many minutes, so the defaults must already sit on that grid.
+    // Otherwise each picker snaps on its own (e.g. :07 -> :05 but :08 -> :10) and the gap between start and end drifts
+    private static func defaultStart(from now: Date, minuteInterval: Int) -> Date {
+        let calendar = Calendar.current
         
-        //return currentDate.addingTimeInterval(oneDayInSeconds)
-        return currentDate.addingTimeInterval(oneHourInSeconds)
+        // Aim for one hour out, drop the seconds, then move forward to the next picker slot
+        let target = now.addingTimeInterval(60 * 60)
+        let wholeMinute = calendar.dateInterval(of: .minute, for: target)?.start ?? target
+        let minute = calendar.component(.minute, from: wholeMinute)
+        let minutesToSlot = (minuteInterval - minute % minuteInterval) % minuteInterval
         
-    }()
+        return wholeMinute.addingTimeInterval(TimeInterval(minutesToSlot * 60))
+        
+    }
     
-    @State private var formIsAllDay: Bool = false
+    @State private var formTiming: EventTiming = .timed
     
     @State private var formIsRecurring: Bool = false
     @State private var formRecurringRate: String = "never"
@@ -179,31 +138,6 @@ struct NewEventSheetView: View {
         
     }()
     
-    var timesAfterStart: ClosedRange<Date> {
-        let calendar = Calendar.current
-        
-        let startComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: formDateAndTime)
-        let startDate = calendar.date(from: startComponents)!
-        
-        let endComponents = DateComponents(year: 10000, month: 12, day: 31, hour: 23, minute: 59, second: 59)
-        let endDate = calendar.date(from: endComponents)!
-        
-        return startDate...endDate
-        
-    }
-    
-    func setTime(for date: Date, hour: Int, minute: Int, second: Int) -> Date? {
-        let calendar = Calendar.current
-        var components = calendar.dateComponents([.year, .month, .day], from: date)
-        
-        components.hour = hour
-        components.minute = minute
-        components.second = second
-        
-        return calendar.date(from: components)
-        
-    }
-    
     func createEvent() {
         if formEmoji == "" {
             var hasFoundEmoji = false
@@ -240,8 +174,8 @@ struct NewEventSheetView: View {
             description: (formDescription != "" ? formDescription.trimmingCharacters(in: .whitespaces) : nil),
             
             dateAndTime: formDateAndTime,
-            endDateAndTime: formEndDateAndTime,
-            isAllDay: formIsAllDay,
+            endDateAndTime: formTiming == .moment ? nil : formEndDateAndTime,
+            timing: formTiming,
             
             isRecurring: formIsRecurring,
             recurranceRate: formRecurringRate,
@@ -274,8 +208,8 @@ struct NewEventSheetView: View {
                         description: (formDescription != "" ? formDescription.trimmingCharacters(in: .whitespaces) : nil),
                         
                         dateAndTime: moveDate(formDateAndTime, by: formRecurringRate, amount: recurringSpace),
-                        endDateAndTime: moveDate(formEndDateAndTime, by: formRecurringRate, amount: recurringSpace),
-                        isAllDay: formIsAllDay,
+                        endDateAndTime: formTiming == .moment ? nil : moveDate(formEndDateAndTime, by: formRecurringRate, amount: recurringSpace),
+                        timing: formTiming,
                         
                         recurranceRate: formRecurringRate,
                         
@@ -343,36 +277,7 @@ struct NewEventSheetView: View {
                         
                     }
                     
-                    Section("Date and Time") {
-                        DatePicker("Start Time", selection: $formDateAndTime, in: dateRange, displayedComponents: [.date, .hourAndMinute])
-                            .datePickerStyle(.compact)
-                            .opacity(!formIsAllDay ? 1.0 : 0.5)
-                        
-                        DatePicker("End Time", selection: $formEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
-                            .datePickerStyle(.compact)
-                            .opacity(!formIsAllDay ? 1.0 : 0.5)
-                            .disabled(formIsAllDay)
-                        
-                        Toggle("All Day", isOn: $formIsAllDay)
-                            .onChange(of: formIsAllDay) { _, newValue in
-                                if newValue {
-                                    formDateAndTime = setTime(for: formDateAndTime, hour: 0, minute: 0, second: 0) ?? formDateAndTime
-                                    formEndDateAndTime = setTime(for: formDateAndTime, hour: 23, minute: 59, second: 59) ?? formEndDateAndTime
-                                    
-                                }
-                            }
-                            .padding(.vertical, 8)
-                        
-                    }
-                    .onChange(of: formDateAndTime) { _, _ in
-                        if !formIsAllDay {
-                            let eventLength = formEndDateAndTime.timeIntervalSince(dummyDateAndTime)
-                            
-                            formEndDateAndTime = formDateAndTime.addingTimeInterval(eventLength)
-                            dummyDateAndTime = formDateAndTime
-                            
-                        }
-                    }
+                    EventDateTimeSection(start: $formDateAndTime, previousStart: $dummyDateAndTime, end: $formEndDateAndTime, timing: $formTiming, startRange: dateRange)
                     
                     if !preferences.quickAdd {
                         Section("Repeating") {
@@ -493,13 +398,6 @@ struct NewEventSheetView: View {
                         }
                     }
                     
-                    if preferences.quickAdd {
-                        Section {
-                            Label("**Quick Add enabled**\nSome fields have been auto-filled with defaults", systemImage: "bolt.fill")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
                 }
             }
             .scrollDismissesKeyboard(.interactively)
@@ -517,7 +415,7 @@ struct NewEventSheetView: View {
                         
                     }
                 }
-
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button ("Save") {
                         createEvent()

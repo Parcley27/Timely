@@ -18,6 +18,13 @@ class EventData : ObservableObject {
     ]
 }
 
+enum EventTiming: String, Codable, CaseIterable {
+    case timed // start and end
+    case allDay
+    case moment // a single point in time, no end
+    
+}
+
 // Seasonally means every 3 months
 // recurringTimeOptions: [String] = ["never", "daily", "weekly", "monthly", "annualy"]
 
@@ -132,17 +139,33 @@ struct Event: Identifiable, Codable, Hashable {
         
     }()
     var endDateAndTime: Date?
-    var isAllDay: Bool? = false
+    var timing: EventTiming = .timed
+    var isAllDay: Bool { timing == .allDay }
+    var isPointEvent: Bool { timing == .moment }
     var isOnDates: [Date] {
         var dates: [Date] = []
-        var currentDate = dateAndTime
+        let calendar = Calendar.current
         
-        let oneDayInSeconds: Double = 24 * 60 * 60
+        let firstDay = calendar.startOfDay(for: dateAndTime)
+        let end = endDateAndTime ?? dateAndTime
+        var lastDay = calendar.startOfDay(for: end)
         
-        while currentDate <= endDateAndTime ?? dateAndTime {
-            dates.append(currentDate)
+        // Allow ending at midnight
+        if end > dateAndTime && end == lastDay {
+            lastDay = calendar.date(byAdding: .day, value: -1, to: lastDay) ?? lastDay
             
-            currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate.addingTimeInterval(oneDayInSeconds)
+        }
+        
+        // catch above if maybe some goofy stuff
+        lastDay = max(lastDay, firstDay)
+        
+        var currentDay = firstDay
+        
+        while currentDay <= lastDay {
+            dates.append(currentDay)
+            
+            guard let nextDay = calendar.date(byAdding: .day, value: 1, to: currentDay) else { break }
+            currentDay = nextDay
             
         }
         
@@ -233,7 +256,7 @@ struct Event: Identifiable, Codable, Hashable {
             
         }
         
-        if isAllDay ?? false {
+        if isAllDay {
             dateFormatter.dateFormat = NSLocalizedString("'All day on' EEEE, d MMMM yyyy", comment: "")
             
             formattedDate = dateFormatter.string(from: dateAndTime)
@@ -390,7 +413,7 @@ struct Event: Identifiable, Codable, Hashable {
     }
     var isMuted: Bool = false
     
-    var isPinned: Bool? = false
+    var isPinned: Bool = false
     
     var id: UUID = UUID()
     

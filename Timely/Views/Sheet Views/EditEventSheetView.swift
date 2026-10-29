@@ -48,7 +48,7 @@ struct EditEventSheetView: View {
     
     @State var dummyDateAndTime: Date = Date()
     
-    @State var editedIsAllDay: Bool = false
+    @State var editedTiming: EventTiming = .timed
     
     @State var editedIsRecurring: Bool = false
     @State var editedRecurringRate: String = "never"
@@ -56,31 +56,6 @@ struct EditEventSheetView: View {
     
     @State var editedFavourite: Bool = false
     @State var editedMute: Bool = false
-    
-    var timesAfterStart: ClosedRange<Date> {
-        let calendar = Calendar.current
-        
-        let startComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: editedDateAndTime)
-        let startDate = calendar.date(from: startComponents)!
-        
-        let endComponents = DateComponents(year: 10000, month: 12, day: 31, hour: 23, minute: 59, second: 59)
-        let endDate = calendar.date(from: endComponents)!
-        
-        return startDate...endDate
-        
-    }
-    
-    func setTime(for date: Date, hour: Int, minute: Int, second: Int) -> Date? {
-        let calendar = Calendar.current
-        var components = calendar.dateComponents([.year, .month, .day], from: date)
-        
-        components.hour = hour
-        components.minute = minute
-        components.second = second
-        
-        return calendar.date(from: components)
-        
-    }
     
     func saveEvent() {
         guard let eventIndex = data.firstIndex(where: { $0.id == eventID }) else { return }
@@ -138,8 +113,8 @@ struct EditEventSheetView: View {
         }
         
         data[eventIndex].dateAndTime = editedDateAndTime
-        data[eventIndex].endDateAndTime = editedEndDateAndTime
-        data[eventIndex].isAllDay = editedIsAllDay
+        data[eventIndex].endDateAndTime = editedTiming == .moment ? nil : editedEndDateAndTime
+        data[eventIndex].timing = editedTiming
         
         data[eventIndex].isRecurring = editedIsRecurring
         data[eventIndex].recurranceRate = editedRecurringRate
@@ -244,36 +219,7 @@ struct EditEventSheetView: View {
                     
                 }
                 
-                Section(NSLocalizedString("Date and Time", comment: "")) {
-                    DatePicker(NSLocalizedString("Start Time", comment: ""), selection: $editedDateAndTime, displayedComponents: [.date, .hourAndMinute])
-                        .datePickerStyle(.compact)
-                        .opacity(!editedIsAllDay ? 1.0 : 0.5)
-                    
-                    DatePicker(NSLocalizedString("End Time", comment: ""), selection: $editedEndDateAndTime, in: timesAfterStart, displayedComponents: [.date, .hourAndMinute])
-                        .datePickerStyle(.compact)
-                        .opacity(!editedIsAllDay ? 1.0 : 0.5)
-                        .disabled(editedIsAllDay)
-                    
-                    Toggle(NSLocalizedString("All Day", comment: ""), isOn: $editedIsAllDay)
-                        .onChange(of: editedIsAllDay) { _, newValue in
-                            if newValue {
-                                editedDateAndTime = setTime(for: editedDateAndTime, hour: 0, minute: 0, second: 0) ?? editedDateAndTime
-                                editedEndDateAndTime = setTime(for: editedDateAndTime, hour: 23, minute: 59, second: 59) ?? editedEndDateAndTime
-                                
-                            }
-                        }
-                        .padding(.vertical, 8)
-                    
-                }
-                .onChange(of: editedDateAndTime) { _, _ in
-                    if !editedIsAllDay {
-                        let eventLength = editedEndDateAndTime.timeIntervalSince(dummyDateAndTime)
-                        
-                        editedEndDateAndTime = editedDateAndTime.addingTimeInterval(eventLength)
-                        dummyDateAndTime = editedDateAndTime
-                        
-                    }
-                }
+                EventDateTimeSection(start: $editedDateAndTime, previousStart: $dummyDateAndTime, end: $editedEndDateAndTime, timing: $editedTiming)
                 
                 Section(NSLocalizedString("Repeating", comment: "")) {
                     Picker(editedRecurringRate != "never" ? NSLocalizedString("Occurs", comment: "") : NSLocalizedString("Never", comment: ""), selection: $editedRecurringRate) {
@@ -405,10 +351,12 @@ struct EditEventSheetView: View {
                 editedDescription = data[eventIndex].description ?? ""
                 
                 editedDateAndTime = data[eventIndex].dateAndTime
-                editedEndDateAndTime = data[eventIndex].endDateAndTime ?? data[eventIndex].dateAndTime
+                
+                // fill extra hour in case of missing endDateAndTime (point, old event)
+                editedEndDateAndTime = data[eventIndex].endDateAndTime ?? data[eventIndex].dateAndTime.addingTimeInterval(60 * 60)
                 dummyDateAndTime = data[eventIndex].dateAndTime
                 
-                editedIsAllDay = data[eventIndex].isAllDay ?? false
+                editedTiming = data[eventIndex].timing
                 
                 editedIsRecurring = data[eventIndex].isRecurring ?? false
                 editedRecurringRate = data[eventIndex].recurranceRate ?? "never"
@@ -463,8 +411,8 @@ struct EditEventSheetView: View {
                                         description: (editedDescription != "" ? editedDescription.trimmingCharacters(in: .whitespaces) : nil),
                                         
                                         dateAndTime: moveDate(editedDateAndTime, by: editedRecurringRate, amount: recurringSpace),
-                                        endDateAndTime: moveDate(editedEndDateAndTime, by: editedRecurringRate, amount: recurringSpace),
-                                        isAllDay: editedIsAllDay,
+                                        endDateAndTime: editedTiming == .moment ? nil : moveDate(editedEndDateAndTime, by: editedRecurringRate, amount: recurringSpace),
+                                        timing: editedTiming,
                                         
                                         recurranceRate: editedRecurringRate,
                                         
@@ -511,10 +459,10 @@ struct EditEventSheetView: View {
             editedDescription = data[eventIndex].description ?? ""
             
             editedDateAndTime = data[eventIndex].dateAndTime
-            editedEndDateAndTime = data[eventIndex].endDateAndTime ?? data[eventIndex].dateAndTime
+            editedEndDateAndTime = data[eventIndex].endDateAndTime ?? data[eventIndex].dateAndTime.addingTimeInterval(60 * 60)
             dummyDateAndTime = data[eventIndex].dateAndTime
             
-            editedIsAllDay = data[eventIndex].isAllDay ?? false
+            editedTiming = data[eventIndex].timing
             
             editedIsRecurring = data[eventIndex].isRecurring ?? false
             editedRecurringRate = data[eventIndex].recurranceRate ?? "never"
