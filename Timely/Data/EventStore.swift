@@ -38,7 +38,7 @@ class EventStore: ObservableObject {
                 
                 print("Loaded JSON from iCloud")
                 
-                let loadedEvents = try JSONDecoder().decode([Event].self, from: data)
+                let loadedEvents = try Event.decodeList(from: data)
                 
                 DispatchQueue.main.async {
                     self.events = loadedEvents
@@ -53,28 +53,31 @@ class EventStore: ObservableObject {
             } catch {
                 print("Failed to load events from iCloud: \(error)")
                 
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    
-                }
+                loadFromLocalStorage()
+                
             }
             
         } else {
             print("No events found in iCloud, loading from local storage.")
             
-            Task {
-                do {
-                    try await load()
-                    
-                } catch {
-                    print("Failed to load events from local storage: \(error)")
-                    
-                }
+            loadFromLocalStorage()
+            
+        }
+    }
+    
+    private func loadFromLocalStorage() {
+        Task {
+            do {
+                try await load()
                 
-                await MainActor.run {
-                    self.isLoading = false
-                    
-                }
+            } catch {
+                print("Failed to load events from local storage: \(error)")
+                
+            }
+            
+            await MainActor.run {
+                self.isLoading = false
+                
             }
         }
     }
@@ -120,7 +123,7 @@ class EventStore: ObservableObject {
                 
             }
             
-            let loadedEvents = try JSONDecoder().decode([Event].self, from: data)
+            let loadedEvents = try Event.decodeList(from: data)
             return loadedEvents
             
         }

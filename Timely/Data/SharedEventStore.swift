@@ -40,7 +40,7 @@ struct SharedEventStore {
         // Try shared app group file first (fast path after app has synced)
         if let url = fileURL(),
             let data = try? Data(contentsOf: url),
-            let events = try? JSONDecoder().decode([Event].self, from: data),
+            let events = try? Event.decodeList(from: data),
            
             !events.isEmpty {
                 print("SharedEventStore: loaded \(events.count) events from shared file")
@@ -50,7 +50,7 @@ struct SharedEventStore {
         
         // Fall back to iCloud KV store directly
         if let data = NSUbiquitousKeyValueStore.default.data(forKey: "events"),
-            let events = try? JSONDecoder().decode([Event].self, from: data) {
+            let events = try? Event.decodeList(from: data) {
                 print("SharedEventStore: loaded \(events.count) events from iCloud KV store")
             
                 return events

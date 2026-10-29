@@ -116,6 +116,7 @@
 			membershipExceptions = (
 				"Color Extensions.swift",
 				"Comparable Extensions.swift",
+				"Event Extensions.swift",
 			);
 			target = 6E3CACE22F7124750076E431 /* TimelyWidgetExtension */;
 		};
