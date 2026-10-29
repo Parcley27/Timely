@@ -67,6 +67,13 @@
           "value" : "individual"
         }
       ],
+      "position" : {
+        "scale" : 0.9,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.6
@@ -83,6 +90,13 @@
           "name" : "Sand 2"
         }
       ],
+      "position" : {
+        "scale" : 0.9,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.6
