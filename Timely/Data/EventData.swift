@@ -140,6 +140,9 @@ struct Event: Identifiable, Codable, Hashable {
     }()
     var endDateAndTime: Date?
     var timing: EventTiming = .timed
+    var recurrence: RecurrenceRule? = nil
+    var excludedOccurrences: [Date] = [] // deleted or branched off at some point
+    var detachedFrom: SeriesLink? = nil
     var isAllDay: Bool { timing == .allDay }
     var isPointEvent: Bool { timing == .moment }
     var isOnDates: [Date] {

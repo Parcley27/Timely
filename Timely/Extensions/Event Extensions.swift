@@ -18,6 +18,9 @@ extension Event {
         case endDateAndTime
         case timing
         case isAllDay // read only, for data saved before timing existed
+        case recurrence
+        case excludedOccurrences
+        case detachedFrom
         case isRecurring
         case recurranceRate
         case recurringTimes
@@ -58,6 +61,10 @@ extension Event {
             
         }
         
+        recurrence = try container.decodeIfPresent(RecurrenceRule.self, forKey: .recurrence)
+        excludedOccurrences = try container.decodeIfPresent([Date].self, forKey: .excludedOccurrences) ?? []
+        detachedFrom = try container.decodeIfPresent(SeriesLink.self, forKey: .detachedFrom)
+        
         isRecurring = try container.decodeIfPresent(Bool.self, forKey: .isRecurring)
         recurranceRate = try container.decodeIfPresent(String.self, forKey: .recurranceRate)
         recurringTimes = try container.decodeIfPresent(Int.self, forKey: .recurringTimes)
@@ -86,6 +93,15 @@ extension Event {
         try container.encode(dateAndTime, forKey: .dateAndTime)
         try container.encodeIfPresent(endDateAndTime, forKey: .endDateAndTime)
         try container.encode(timing, forKey: .timing)
+        
+        try container.encodeIfPresent(recurrence, forKey: .recurrence)
+        try container.encodeIfPresent(detachedFrom, forKey: .detachedFrom)
+        
+        // omitted when non recurrant
+        if !excludedOccurrences.isEmpty {
+            try container.encode(excludedOccurrences, forKey: .excludedOccurrences)
+            
+        }
         
         try container.encodeIfPresent(isRecurring, forKey: .isRecurring)
         try container.encodeIfPresent(recurranceRate, forKey: .recurranceRate)
