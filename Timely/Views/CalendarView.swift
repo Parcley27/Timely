@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SlidingMonthContainer: View {
+    @EnvironmentObject var preferences: SettingsStore
+    
     @Binding var displayMonth: Int
     @Binding var displayYear: Int
     @Binding var data: [Event]
@@ -26,24 +28,18 @@ struct SlidingMonthContainer: View {
     private var nextMonth: Int { displayMonth == 12 ? 1 : displayMonth + 1 }
     private var nextYear: Int { displayMonth == 12 ? displayYear + 1 : displayYear }
     
-    private func eventsForMonth(month: Int, year: Int) -> [Event] {
+    private func eventsForMonth(month: Int, year: Int) -> [EventOccurrence] {
         let calendar = Calendar.current
         guard let monthStart = calendar.date(from: DateComponents(year: year, month: month)),
-              let monthEnd = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: monthStart) else {
-            return data
+              let nextMonthStart = calendar.date(byAdding: .month, value: 1, to: monthStart) else {
+            return []
             
         }
         
-        let monthStartDay = calendar.startOfDay(for: monthStart)
-        let monthEndDay = calendar.startOfDay(for: monthEnd)
+        let hideExpired = preferences.removePassedEvents && !preferences.keepEventHistory
         
-        return data.filter { event in
-            let eventStart = calendar.startOfDay(for: event.dateAndTime)
-            let eventEnd = calendar.startOfDay(for: event.endDateAndTime ?? event.dateAndTime)
-            
-            return eventStart <= monthEndDay && eventEnd >= monthStartDay
-            
-        }
+        return data.occurrences(overlapping: DateInterval(start: monthStart, end: nextMonthStart), hideExpired: hideExpired)
+        
     }
     
     var body: some View {

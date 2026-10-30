@@ -34,11 +34,10 @@ struct Provider: TimelineProvider {
     
     func getSnapshot(in context: Context, completion: @escaping (EventEntry) -> Void) {
         let next = SharedEventStore.load()
-            .filter { !$0.hasPassed }
-            .sorted { $0.dateAndTime < $1.dateAndTime }
-            .first
+            .compactMap { $0.nextOccurrence() }
+            .min { $0.event.dateAndTime < $1.event.dateAndTime }
         
-        completion(EventEntry(date: Date(), nextEvent: next))
+        completion(EventEntry(date: Date(), nextEvent: next?.event))
         
     }
     
@@ -58,11 +57,10 @@ struct Provider: TimelineProvider {
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<EventEntry>) -> Void) {
         let next = SharedEventStore.load()
-            .filter { !$0.hasPassed }
-            .sorted { $0.dateAndTime < $1.dateAndTime }
-            .first
+            .compactMap { $0.nextOccurrence() }
+            .min { $0.event.dateAndTime < $1.event.dateAndTime }
         
-        let entry = EventEntry(date: Date(), nextEvent: next)
+        let entry = EventEntry(date: Date(), nextEvent: next?.event)
         let timeline = Timeline(entries: [entry], policy: .after(Date().addingTimeInterval(30)))
         
         completion(timeline)

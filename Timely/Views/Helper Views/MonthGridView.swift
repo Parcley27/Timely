@@ -34,7 +34,7 @@ struct MonthGridView: View {
     let year: Int
     
     @Binding var data: [Event]
-    let monthData: [Event]
+    let monthData: [EventOccurrence]
     
     let isLightMode: Bool
     let isDragging: Bool
@@ -107,9 +107,9 @@ struct MonthGridView: View {
     
     var body: some View {
         let calendar = Calendar.current
-        let eventsPerDay: [Date: [Event]] = monthData.reduce(into: [:]) { result, event in
-            for day in event.isOnDates {
-                result[day, default: []].append(event)
+        let eventsPerDay: [Date: [EventOccurrence]] = monthData.reduce(into: [:]) { result, occurrence in
+            for day in occurrence.event.isOnDates {
+                result[day, default: []].append(occurrence)
                 
             }
         }
@@ -187,7 +187,7 @@ struct MonthGridView: View {
     let currentYear = Calendar.current.component(.year, from: Date())
     
     NavigationStack {
-        MonthGridView(month: currentMonth, year: currentYear, data: eventsBinding, monthData: previewEvents, isLightMode: false, isDragging: false, saveAction: {})
+        MonthGridView(month: currentMonth, year: currentYear, data: eventsBinding, monthData: previewEvents.map { $0.displayOccurrence() }, isLightMode: false, isDragging: false, saveAction: {})
             .padding()
         
     }

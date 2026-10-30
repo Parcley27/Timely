@@ -42,7 +42,8 @@ struct EventOccurrence: Identifiable, Hashable {
     let event: Event
     let occurrenceDate: Date
     var seriesID: UUID { event.id }
-    var id: String { "\(seriesID.uuidString)-\(occurrenceDate.timeIntervalSinceReferenceDate)" }
+    // One-offs keep the plain event id, so editing their date doesn't change list identity
+    var id: String { event.isRepeating ? "\(seriesID.uuidString)-\(occurrenceDate.timeIntervalSinceReferenceDate)" : seriesID.uuidString }
     
 }
 
@@ -71,7 +72,10 @@ extension Event {
     }
     
     func displayOccurrence(at now: Date = Date(), calendar: Calendar = .current) -> EventOccurrence {
-        nextOccurrence(after: now, calendar: calendar)
+        // Called per event on every list and badge refresh
+        guard isRepeating else { return EventOccurrence(event: self, occurrenceDate: dateAndTime) }
+        
+        return nextOccurrence(after: now, calendar: calendar)
             ?? lastOccurrence(calendar: calendar)
             ?? EventOccurrence(event: self, occurrenceDate: dateAndTime)
             
@@ -91,6 +95,42 @@ extension Event {
         
     }
     
+    func continuationSummary(after occurrence: EventOccurrence, calendar: Calendar = .current) -> String? {
+        guard let recurrence else { return nil }
+        
+        let boundary = max(occurrence.event.endDateAndTime ?? occurrence.occurrenceDate, occurrence.occurrenceDate)
+        
+        guard nextOccurrence(after: boundary, calendar: calendar) != nil else {
+            return NSLocalizedString("Last occurrence", comment: "")
+            
+        }
+        
+        var summary = recurrence.cadenceSummary(calendar: calendar)
+        
+        switch recurrence.end {
+        case .never:
+            break
+            
+        case .afterOccurrences:
+            if let remaining = remainingOccurrences(after: occurrence, calendar: calendar), remaining > 0 {
+                summary += " · " + String.localizedStringWithFormat(NSLocalizedString("%lld more", comment: ""), remaining)
+                
+            }
+            
+        case .onDate(let date):
+            let formatter = DateFormatter()
+            formatter.calendar = calendar
+            formatter.locale = calendar.locale ?? Locale.current
+            formatter.setLocalizedDateFormatFromTemplate(calendar.isDate(date, equalTo: Date(), toGranularity: .year) ? "dMMM" : "dMMMy")
+            
+            summary += " · " + String.localizedStringWithFormat(NSLocalizedString("until %@", comment: ""), formatter.string(from: date))
+            
+        }
+        
+        return summary
+        
+    }
+    
     private func makeOccurrence(_ instance: OccurrenceSeries.Instance) -> EventOccurrence {
         guard instance.index > 0 else {
             return EventOccurrence(event: self, occurrenceDate: dateAndTime)
@@ -102,6 +142,67 @@ extension Event {
         moved.endDateAndTime = instance.end
         
         return EventOccurrence(event: moved, occurrenceDate: instance.start)
+        
+    }
+}
+
+extension RecurrenceRule {
+    // x, then every abc
+    func cadenceSummary(calendar: Calendar = .current) -> String {
+        let step = max(1, interval)
+        
+        if frequency == .weekly {
+            let weekdays = Set((daysOfWeek ?? []).filter { (1...7).contains($0) })
+            
+            if !weekdays.isEmpty {
+                let symbols = calendar.shortWeekdaySymbols
+                
+                let names = weekdays
+                    .sorted { ($0 - calendar.firstWeekday + 7) % 7 < ($1 - calendar.firstWeekday + 7) % 7 }
+                    .map { symbols[$0 - 1] }
+                    
+                let days = ListFormatter.localizedString(byJoining: names)
+                
+                if step == 1 {
+                    return String.localizedStringWithFormat(NSLocalizedString("Then every week on %@", comment: ""), days)
+                    
+                }
+                
+                return String.localizedStringWithFormat(NSLocalizedString("Then every %lld weeks on %@", comment: ""), step, days)
+                
+            }
+        }
+        
+        switch frequency {
+        case .daily:
+            if step == 1 { return NSLocalizedString("Then every day", comment: "") }
+            
+            return String.localizedStringWithFormat(NSLocalizedString("Then every %lld days", comment: ""), step)
+            
+        case .weekly:
+            if step == 1 { return NSLocalizedString("Then every week", comment: "") }
+            
+            return String.localizedStringWithFormat(NSLocalizedString("Then every %lld weeks", comment: ""), step)
+            
+        case .monthly:
+            if step == 1 { return NSLocalizedString("Then every month", comment: "") }
+            
+            return String.localizedStringWithFormat(NSLocalizedString("Then every %lld months", comment: ""), step)
+            
+        case .yearly:
+            if step == 1 { return NSLocalizedString("Then every year", comment: "") }
+            
+            return String.localizedStringWithFormat(NSLocalizedString("Then every %lld years", comment: ""), step)
+            
+        }
+    }
+}
+
+extension Array where Element == Event {
+    func occurrences(overlapping interval: DateInterval, hideExpired: Bool, calendar: Calendar = .current) -> [EventOccurrence] {
+        let found = flatMap { $0.occurrences(overlapping: interval, calendar: calendar) }
+        
+        return hideExpired ? found.filter { !$0.event.hasExpired() } : found
         
     }
 }

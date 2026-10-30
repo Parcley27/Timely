@@ -40,9 +40,9 @@ struct EventListView: View {
     @State var showStandard = true
     
     @State private var hasCachedEvents: Bool = false
-    @State private var cachedEventsToShow: [Event] = []
+    @State private var cachedEventsToShow: [EventOccurrence] = []
     
-    @State private var eventsByDate: [Date: [Event]] = [:]
+    @State private var eventsByDate: [Date: [EventOccurrence]] = [:]
     
     let maxDisplayedEvents = 50
     
@@ -82,25 +82,30 @@ struct EventListView: View {
     private func cacheEvents() {
         print("Caching events")
         
-        var agreeingEvents: [Event] = []
+        var agreeingEvents: [EventOccurrence] = []
         
         if let date = dateToDisplay {
-            agreeingEvents = data.filter { event in
-                event.isOnDates.contains(where: { $0.isSameDay(as: date) })
-                
-            }
+            let calendar = Calendar.current
+            let dayStart = calendar.startOfDay(for: date)
+            let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) ?? dayStart
+            
+            let hideExpired = preferences.removePassedEvents && !preferences.keepEventHistory
+            
+            agreeingEvents = data.occurrences(overlapping: DateInterval(start: dayStart, end: dayEnd), hideExpired: hideExpired)
             
         } else {
-            var goodEvents: [Event] = []
+            var goodEvents: [EventOccurrence] = []
             
-            let filteredData = preferences.removePassedEvents == false ? data : data.filter { !$0.hasExpired() }
+            let displayedData = data.map { $0.displayOccurrence() }
             
-            goodEvents.append(contentsOf: filteredData.filter { $0.hasStarted && !$0.hasPassed })
-            goodEvents.append(contentsOf: filteredData.filter { !$0.hasStarted && !$0.hasPassed })
+            let filteredData = preferences.removePassedEvents == false ? displayedData : displayedData.filter { !$0.event.hasExpired() }
+            
+            goodEvents.append(contentsOf: filteredData.filter { $0.event.hasStarted && !$0.event.hasPassed })
+            goodEvents.append(contentsOf: filteredData.filter { !$0.event.hasStarted && !$0.event.hasPassed })
             
             let pastEvents = filteredData
-                .filter { $0.hasPassed }
-                .sorted(by: { ($0.endDateAndTime ?? $0.dateAndTime) > ($1.endDateAndTime ?? $1.dateAndTime) })
+                .filter { $0.event.hasPassed }
+                .sorted(by: { ($0.event.endDateAndTime ?? $0.event.dateAndTime) > ($1.event.endDateAndTime ?? $1.event.dateAndTime) })
             
             goodEvents.append(contentsOf: pastEvents)
             
@@ -108,7 +113,7 @@ struct EventListView: View {
             
         }
         
-        cachedEventsToShow = agreeingEvents.sorted(by: { $0.dateAndTime < $1.dateAndTime })
+        cachedEventsToShow = agreeingEvents.sorted(by: { $0.event.dateAndTime < $1.event.dateAndTime })
         hasCachedEvents = true
         
     }
@@ -143,17 +148,19 @@ struct EventListView: View {
         }
     }
     
-    var eventsToShow: [Event] {
+    var eventsToShow: [EventOccurrence] {
         return cachedEventsToShow
         
     }
     
     private func rebuildEventsByDate() {
-        var grouped: [Date: [Event]] = [:]
+        var grouped: [Date: [EventOccurrence]] = [:]
         
         let calendar = Calendar.current
         
-        for event in eventsToShow {
+        for occurrence in eventsToShow {
+            let event = occurrence.event
+            
             guard (showMuted || !event.isMuted), (showStandard || !event.isStandard) else {
                 continue
                 
@@ -173,7 +180,7 @@ struct EventListView: View {
             }
             
             for day in relevantDates {
-                grouped[day, default: []].append(event)
+                grouped[day, default: []].append(occurrence)
                 
             }
         }
@@ -185,7 +192,9 @@ struct EventListView: View {
     var uniqueDates: [UniqueDate] {
         var datesSeen: [UniqueDate] = []
         
-        for event in eventsToShow {
+        for occurrence in eventsToShow {
+            let event = occurrence.event
+            
             if (showMuted || !event.isMuted) && (showStandard || !event.isStandard) {
                 // Ensure any added date matches dateToDisplay if not nil
                 let shouldAddDate: (Date) -> Bool = { date in
@@ -233,7 +242,7 @@ struct EventListView: View {
     var listDisplay: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                let pinnedEvents = eventsToShow.filter { $0.isPinned }
+                let pinnedEvents = eventsToShow.filter { $0.event.isPinned }
                 
                 if !pinnedEvents.isEmpty && dateToDisplay == nil {
                     Text("Pinned")
@@ -269,8 +278,8 @@ struct EventListView: View {
                     let normalizedDate = Calendar.current.startOfDay(for: uniqueDate.id)
                     let eventsForDate = eventsByDate[normalizedDate] ?? []
                     
-                    ForEach(eventsForDate) { event in
-                        EventTileView(for: event)
+                    ForEach(eventsForDate) { occurrence in
+                        EventTileView(for: occurrence)
                         
                     }
                 }

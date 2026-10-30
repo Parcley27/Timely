@@ -12,20 +12,23 @@ struct StatusIconView: View {
         case pinned
         case favourite
         case muted
+        case repeating
         
     }
     
     let icons: [IconType: String] = [
         .pinned: "pin.fill",
         .favourite: "star.fill",
-        .muted: "bell.slash.fill"
+        .muted: "bell.slash.fill",
+        .repeating: "repeat.circle.fill"
     
     ]
     
     let colours: [IconType: Color] = [
         .pinned: .red,
         .favourite: .yellow,
-        .muted: .purple
+        .muted: .purple,
+        .repeating: .cyan
         
     ]
     
@@ -48,6 +51,8 @@ struct StatusIconView: View {
 #Preview {
     StatusIconView(.pinned)
     StatusIconView(.favourite)
-    StatusIconView(.muted, .green)
+    //StatusIconView(.muted, .green)
+    StatusIconView(.muted)
+    StatusIconView(.repeating)
     
 }

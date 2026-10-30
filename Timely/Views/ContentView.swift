@@ -38,11 +38,12 @@ struct ContentView: View {
     }
     
     func filterPassedEvents(events: [Event]) -> [Event]? {
-        var passedEvents = events.filter { $0.hasPassed == true }
-        passedEvents = passedEvents.filter { $0.isMuted == false }
+        var passedEvents = events.filter { $0.displayOccurrence().event.hasPassed == true }
+        
+        passedEvents = passedEvents.filter { $0.displayOccurrence().event.isMuted == false }
         
         if preferences.removePassedEvents {
-            passedEvents = passedEvents.filter { $0.hasExpired() == false }
+            passedEvents = passedEvents.filter { $0.displayOccurrence().event.hasExpired() == false }
             
         }
         

@@ -22,6 +22,8 @@ struct EventDetailView: View {
     @Binding var data: [Event]
     let eventID: UUID
     
+    @State private var occurrenceDate: Date? = nil
+    
     @State var dataIndex: Int = 0
         
     @Environment(\.dismiss) var dismiss
@@ -33,9 +35,10 @@ struct EventDetailView: View {
     
     @State private var timeUntilEvent: String = ""
         
-    init(data: Binding<[Event]>, eventID: UUID, showEditEventSheet: Bool = false, showConfirmationDialog: Bool = false, timeUntilEvent: String = "") {
+    init(data: Binding<[Event]>, eventID: UUID, occurrenceDate: Date? = nil, showEditEventSheet: Bool = false, showConfirmationDialog: Bool = false, timeUntilEvent: String = "") {
         self._data = data
         self.eventID = eventID
+        self._occurrenceDate = State(initialValue: occurrenceDate)
         self._showEditEventSheet = State(initialValue: showEditEventSheet)
         self._showConfirmationDialog = State(initialValue: showConfirmationDialog)
         self._timeUntilEvent = State(initialValue: timeUntilEvent)
@@ -44,6 +47,20 @@ struct EventDetailView: View {
     
     private var currentEvent: Event? {
         return data.first(where: { $0.id == eventID })
+        
+    }
+    
+    // The event moved to the shown occurrence; used for anything about when
+    private var displayedEvent: Event? {
+        guard let event = currentEvent else { return nil }
+        guard event.isRepeating else { return event }
+        
+        if let occurrenceDate, let occurrence = event.occurrence(startingOn: occurrenceDate) {
+            return occurrence.event
+            
+        }
+        
+        return event.displayOccurrence().event
         
     }
     
@@ -64,7 +81,7 @@ struct EventDetailView: View {
     }
     
     var body: some View {
-        if let event = currentEvent {
+        if let event = currentEvent, let displayedEvent = displayedEvent {
             //let navigationTitleWrapper = event.name ?? "Event Name"
             
             ZStack(alignment: .top) {
@@ -169,7 +186,7 @@ struct EventDetailView: View {
                             .padding(.top, 24)
                             
                             VStack(spacing: 4) {
-                                if !event.hasStarted {
+                                if !displayedEvent.hasStarted {
                                     Text(event.isPointEvent ? LocalizedStringKey("Happening in") : LocalizedStringKey("Starting in"))
                                         .font(.headline)
                                         .foregroundStyle(.secondary)
@@ -180,8 +197,8 @@ struct EventDetailView: View {
                                     .font(.system(size: 32, weight: .bold))
                                     .multilineTextAlignment(.center)
                                 
-                                if event.hasStarted {
-                                    Text(event.hasPassed ? "ago" : "remaining")
+                                if displayedEvent.hasStarted {
+                                    Text(displayedEvent.hasPassed ? "ago" : "remaining")
                                         .font(.headline)
                                         .foregroundStyle(.secondary)
                                     
@@ -201,9 +218,10 @@ struct EventDetailView: View {
                                     .font(.headline)
                                     .foregroundStyle(.secondary)
                                 
-                                Text(event.dateString ?? "Event date and time")
+                                Text(displayedEvent.dateString ?? "Event date and time")
                                     .font(.system(size: 16, weight: .medium))
-                                    .bold(event.hasStarted && !event.hasPassed)
+                                    .bold(displayedEvent.hasStarted && !displayedEvent.hasPassed)
+                                
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
@@ -454,13 +472,10 @@ struct EventDetailView: View {
     }
     
     private func updateTimeUntilEvent() {
-        guard let eventIndex = data.firstIndex(where: { $0.id == eventID }),
-              eventIndex < data.count else {
-            return
-            
-        }
+        guard let displayedEvent else { return }
         
-        timeUntilEvent = calculateTime(event: data[eventIndex])
+        timeUntilEvent = calculateTime(event: displayedEvent)
+        
     }
 }
 

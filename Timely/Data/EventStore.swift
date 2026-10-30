@@ -179,7 +179,7 @@ class EventStore: ObservableObject {
         //let oneHourInSeconds = 60 * 60
         
         events.removeAll { event in
-            event.hasExpired()
+            event.displayOccurrence().event.hasExpired()
             
         }
         

@@ -11,7 +11,9 @@ struct EventTileView: View {
     @EnvironmentObject var preferences: SettingsStore
     @EnvironmentObject var eventStore: EventStore
     
-    var event: Event
+    var occurrence: EventOccurrence
+    
+    var event: Event { occurrence.event }
     
     @Environment(\.colorScheme) var colorScheme
     var isLightMode: Bool { colorScheme == .light }
@@ -30,8 +32,17 @@ struct EventTileView: View {
     
     @State private var saveError: String? = nil
     
-    init(for event: Event) {
-        self.event = event
+    init(for occurrence: EventOccurrence) {
+        self.occurrence = occurrence
+        
+    }
+    
+    private var continuationSummary: String? {
+        guard event.isRepeating else { return nil }
+        
+        let seriesEvent = eventStore.events.first(where: { $0.id == event.id }) ?? event
+        
+        return seriesEvent.continuationSummary(after: occurrence)
         
     }
     
@@ -85,7 +96,7 @@ struct EventTileView: View {
     
     var body: some View {
         ZStack {
-            NavigationLink(destination: EventDetailView(data: $eventStore.events, eventID: event.id)) {
+            NavigationLink(destination: EventDetailView(data: $eventStore.events, eventID: event.id, occurrenceDate: event.isRepeating ? occurrence.occurrenceDate : nil)) {
                 HStack(spacing: 12) {
                     // Emoji icon
                     Text(event.emoji ?? "📅")
@@ -106,6 +117,14 @@ struct EventTileView: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                         
+                        // Recurrance note
+                        if let continuationSummary {
+                            Text(continuationSummary)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                            
+                        }
                     }
                     //.shadow(color: Color.black, radius: 20)
                     
@@ -114,6 +133,13 @@ struct EventTileView: View {
                     VStack(spacing: 8) {
                         if event.isPinned {
                             StatusIconView(.pinned, Color.gray)
+                                .padding(.horizontal, 4)
+                                .padding(.vertical, 2)
+                            
+                        }
+                        
+                        if event.isRepeating {
+                            StatusIconView(.repeating, Color.gray)
                                 .padding(.horizontal, 4)
                                 .padding(.vertical, 2)
                             
@@ -200,7 +226,7 @@ struct EventTileView: View {
                     
                     Divider()
                     
-                    NavigationLink(destination: EventDetailView(data: $eventStore.events, eventID: event.id, showEditEventSheet: true)) {
+                    NavigationLink(destination: EventDetailView(data: $eventStore.events, eventID: event.id, occurrenceDate: event.isRepeating ? occurrence.occurrenceDate : nil, showEditEventSheet: true)) {
                         Label("Edit", systemImage: "slider.horizontal.3")
                         
                     }
@@ -232,6 +258,6 @@ struct EventTileView: View {
     
     let dummyEvent: Event = Event(name: "Sample Event 1", emoji: "🌲", dateAndTime: Date(), endDateAndTime: calendar.date(byAdding: .minute, value: 30, to: Date()))
     
-    EventTileView(for: dummyEvent)
+    EventTileView(for: dummyEvent.displayOccurrence())
     
 }
