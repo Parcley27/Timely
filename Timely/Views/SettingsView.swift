@@ -182,7 +182,7 @@ struct SettingsView: View {
                             self.showFeatureRequest.toggle()
                             
                         } label: {
-                            customButton(text: NSLocalizedString("Request a Feature", comment: ""), icon: "sparkles")
+                            customButton(text: NSLocalizedString("Request a Feature", comment: ""), icon: "lightbulb")
                             
                         }
                     }
@@ -229,7 +229,7 @@ struct SettingsView: View {
                             HStack {
                                 Text("Restore Defaults")
                                 Spacer()
-                                Image(systemName: "arrow.trianglehead.counterclockwise")
+                                Image(systemName: "arrow.counterclockwise")
                                 
                             }
                             .foregroundStyle(.red)

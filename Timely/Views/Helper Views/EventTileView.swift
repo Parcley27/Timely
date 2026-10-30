@@ -138,13 +138,6 @@ struct EventTileView: View {
                             
                         }
                         
-                        if event.isRepeating {
-                            StatusIconView(.repeating, Color.gray)
-                                .padding(.horizontal, 4)
-                                .padding(.vertical, 2)
-                            
-                        }
-                        
                         if event.isFavourite {
                             StatusIconView(.favourite, Color.gray)
                                 .padding(.horizontal, 4)
@@ -153,6 +146,13 @@ struct EventTileView: View {
                         
                         if event.isMuted {
                             StatusIconView(.muted, Color.gray)
+                                .padding(.horizontal, 4)
+                                .padding(.vertical, 2)
+                            
+                        }
+                        
+                        if event.isRepeating {
+                            StatusIconView(.repeating, Color.gray)
                                 .padding(.horizontal, 4)
                                 .padding(.vertical, 2)
                             

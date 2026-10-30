@@ -20,7 +20,7 @@ struct StatusIconView: View {
         .pinned: "pin.fill",
         .favourite: "star.fill",
         .muted: "bell.slash.fill",
-        .repeating: "repeat.circle.fill"
+        .repeating: "repeat"
     
     ]
     
