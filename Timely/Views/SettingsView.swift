@@ -33,12 +33,14 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
     
+    @State private var showLayoutChangeConfirmation: Bool = false
+    @State private var temporaryLegacyLayout: Bool = false
+    
     @State private var showArchiveDisableConfirmation: Bool = false
     @State private var showSettingsResetConfirmation: Bool = false
     @State private var showDeleteEventsConfirmation: Bool = false
     
     @State private var temporaryToggleState: Bool = false
-    @State private var temporaryLegacyLayout: Bool = false
     
     private var gitHubLink: some View {
         HStack {
@@ -93,10 +95,33 @@ struct SettingsView: View {
                     }
                     
                     Section("Appearance") {
-                        Toggle(isOn: $temporaryLegacyLayout) {
+                        Toggle(isOn: Binding(
+                            get: { preferences.useLegacyLayout },
+                            set: { newValue in
+                                temporaryLegacyLayout = newValue
+                                showLayoutChangeConfirmation = true
+                                
+                            }
+                        )) {
                             Text("Use Legacy Layout")
                             
                         }
+                        .alert(
+                            Text("Change Layout Style?"),
+                            isPresented: $showLayoutChangeConfirmation,
+                            actions: {
+                                Button("Cancel", role: .cancel) {}
+                                
+                                Button("Ok", role: .confirm) {
+                                    preferences.useLegacyLayout = temporaryLegacyLayout
+                                    
+                                }
+                            },
+                            message: {
+                                Text("Timely will restart to apply your changes")
+                                
+                            }
+                        )
                         
                         Toggle(isOn: $preferences.listTinting) {
                             Text("List Tinting")
@@ -242,7 +267,6 @@ struct SettingsView: View {
                             actions: {
                             Button("Reset", role: .destructive) {
                                     preferences.resetToDefaults()
-                                    temporaryLegacyLayout = SettingsStore.Defaults.useLegacyLayout
                                     
                                 }
                             },
@@ -318,21 +342,17 @@ struct SettingsView: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        // Commit the temporary legacy layout setting
-                        preferences.useLegacyLayout = temporaryLegacyLayout
-                        dismiss()
-                        
+                if preferences.useLegacyLayout {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Done") {
+                            dismiss()
+                            
+                        }
                     }
                 }
             }
             .navigationBarTitle("Settings")
-            .onAppear {
-                // Initialize temporary state with current preference
-                temporaryLegacyLayout = preferences.useLegacyLayout
-                
-            }
+            
         }
     }
 }

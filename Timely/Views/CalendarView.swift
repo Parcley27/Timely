@@ -211,13 +211,15 @@ struct CalendarView: View {
                     
                 }
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showingSettings = true
-                            
-                        } label: {
-                            Image(systemName: "gearshape")
-                            
+                    if preferences.useLegacyLayout {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button {
+                                showingSettings = true
+                                
+                            } label: {
+                                Image(systemName: "gearshape")
+                                
+                            }
                         }
                     }
                 }

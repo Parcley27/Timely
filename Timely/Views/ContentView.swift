@@ -15,6 +15,8 @@ struct ContentView: View {
     @State var lastTab: Int = 0
     @State private var showNewSheet: Bool = false
     
+    @State var searchText: String = ""
+    
     let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
     
     var currentMonth = Calendar.current.component(.month, from: Date())
@@ -107,15 +109,15 @@ struct ContentView: View {
                         }
                         .disabled(true)
                         
-                    } else {
-                        Tab("New", systemImage: "plus") {
-                            Color.clear
-                                .onAppear {
-                                    showNewSheet = true
-                                    
-                                }
-                        }
-                    }
+                    } //else {
+//                        Tab("New", systemImage: "plus") {
+//                            Color.clear
+//                                .onAppear {
+//                                    showNewSheet = true
+//                                    
+//                                }
+//                        }
+//                    }
                     
                     Tab("Calendar", systemImage: "calendar") {
                         CalendarView(data: $eventStore.events, displayMonth: currentMonth, displayYear: currentYear) {
@@ -138,22 +140,62 @@ struct ContentView: View {
                             }
                         }
                     }
-                }
-                .id(preferences.useLegacyLayout) // Force to rerender when layout preference changes
-                .overlay(alignment: .bottom) {
-                    GeometryReader { geometry in // New button collider
-                        Color.clear
-                            .contentShape(Circle())
-                            .frame(width: geometry.size.width * 0.2, height: 60)
-                            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.977)
-                            .allowsHitTesting(true)
-                            .onTapGesture {
-                                showNewSheet = true
+                    
+                    if !preferences.useLegacyLayout {
+                        Tab("Settings", systemImage: "gearshape") {
+                            SettingsView()
+                            
+                        }
+                        
+                        Tab("Search", systemImage: "magnifyingglass", role: .prominent) {
+                            NavigationStack {
+                                List {
+                                    Text("Hello")
+                                    Text("Hi")
+                                    
+                                }
+                                .navigationTitle("Search")
+                                .searchable(text: $searchText, prompt: "Search items")
                                 
                             }
+                        }
                     }
-                    .allowsHitTesting(!preferences.useLegacyLayout)
-                    
+                }
+                .id(preferences.useLegacyLayout) // Force to rerender when layout preference changes
+                .tabViewBottomAccessory(isEnabled: !preferences.useLegacyLayout) {
+                    ZStack {
+                        //Color.accentColor
+                        
+                        HStack {
+                            Image(systemName: "plus")
+                            
+                            Text("Create New Event")
+                            
+                        }
+                        .fontWeight(.medium)
+                        
+                    }
+                    .onTapGesture {
+                        showNewSheet = true
+                        
+                    }
+                }
+                .overlay(alignment: .bottom) {
+                    if preferences.useLegacyLayout {
+                        GeometryReader { geometry in // New button collider
+                            Color.clear
+                                .contentShape(Circle())
+                                .frame(width: geometry.size.width * 0.2, height: 60)
+                                .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.977)
+                                .allowsHitTesting(true)
+                                .onTapGesture {
+                                    showNewSheet = true
+                                    
+                                }
+                        }
+                        .allowsHitTesting(!preferences.useLegacyLayout)
+                        
+                    }
                 }
                 .sheet(isPresented: $showNewSheet) {
                     NewEventSheetView(data: $eventStore.events)
