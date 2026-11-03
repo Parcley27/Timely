@@ -53,6 +53,9 @@ struct SettingsView: View {
         
     }
     
+    var listSpacingNumber: CGFloat = 12
+    var headingSpacingNumber: CGFloat = 0
+    
     func customButton(text: String, icon: String) -> some View {
         HStack {
             Text(text)
@@ -71,30 +74,53 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                List {
-                    Section("App Behaviour") {
+            ScrollView {
+                LazyVStack(spacing: 16) {
+                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                        Text("App Behaviour")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .padding(.bottom, headingSpacingNumber)
+                        
                         Toggle(isOn: $preferences.quickAdd) {
                             Text("Enable Quick Add")
                             
                         }
                         
+                        Divider()
+                            
                         Toggle(isOn: $preferences.allowContextMenu) {
                             Text("Allow \"Press and Hold\" Actions")
                             
                         }
                         
+                        Divider()
+                        
+                            
                         Toggle(isOn: $preferences.useEmojiKeyboard) {
                             Text("Use Emoji Keyboard")
                         }
+                            
+                        Divider()
                         
                         Toggle(isOn: $preferences.showBadge) {
                             Text("In-App Notifications")
                             
                         }
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        TileView(inputColours: preferences.listTinting ? .accentColor : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                        
+                    )
                     
-                    Section("Appearance") {
+                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                        Text("Appearance")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .padding(.bottom, headingSpacingNumber)
+                        
                         Toggle(isOn: Binding(
                             get: { preferences.useLegacyLayout },
                             set: { newValue in
@@ -123,17 +149,34 @@ struct SettingsView: View {
                             }
                         )
                         
+                        Divider()
+                        
                         Toggle(isOn: $preferences.listTinting) {
                             Text("List Tinting")
                             
                         }
                         
+                        Divider()
+                        
                         Toggle(isOn: $preferences.showFilmGrain) {
                             Text("Display \"Film Grain\" Effects")
+                            
                         }
+                        
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        TileView(inputColours: preferences.listTinting ? .accentColor : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                        
+                    )
                     
-                    Section("Event Storage") {
+                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                        Text("Event Storage")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .padding(.bottom, headingSpacingNumber)
+                        
                         /*
                         Toggle(isOn: $preferences.doiCloudSync) {
                             Text("Sync to iCloud")
@@ -150,6 +193,8 @@ struct SettingsView: View {
                                 
                             }
                         }
+                        
+                        Divider()
                         
                         Toggle(isOn: Binding(
                             get: { preferences.keepEventHistory },
@@ -184,9 +229,22 @@ struct SettingsView: View {
                             
                             }
                         )
-                    }
                     
-                    Section("Contact") {
+                        
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        TileView(inputColours: preferences.listTinting ? .accentColor : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                        
+                    )
+                    
+                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                        Text("Contact")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .padding(.bottom, headingSpacingNumber)
+                        
                         Button() {
                             self.showGetSupport.toggle()
                             
@@ -194,6 +252,8 @@ struct SettingsView: View {
                             customButton(text: NSLocalizedString("Get Support", comment: ""), icon: "questionmark.circle")
                             
                         }
+                        
+                        Divider()
                         
                         Button() {
                             self.showIssueReport.toggle()
@@ -203,6 +263,8 @@ struct SettingsView: View {
                             
                         }
                         
+                        Divider()
+                        
                         Button() {
                             self.showFeatureRequest.toggle()
                             
@@ -211,27 +273,27 @@ struct SettingsView: View {
                             
                         }
                     }
-                    
-                    Section("Credits") {
-                        Button() {
-                            openURL(URL(string: "https://pierceoxley.ca")!)
-                            
-                        } label: {
-                            customButton(text: NSLocalizedString("Created by Pierce Nestibo-Oxley", comment: ""), icon: "person.circle")
-                            
-                        }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        TileView(inputColours: preferences.listTinting ? .accentColor : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
                         
-                        Text("Special thanks to my family, Dale Dai, and everyone else along the way.")
-                        
-                    }
+                    )
                     
-                    Section("App Information") {
+                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                        Text("App Information")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .padding(.bottom, headingSpacingNumber)
+                        
                         Button() {
                             openURL(URL(string: "https://apps.apple.com/ca/app/timely-event-tracker/id6503667182")!)
                             
                         } label: {
                             customButton(text: NSLocalizedString("App Store Page", comment: ""), icon: "arrow.up.forward.app")
                         }
+                        
+                        Divider()
                         
                         Button() {
                             openURL(URL(string: "https://github.com/Parcley27/Timely")!)
@@ -241,12 +303,64 @@ struct SettingsView: View {
                             
                         }
                         
-                        Text("Version")
-                            .badge(Bundle.main.fullVersion)
+                        Divider()
+                        
+//                        Text("Timely Version \(Bundle.main.fullVersion)")
+//                        
+//                        Divider()
+                        
+                        HStack {
+                            Text("Version")
+                            
+                            Spacer()
+                            
+                            Text("Timely \(Bundle.main.fullVersion)")
+                                .foregroundStyle(.secondary)
+                            
+                        }
                         
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        TileView(inputColours: preferences.listTinting ? .accentColor : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                        
+                    )
                     
-                    Section("Danger Zone") {
+                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                        Text("Credits")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .padding(.bottom, headingSpacingNumber)
+                        
+                        Button() {
+                            openURL(URL(string: "https://pierceoxley.ca")!)
+                            
+                        } label: {
+                            customButton(text: NSLocalizedString("Created by Pierce Nestibo-Oxley", comment: ""), icon: "person.circle")
+                            
+                        }
+                        
+                        Divider()
+                        
+                        Text("Special thanks to my family, Dale Dai, and everyone else along the way.")
+                            .foregroundStyle(.secondary)
+                        
+                        
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        TileView(inputColours: preferences.listTinting ? .accentColor : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                        
+                    )
+                    
+                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                        Text("Danger Zone")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .padding(.bottom, headingSpacingNumber)
+                        
                         Button () {
                             showSettingsResetConfirmation = true
                             
@@ -276,6 +390,8 @@ struct SettingsView: View {
                             }
                         )
                         
+                        Divider()
+                        
                         Button () {
                             showDeleteEventsConfirmation = true
                             
@@ -304,8 +420,58 @@ struct SettingsView: View {
                             
                             }
                         )
+                        
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        TileView(inputColours: preferences.listTinting ? .accentColor : .black, forceBackground: true, saturationModifier: 0.75, customBorder: false)
+                        
+                    )
                 }
+                .padding()
+                .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
+                
+                VStack(spacing: 6) {
+                    HStack {
+                        Rectangle()
+                            //.frame(width: 27 * 1.62, height: 2)
+                            .frame(width: 27 * 1, height: 2)
+                        
+                        Image("Centered Logo")
+                            .renderingMode(.template)
+                            .resizable().scaledToFit()
+                            .frame(width: 27)
+                        
+                        Rectangle()
+                            //.frame(width: 27 * 1.62, height: 2)
+                            .frame(width: 27 * 1, height: 2)
+                        
+                    }
+                    .padding(.bottom, 6)
+                    
+                    HStack(spacing: 0) {
+                        Text("Made in ")
+                            .bold()
+                        
+                        //Image("Canada Flag BW Transparent")
+                        Image("Leaf")
+                            .renderingMode(.template)
+                            .resizable().scaledToFit()
+                            .frame(height: 14)
+                        
+                        Text(" with ♥︎")
+                            .bold()
+                        
+                    }
+                    
+                }
+                .font(.footnote)
+                .foregroundStyle(.tertiary)
+                .frame(maxWidth: .infinity)
+                .padding(.top, 16)
+                .padding(.bottom, 32)
+                
             }
             .scrollContentBackground(preferences.showFilmGrain ? .hidden : .visible)
             .background {
