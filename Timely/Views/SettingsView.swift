@@ -31,6 +31,7 @@ struct SettingsView: View {
     @State private var showFeatureRequest = false
     
     @Environment(\.dismiss) var dismiss
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.openURL) var openURL
     
     @State private var showLayoutChangeConfirmation: Bool = false
@@ -42,6 +43,28 @@ struct SettingsView: View {
     
     @State private var temporaryToggleState: Bool = false
     
+    // Plain accent blue and system grey wash out against the accent-tinted tiles,
+    // so when tinting is on, use a deeper accent in light mode, a lighter one in dark mode,
+    // and a primary-based grey for headings and secondary text
+    private var linkColour: Color {
+        guard preferences.listTinting else { return .accentColor }
+        
+        return colorScheme == .light
+            ? Color.accentColor.adjusted(saturation: 1.0, brightness: 0.68)
+            : Color.accentColor.adjusted(saturation: 0.6, brightness: 1.0)
+    }
+    
+    // Softer red than the system one, which looks harsh on the tinted tiles
+    private var dangerColour: Color {
+        colorScheme == .light
+            ? Color.red.adjusted(saturation: 0.8, brightness: 0.92)
+            : Color.red.adjusted(saturation: 0.55, brightness: 1.0)
+    }
+    
+    private var secondaryTextColour: Color {
+        preferences.listTinting ? Color.primary.opacity(0.7) : Color.secondary
+    }
+    
     private var gitHubLink: some View {
         HStack {
             Text("Contribute to Timely")
@@ -49,16 +72,17 @@ struct SettingsView: View {
             Image(systemName: "arrow.up.forward.app")
             
         }
-        .foregroundStyle(.accent)
+        .foregroundStyle(linkColour)
         
     }
     
-    var listSpacingNumber: CGFloat = 12
-    var headingSpacingNumber: CGFloat = 0
+    var listSpacing: CGFloat = 12
+    var headingSpacing: CGFloat = 0
     
     func customButton(text: String, icon: String) -> some View {
         HStack {
             Text(text)
+                .fontWeight(.medium)
             Spacer()
             ZStack {
                 Image(systemName: icon)
@@ -68,7 +92,7 @@ struct SettingsView: View {
                 
             }
         }
-        .foregroundStyle(.accent)
+        .foregroundStyle(linkColour)
         
     }
     
@@ -76,11 +100,11 @@ struct SettingsView: View {
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 16) {
-                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                    VStack(alignment: .leading, spacing: listSpacing) {
                         Text("App Behaviour")
                             .font(.headline)
-                            .foregroundStyle(.secondary)
-                            .padding(.bottom, headingSpacingNumber)
+                            .foregroundStyle(secondaryTextColour)
+                            .padding(.bottom, headingSpacing)
                         
                         Toggle(isOn: $preferences.quickAdd) {
                             Text("Enable Quick Add")
@@ -115,11 +139,11 @@ struct SettingsView: View {
                         
                     )
                     
-                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                    VStack(alignment: .leading, spacing: listSpacing) {
                         Text("Appearance")
                             .font(.headline)
-                            .foregroundStyle(.secondary)
-                            .padding(.bottom, headingSpacingNumber)
+                            .foregroundStyle(secondaryTextColour)
+                            .padding(.bottom, headingSpacing)
                         
                         Toggle(isOn: Binding(
                             get: { preferences.useLegacyLayout },
@@ -171,11 +195,11 @@ struct SettingsView: View {
                         
                     )
                     
-                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                    VStack(alignment: .leading, spacing: listSpacing) {
                         Text("Event Storage")
                             .font(.headline)
-                            .foregroundStyle(.secondary)
-                            .padding(.bottom, headingSpacingNumber)
+                            .foregroundStyle(secondaryTextColour)
+                            .padding(.bottom, headingSpacing)
                         
                         /*
                         Toggle(isOn: $preferences.doiCloudSync) {
@@ -239,11 +263,11 @@ struct SettingsView: View {
                         
                     )
                     
-                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                    VStack(alignment: .leading, spacing: listSpacing) {
                         Text("Contact")
                             .font(.headline)
-                            .foregroundStyle(.secondary)
-                            .padding(.bottom, headingSpacingNumber)
+                            .foregroundStyle(secondaryTextColour)
+                            .padding(.bottom, headingSpacing)
                         
                         Button() {
                             self.showGetSupport.toggle()
@@ -280,11 +304,11 @@ struct SettingsView: View {
                         
                     )
                     
-                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                    VStack(alignment: .leading, spacing: listSpacing) {
                         Text("App Information")
                             .font(.headline)
-                            .foregroundStyle(.secondary)
-                            .padding(.bottom, headingSpacingNumber)
+                            .foregroundStyle(secondaryTextColour)
+                            .padding(.bottom, headingSpacing)
                         
                         Button() {
                             openURL(URL(string: "https://apps.apple.com/ca/app/timely-event-tracker/id6503667182")!)
@@ -315,7 +339,7 @@ struct SettingsView: View {
                             Spacer()
                             
                             Text("Timely \(Bundle.main.fullVersion)")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(secondaryTextColour)
                             
                         }
                         
@@ -327,11 +351,11 @@ struct SettingsView: View {
                         
                     )
                     
-                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                    VStack(alignment: .leading, spacing: listSpacing) {
                         Text("Credits")
                             .font(.headline)
-                            .foregroundStyle(.secondary)
-                            .padding(.bottom, headingSpacingNumber)
+                            .foregroundStyle(secondaryTextColour)
+                            .padding(.bottom, headingSpacing)
                         
                         Button() {
                             openURL(URL(string: "https://pierceoxley.ca")!)
@@ -344,8 +368,7 @@ struct SettingsView: View {
                         Divider()
                         
                         Text("Special thanks to my family, Dale Dai, and everyone else along the way.")
-                            .foregroundStyle(.secondary)
-                        
+                            .foregroundStyle(secondaryTextColour)
                         
                     }
                     .padding()
@@ -355,11 +378,11 @@ struct SettingsView: View {
                         
                     )
                     
-                    VStack(alignment: .leading, spacing: listSpacingNumber) {
+                    VStack(alignment: .leading, spacing: listSpacing) {
                         Text("Danger Zone")
                             .font(.headline)
-                            .foregroundStyle(.secondary)
-                            .padding(.bottom, headingSpacingNumber)
+                            .foregroundStyle(secondaryTextColour)
+                            .padding(.bottom, headingSpacing)
                         
                         Button () {
                             showSettingsResetConfirmation = true
@@ -371,7 +394,7 @@ struct SettingsView: View {
                                 Image(systemName: "arrow.counterclockwise")
                                 
                             }
-                            .foregroundStyle(.red)
+                            .foregroundStyle(dangerColour)
                             
                         }
                         .confirmationDialog(
@@ -402,7 +425,7 @@ struct SettingsView: View {
                                 Image(systemName: "trash")
                                 
                             }
-                            .foregroundStyle(.red)
+                            .foregroundStyle(dangerColour)
                             
                         }
                         .confirmationDialog(
