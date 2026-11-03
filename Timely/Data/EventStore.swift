@@ -23,6 +23,90 @@ class EventStore: ObservableObject {
         
     }
     
+    // Original data before any sort of migration
+    private static func backupFileURL() throws -> URL {
+        try FileManager.default.url(for: .documentDirectory,
+                                    in: .userDomainMask,
+                                    appropriateFor: nil,
+                                    create: false)
+        .appendingPathComponent("events.v1.backup.data")
+        
+    }
+    
+    private static func writeMigrationBackup(_ data: Data) -> Bool {
+        do {
+            let backupURL = try backupFileURL()
+            
+            if !FileManager.default.fileExists(atPath: backupURL.path) {
+                try data.write(to: backupURL, options: .atomic)
+                
+                print("Wrote pre-migration backup")
+                
+            }
+            
+            return true
+            
+        } catch {
+            print("Failed to write pre-migration backup: \(error)")
+            
+            return false
+            
+        }
+    }
+    
+    private static func deleteMigrationBackup() {
+        guard let backupURL = try? backupFileURL(), FileManager.default.fileExists(atPath: backupURL.path) else { return }
+        
+        do {
+            try FileManager.default.removeItem(at: backupURL)
+            
+            print("Removed pre-migration backup")
+            
+        } catch {
+            print("Failed to remove pre-migration backup: \(error)")
+            
+        }
+    }
+    
+    // Shared by iCloud and local
+    private static func decodeEvents(from data: Data) throws -> (events: [Event], didMigrate: Bool) {
+        let decodedEvents = try Event.decodeList(from: data)
+        let legacyFields = LegacyRecurrenceFields.decodeList(from: data)
+        
+        guard EventMigration.needsMigration(legacyFields) else {
+            return (decodedEvents, false)
+            
+        }
+        
+        // Dont touch anything without a backup!!
+        guard writeMigrationBackup(data) else {
+            print("Skipping repeating events migration")
+            
+            return (decodedEvents, false)
+            
+        }
+        
+        return (EventMigration.migrate(decodedEvents, legacy: legacyFields), true)
+        
+    }
+    
+    private func saveMigratedEvents() {
+        Task {
+            do {
+                try await save(events: events)
+                
+                // delete backup AFTER everything is moved
+                Self.deleteMigrationBackup()
+                
+            } catch {
+                await MainActor.run {
+                    self.saveError = error
+                    
+                }
+            }
+        }
+    }
+    
     // Load from iCloud
     func loadFromiCloud() {
         let store = NSUbiquitousKeyValueStore.default
@@ -38,12 +122,16 @@ class EventStore: ObservableObject {
                 
                 print("Loaded JSON from iCloud")
                 
-                let loadedEvents = try Event.decodeList(from: data)
+                let (loadedEvents, didMigrate) = try Self.decodeEvents(from: data)
                 
                 DispatchQueue.main.async {
                     self.events = loadedEvents
                     self.isLoading = false
                     
+                    if didMigrate {
+                        self.saveMigratedEvents()
+                        
+                    }
                 }
                 
                 // Mirror to shared store for widgets
@@ -115,22 +203,29 @@ class EventStore: ObservableObject {
     
     func load() async throws {
         print("Loading from local storage")
-        let task = Task<[Event], Error> {
+        let task = Task<(events: [Event], didMigrate: Bool), Error> {
             let fileURL = try Self.fileURL()
             
             guard let data = try? Data(contentsOf: fileURL) else {
-                return []
+                return ([], false)
                 
             }
             
-            let loadedEvents = try Event.decodeList(from: data)
-            return loadedEvents
+            return try Self.decodeEvents(from: data)
             
         }
         
-        let events = try await task.value
-        self.events = events
+        let (events, didMigrate) = try await task.value
         
+        await MainActor.run {
+            self.events = events
+            
+        }
+        
+        if didMigrate {
+            saveMigratedEvents()
+            
+        }
     }
     
     func save(events: [Event]) async throws {

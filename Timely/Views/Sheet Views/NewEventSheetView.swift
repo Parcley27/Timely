@@ -263,6 +263,41 @@ struct NewEventSheetView: View {
         NavigationStack {
             VStack {
                 List {
+                    if preferences.quickAdd {
+                        Section {
+                            HStack(spacing: 12) {
+                                Image(systemName: "bolt.fill")
+                                    .foregroundStyle(.yellow)
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Quick Add enabled")
+                                        .font(.subheadline.weight(.semibold))
+                                    
+                                    Text("Some fields will be auto-filled by Timely Intelligence")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    
+                                }
+                                
+                                Spacer()
+                                
+                                Button("Disable") {
+                                    withAnimation {
+                                        preferences.quickAdd = false
+                                        
+                                    }
+                                    
+                                    UIDatePicker.appearance().minuteInterval = 5
+                                    
+                                }
+                                .buttonStyle(.borderless)
+                                .buttonBorderShape(.capsule)
+                                .font(.subheadline.weight(.medium))
+                                
+                            }
+                        }
+                    }
+                    
                     Section("About") {
                         TextField("Name", text: $formName)
                             .textInputAutocapitalization(.words)

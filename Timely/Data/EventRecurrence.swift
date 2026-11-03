@@ -105,25 +105,45 @@ extension Event {
             
         }
         
-        var summary = recurrence.cadenceSummary(calendar: calendar)
+        var summary = String.localizedStringWithFormat(NSLocalizedString("Repeating %@", comment: "Recurrence summary. The argument is the cadence, e.g. daily or every 2 weeks."), recurrence.cadenceSummary(calendar: calendar))
+        
+        let endDate: Date?
         
         switch recurrence.end {
         case .never:
-            break
+            endDate = nil
             
         case .afterOccurrences:
-            if let remaining = remainingOccurrences(after: occurrence, calendar: calendar), remaining > 0 {
-                summary += " · " + String.localizedStringWithFormat(NSLocalizedString("%lld more", comment: ""), remaining)
-                
-            }
+            endDate = lastOccurrence(calendar: calendar)?.occurrenceDate
             
         case .onDate(let date):
+            endDate = date
+            
+        }
+        
+        if let endDate {
             let formatter = DateFormatter()
             formatter.calendar = calendar
             formatter.locale = calendar.locale ?? Locale.current
-            formatter.setLocalizedDateFormatFromTemplate(calendar.isDate(date, equalTo: Date(), toGranularity: .year) ? "dMMM" : "dMMMy")
             
-            summary += " · " + String.localizedStringWithFormat(NSLocalizedString("until %@", comment: ""), formatter.string(from: date))
+            // Coarser cadences -> coarser end dates
+            let template: String
+            
+            switch recurrence.frequency {
+            case .daily, .weekly:
+                template = calendar.isDate(endDate, equalTo: Date(), toGranularity: .year) ? "dMMM" : "dMMMy"
+                
+            case .monthly:
+                template = "MMMy"
+                
+            case .yearly:
+                template = "y"
+                
+            }
+            
+            formatter.setLocalizedDateFormatFromTemplate(template)
+            
+            summary += " " + String.localizedStringWithFormat(NSLocalizedString("through %@", comment: ""), formatter.string(from: endDate))
             
         }
         
@@ -147,7 +167,6 @@ extension Event {
 }
 
 extension RecurrenceRule {
-    // x, then every abc
     func cadenceSummary(calendar: Calendar = .current) -> String {
         let step = max(1, interval)
         
@@ -164,35 +183,35 @@ extension RecurrenceRule {
                 let days = ListFormatter.localizedString(byJoining: names)
                 
                 if step == 1 {
-                    return String.localizedStringWithFormat(NSLocalizedString("Then every week on %@", comment: ""), days)
+                    return String.localizedStringWithFormat(NSLocalizedString("weekly on %@", comment: ""), days)
                     
                 }
                 
-                return String.localizedStringWithFormat(NSLocalizedString("Then every %lld weeks on %@", comment: ""), step, days)
+                return String.localizedStringWithFormat(NSLocalizedString("every %lld weeks on %@", comment: ""), step, days)
                 
             }
         }
         
         switch frequency {
         case .daily:
-            if step == 1 { return NSLocalizedString("Then every day", comment: "") }
+            if step == 1 { return NSLocalizedString("daily", comment: "") }
             
-            return String.localizedStringWithFormat(NSLocalizedString("Then every %lld days", comment: ""), step)
+            return String.localizedStringWithFormat(NSLocalizedString("every %lld days", comment: ""), step)
             
         case .weekly:
-            if step == 1 { return NSLocalizedString("Then every week", comment: "") }
+            if step == 1 { return NSLocalizedString("weekly", comment: "") }
             
-            return String.localizedStringWithFormat(NSLocalizedString("Then every %lld weeks", comment: ""), step)
+            return String.localizedStringWithFormat(NSLocalizedString("every %lld weeks", comment: ""), step)
             
         case .monthly:
-            if step == 1 { return NSLocalizedString("Then every month", comment: "") }
+            if step == 1 { return NSLocalizedString("monthly", comment: "") }
             
-            return String.localizedStringWithFormat(NSLocalizedString("Then every %lld months", comment: ""), step)
+            return String.localizedStringWithFormat(NSLocalizedString("every %lld months", comment: ""), step)
             
         case .yearly:
-            if step == 1 { return NSLocalizedString("Then every year", comment: "") }
+            if step == 1 { return NSLocalizedString("annually", comment: "") }
             
-            return String.localizedStringWithFormat(NSLocalizedString("Then every %lld years", comment: ""), step)
+            return String.localizedStringWithFormat(NSLocalizedString("every %lld years", comment: ""), step)
             
         }
     }
@@ -254,6 +273,12 @@ private struct OccurrenceSeries {
         
     }
     
+    struct EndClock {
+        let dayOffset: Int
+        let time: DateComponents
+        
+    }
+    
     let calendar: Calendar
     let anchor: Date
     let anchorEnd: Date?
@@ -262,6 +287,7 @@ private struct OccurrenceSeries {
     let maxCount: Int?
     let endLimit: Date? // inclusive of final day
     let duration: DateComponents? // nil for moments
+    let endClock: EndClock? // nil for moments and ends at or before the start
     let excludedDays: Set<Date>
     let weeklyDays: WeeklyDays?
     
@@ -291,11 +317,15 @@ private struct OccurrenceSeries {
             
         }
         
-        if let end = event.endDateAndTime {
-            duration = end > event.dateAndTime ? calendar.dateComponents([.day, .hour, .minute, .second], from: event.dateAndTime, to: end) : DateComponents()
+        if let end = event.endDateAndTime, end > event.dateAndTime {
+            let endDays = calendar.dateComponents([.day], from: calendar.startOfDay(for: event.dateAndTime), to: calendar.startOfDay(for: end)).day ?? 0
+            
+            duration = calendar.dateComponents([.day, .hour, .minute, .second], from: event.dateAndTime, to: end)
+            endClock = EndClock(dayOffset: max(0, endDays), time: calendar.dateComponents([.hour, .minute, .second], from: end))
             
         } else {
-            duration = nil
+            duration = event.endDateAndTime == nil ? nil : DateComponents()
+            endClock = nil
             
         }
         
@@ -400,7 +430,7 @@ private struct OccurrenceSeries {
             end = anchorEnd
             
         } else if let duration {
-            end = calendar.date(byAdding: duration, to: start) ?? start
+            end = clockEnd(for: start) ?? calendar.date(byAdding: duration, to: start) ?? start
             
         } else {
             end = nil
@@ -448,16 +478,21 @@ private struct OccurrenceSeries {
         
     }
     
+    // fix end for dst and time zones
+    private func clockEnd(for start: Date) -> Date? {
+        guard let endClock,
+              let day = calendar.date(byAdding: .day, value: endClock.dayOffset, to: calendar.startOfDay(for: start)),
+              let end = calendar.date(bySettingHour: endClock.time.hour ?? 0, minute: endClock.time.minute ?? 0, second: endClock.time.second ?? 0, of: day),
+              end > start else { return nil }
+              
+        return end
+        
+    }
+    
     func lookback(from date: Date) -> Date {
-        guard let duration else { return date }
+        guard duration != nil else { return date }
         
-        var back = DateComponents()
-        back.day = -(duration.day ?? 0)
-        back.hour = -(duration.hour ?? 0)
-        back.minute = -(duration.minute ?? 0)
-        back.second = -(duration.second ?? 0)
-        
-        return calendar.date(byAdding: back, to: date) ?? date
+        return calendar.date(byAdding: .day, value: -((endClock?.dayOffset ?? 0) + 1), to: date) ?? date
         
     }
     
