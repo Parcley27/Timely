@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		6E11A7A72F8C3C0C00CEC061 /* SharedEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E11A7A62F8C3C0C00CEC061 /* SharedEventStore.swift */; };
 		6E11A7A82F8C3C1300CEC061 /* SharedEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E11A7A62F8C3C0C00CEC061 /* SharedEventStore.swift */; };
+		6E11A7AA2F8C410A00CEC061 /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0212B0196A90029A8D4 /* EventData.swift */; };
 		6E11A7B62F9A1C3400CEC061 /* EventRecurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E11A7B52F9A1C2D00CEC061 /* EventRecurrence.swift */; };
 		6E11A7B72F9A1C3B00CEC061 /* EventRecurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E11A7B52F9A1C2D00CEC061 /* EventRecurrence.swift */; };
 		6E11A7BD2FA3D1EB00CEC061 /* EventMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E11A7BC2FA3D1E400CEC061 /* EventMigration.swift */; };
-		6E11A7AA2F8C410A00CEC061 /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAEA0212B0196A90029A8D4 /* EventData.swift */; };
 		6E3CACE62F7124750076E431 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E3CACE52F7124750076E431 /* WidgetKit.framework */; };
 		6E3CACE82F7124750076E431 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E3CACE72F7124750076E431 /* SwiftUI.framework */; };
 		6E3CACF92F7124770076E431 /* TimelyWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6E3CACE32F7124750076E431 /* TimelyWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -83,9 +83,9 @@
 
 /* Begin PBXFileReference section */
 		6E11A7A62F8C3C0C00CEC061 /* SharedEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedEventStore.swift; sourceTree = "<group>"; };
+		6E11A7B32F8C523E00CEC061 /* TimelyWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TimelyWidgetExtension.entitlements; sourceTree = "<group>"; };
 		6E11A7B52F9A1C2D00CEC061 /* EventRecurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRecurrence.swift; sourceTree = "<group>"; };
 		6E11A7BC2FA3D1E400CEC061 /* EventMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMigration.swift; sourceTree = "<group>"; };
-		6E11A7B32F8C523E00CEC061 /* TimelyWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TimelyWidgetExtension.entitlements; sourceTree = "<group>"; };
 		6E3CACE32F7124750076E431 /* TimelyWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TimelyWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E3CACE52F7124750076E431 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		6E3CACE72F7124750076E431 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -771,7 +771,7 @@
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 26;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -809,7 +809,7 @@
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 26;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
